@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Changelog · Order Management Documentation</title>
+<meta name="description" content="What changed, generated from force-app metadata diffs on every push to main">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__logo" href="index.html">
+        <span class="topbar__mark" aria-hidden="true"></span>
+        Order Management Documentation
+      </a>
+      <button id="search-trigger" class="search-trigger" type="button">
+        <span class="search-trigger__icon" aria-hidden="true">&#128269;</span>
+        <span class="search-trigger__label">Search documentation...</span>
+        <span class="search-trigger__kbd">/</span>
+      </button>
+      <div class="topbar__actions">
+        <button id="export-trigger" class="topbar__btn" type="button">
+          <span aria-hidden="true">&#11015;</span>
+          <span>Download docs</span>
+        </button>
+        <a class="topbar__link" href="changelog.html">Changelog</a>
+        <a class="topbar__link" href="technical/index.html">Technical Docs</a>
+      </div>
+    </div>
+  </header>
+  
+  <div id="search-modal" class="search-modal" hidden>
+    <div class="search-modal__backdrop" data-close-search></div>
+    <div class="search-modal__panel" role="dialog" aria-modal="true" aria-label="Search documentation">
+      <div class="search-modal__input-row">
+        <span class="search-trigger__icon" aria-hidden="true">&#128269;</span>
+        <input id="search-input" type="text" placeholder="Search documentation..." autocomplete="off">
+        <span class="search-modal__esc">ESC</span>
+      </div>
+      <div id="search-results" class="search-results search-results--modal"></div>
+    </div>
+  </div>
+  
+  <div id="export-modal" class="modal" hidden>
+    <div class="modal__backdrop" data-close-export></div>
+    <div class="modal__panel export-panel" role="dialog" aria-modal="true" aria-label="Download documentation">
+      <div class="export-panel__head">
+        <h2 class="export-panel__title">Download documentation</h2>
+        <button type="button" class="export-panel__close" data-close-export aria-label="Close">&times;</button>
+      </div>
+      <div class="export-panel__body">
+        <label class="export-field">
+          <span class="export-field__label">Which documentation?</span>
+          <select id="export-category" class="export-select">
+            <option value="__all__">All documentation (2 pages)</option>
+            <option value="Getting Started">Getting Started</option><option value="Orders">Orders</option>
+          </select>
+        </label>
+        <div class="export-field">
+          <span class="export-field__label">Format</span>
+          <label class="export-radio"><input type="radio" name="export-format" value="pdf" checked> <span><strong>PDF</strong> — opens a print view; choose "Save as PDF"</span></label>
+          <label class="export-radio"><input type="radio" name="export-format" value="doc"> <span><strong>Word document (.doc)</strong> — downloads a Word-openable file</span></label>
+        </div>
+      </div>
+      <div class="export-panel__foot">
+        <button type="button" class="btn-secondary" data-close-export>Cancel</button>
+        <button type="button" class="btn-primary" id="export-run">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <nav aria-label="Documentation">
+        <details class="nav-group">
+      <summary class="nav-group__label"><span class="nav-group__chevron" aria-hidden="true"></span>Getting Started</summary>
+      <ul class="nav-group__items">
+        <li><a class="nav-link" href="index.html">Overview</a></li>
+      </ul>
+    </details><details class="nav-group">
+      <summary class="nav-group__label"><span class="nav-group__chevron" aria-hidden="true"></span>Orders</summary>
+      <ul class="nav-group__items">
+        <li><a class="nav-link" href="orders--order-lifecycle.html">Order Lifecycle</a></li>
+      </ul>
+    </details>
+        <div class="nav-group nav-group--static">
+          <div class="nav-group__label">On this changelog</div>
+          <ul class="nav-group__items"><li><a class="nav-link" href="#2026-07-21-initial-documentation-baseline">2026-07-21 — Initial documentation baseline</a></li></ul>
+        </div>
+      </nav>
+    </aside>
+
+    <main id="main" class="content">
+      <div class="content__inner">
+        <div class="breadcrumbs">
+          <a href="index.html">Docs</a>
+          <span class="breadcrumbs__sep">/</span>
+          <span class="breadcrumbs__current">Changelog</span>
+        </div>
+        <h1 class="page-title">Changelog</h1>
+        <p class="page-lede">Generated automatically from what changed in <code>force-app/</code> — not hand-written.</p>
+        
+        <section class="changelog-entry" id="2026-07-21-initial-documentation-baseline">
+          <div class="changelog-entry__header">
+            <h2 class="changelog-entry__version">2026-07-21 — Initial documentation baseline</h2>
+          </div>
+          <div class="prose changelog-entry__body"><p><strong>ApexClass</strong> (4)</p>
+<ul>
+<li><code>OrderNotifier</code></li>
+<li><code>OrderService</code></li>
+<li><code>OrderTriggerHandler</code></li>
+<li><code>OrderTriggerHandlerTest</code></li>
+</ul>
+<p><strong>Flow</strong> (1)</p>
+<ul>
+<li><code>Order_Confirmation_Email</code></li>
+</ul>
+<p><strong>LightningComponentBundle</strong> (1)</p>
+<ul>
+<li><code>orderSummary</code></li>
+</ul>
+<p><strong>CustomField</strong> (8)</p>
+<ul>
+<li><code>Order_Line__c.Confirmed__c</code></li>
+<li><code>Order_Line__c.Order__c</code></li>
+<li><code>Order_Line__c.Price__c</code></li>
+<li><code>Order_Line__c.Product_Name__c</code></li>
+<li><code>Order_Line__c.Quantity__c</code></li>
+<li><code>Order__c.Customer_Email__c</code></li>
+<li><code>Order__c.Status__c</code></li>
+<li><code>Order__c.Total_Amount__c</code></li>
+</ul>
+<p><strong>CustomObject</strong> (2)</p>
+<ul>
+<li><code>Order_Line__c</code></li>
+<li><code>Order__c</code></li>
+</ul>
+<p><strong>ApexTrigger</strong> (1)</p>
+<ul>
+<li><code>OrderTrigger</code></li>
+</ul>
+</div>
+        </section>
+      </div>
+    </main>
+
+    <aside class="toc-rail"></aside>
+  </div>
+
+  <script>window.__SEARCH_INDEX__ = [{"title":"Documentation Overview","description":"How this documentation is generated, and how to find your way around it.","feature":"Overview","url":"index.html"},{"title":"Order Lifecycle","description":"How an order moves from Draft to Confirmed, and what happens automatically when it does.","feature":"Order Lifecycle","url":"orders--order-lifecycle.html"},{"title":"Changelog","description":"What changed, generated from force-app metadata diffs","feature":"Changelog","url":"changelog.html"}];</script>
+  <script src="export-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

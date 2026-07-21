@@ -1,0 +1,378 @@
+{
+  "generatedAt": "2026-07-21T17:32:41.319Z",
+  "version": 6,
+  "componentCount": 17,
+  "edgeCount": 12,
+  "componentsByType": {
+    "ApexClass": 4,
+    "Flow": 1,
+    "LightningComponentBundle": 1,
+    "CustomField": 8,
+    "CustomObject": 2,
+    "ApexTrigger": 1
+  },
+  "edgesByRelationship": {
+    "calls_method": 2,
+    "soql_read": 2,
+    "dml_write": 3,
+    "trigger_on": 2,
+    "wire_adapter": 1,
+    "references_object": 1,
+    "handled_by": 1
+  },
+  "components": [
+    {
+      "name": "OrderNotifier",
+      "type": "ApexClass",
+      "path": "classes/OrderNotifier.cls",
+      "methods": [
+        {
+          "name": "sendConfirmationEmails",
+          "signature": "public sendConfirmationEmails(List<Order__c> orders)",
+          "auraEnabled": false,
+          "future": true
+        }
+      ],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "OrderService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "OrderService",
+      "type": "ApexClass",
+      "path": "classes/OrderService.cls",
+      "methods": [
+        {
+          "name": "confirmOrders",
+          "signature": "public confirmOrders(List<Order__c> orders)",
+          "auraEnabled": false,
+          "future": false
+        },
+        {
+          "name": "getOrderLines",
+          "signature": "public getOrderLines(Id orderId)",
+          "auraEnabled": true,
+          "future": false
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "OrderNotifier",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "Order_Line__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "Order_Line__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "OrderTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "orderSummary",
+          "type": "LightningComponentBundle",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "OrderTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/OrderTriggerHandler.cls",
+      "methods": [
+        {
+          "name": "handleAfterUpdate",
+          "signature": "public handleAfterUpdate(List<Order__c> newOrders, Map<Id, Order__c> oldMap)",
+          "auraEnabled": false,
+          "future": false
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "OrderService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "OrderTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "OrderTriggerHandlerTest",
+      "type": "ApexClass",
+      "path": "classes/OrderTriggerHandlerTest.cls",
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Order_Line__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "Order__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Order_Line__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order_Confirmation_Email",
+      "type": "Flow",
+      "path": "flows/Order_Confirmation_Email.flow-meta.xml",
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Order__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "orderSummary",
+      "type": "LightningComponentBundle",
+      "path": "lwc/orderSummary",
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "OrderService",
+          "type": "ApexClass",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Confirmed__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Confirmed__c.field-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Order__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Order__c.field-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Price__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Price__c.field-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Product_Name__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Product_Name__c.field-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Quantity__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Quantity__c.field-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c",
+      "type": "CustomObject",
+      "path": "objects/Order_Line__c/Order_Line__c.object-meta.xml",
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Order__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "OrderService",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "OrderService",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "OrderTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "OrderTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order__c.Customer_Email__c",
+      "type": "CustomField",
+      "path": "objects/Order__c/fields/Customer_Email__c.field-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order__c.Status__c",
+      "type": "CustomField",
+      "path": "objects/Order__c/fields/Status__c.field-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order__c.Total_Amount__c",
+      "type": "CustomField",
+      "path": "objects/Order__c/fields/Total_Amount__c.field-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order__c",
+      "type": "CustomObject",
+      "path": "objects/Order__c/Order__c.object-meta.xml",
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "OrderTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Order_Confirmation_Email",
+          "type": "Flow",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "Order_Line__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        },
+        {
+          "name": "OrderTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "OrderTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/OrderTrigger.trigger",
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Order__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "OrderTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "health": "unreviewed",
+      "purpose": null
+    }
+  ]
+}

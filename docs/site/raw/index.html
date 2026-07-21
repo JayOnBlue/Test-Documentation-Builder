@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation Overview · Markdown source</title>
+<meta name="description" content="How this documentation is generated, and how to find your way around it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="raw-view">
+  <header class="raw-view__bar">
+    <a href="../index.html">&larr; Back to Documentation Overview</a>
+    <button type="button" id="raw-copy-btn" class="raw-view__copy">Copy</button>
+  </header>
+  <pre class="raw-view__pre"><code>---
+title: &quot;Documentation Overview&quot;
+feature: &quot;Overview&quot;
+category: &quot;Getting Started&quot;
+description: &quot;How this documentation is generated, and how to find your way around it.&quot;
+order: 0
+slug: &quot;overview&quot;
+---
+
+## Overview
+
+This documentation describes the sample Order Management feature in `force-app/`. It is not written by
+hand — it is generated automatically every time metadata changes are pushed to `main`, then published to
+this GitHub Pages site.
+
+## Prerequisites
+
+- None. This page always exists as the landing page for business/use-case documentation.
+
+## Steps to Navigate
+
+1. Use the tabs above to move between documentation categories.
+2. Use the sidebar on the left to jump to a specific feature within a category.
+3. Press **/** anywhere to search across every page.
+4. Use the **Technical Docs** link in the top bar to see the component-level view of the same codebase —
+   classes, objects, flows, and how they depend on each other.
+
+## Validations &amp; Business Rules
+
+- None — this page is informational only.
+
+## Related Features
+
+- See **Orders → Order Lifecycle** for the one real example feature in this demo.
+</code></pre>
+  <script>
+    document.getElementById('raw-copy-btn').addEventListener('click', function () {
+      navigator.clipboard.writeText(document.querySelector('.raw-view__pre code').textContent).then(function () {
+        var b = document.getElementById('raw-copy-btn');
+        b.textContent = 'Copied';
+        setTimeout(function () { b.textContent = 'Copy'; }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>

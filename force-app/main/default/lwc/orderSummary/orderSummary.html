@@ -1,0 +1,9 @@
+<template>
+    <lightning-card title="Order Summary">
+        <template if:true={hasLines}>
+            <template for:each={orderLines.data} for:item="line">
+                <p key={line.Id}>{line.Product_Name__c} — {line.Quantity__c} x {line.Price__c}</p>
+            </template>
+        </template>
+    </lightning-card>
+</template>

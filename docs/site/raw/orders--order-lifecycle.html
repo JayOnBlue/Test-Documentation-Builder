@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Lifecycle · Markdown source</title>
+<meta name="description" content="How an order moves from Draft to Confirmed, and what happens automatically when it does.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="raw-view">
+  <header class="raw-view__bar">
+    <a href="../orders--order-lifecycle.html">&larr; Back to Order Lifecycle</a>
+    <button type="button" id="raw-copy-btn" class="raw-view__copy">Copy</button>
+  </header>
+  <pre class="raw-view__pre"><code>---
+title: &quot;Order Lifecycle&quot;
+feature: &quot;Order Lifecycle&quot;
+category: &quot;Orders&quot;
+description: &quot;How an order moves from Draft to Confirmed, and what happens automatically when it does.&quot;
+prerequisites:
+  - &quot;\&quot;Manage Orders\&quot; permission (or equivalent) to edit an Order record&quot;
+order: 10
+slug: &quot;order-lifecycle&quot;
+---
+
+## Overview
+
+An Order tracks a customer's purchase, made up of one or more Order Lines (products, quantities, and
+prices). Sales and fulfillment staff use the Order record to move a purchase from a working draft to a
+confirmed sale, at which point the customer is notified automatically.
+
+## Prerequisites
+
+- The Order must have at least one Order Line before it is confirmed.
+- The customer's email address must be set on the Order.
+
+## Steps to Navigate
+
+1. Open the Order record and review its Order Lines related list.
+2. Change **Status** from *Draft* to *Confirmed* and save.
+3. The system marks every Order Line on the order as confirmed and emails the customer automatically —
+   no further action is needed.
+
+## Validations &amp; Business Rules
+
+- Changing Status to *Confirmed* triggers `OrderTrigger`, which calls `OrderTriggerHandler` →
+  `OrderService.confirmOrders()`.
+- `OrderService.confirmOrders()` marks every related Order Line as confirmed, then queues a confirmation
+  email via `OrderNotifier` (an `@future` call, so the email is sent asynchronously).
+- The **Order Confirmation Email** flow also listens for the same Status change as a second, declarative
+  path — see the Technical Docs tab for the full dependency picture.
+
+## Related Features
+
+- See **Technical Docs → OrderService** for the exact method-level behavior and everything that depends on it.
+</code></pre>
+  <script>
+    document.getElementById('raw-copy-btn').addEventListener('click', function () {
+      navigator.clipboard.writeText(document.querySelector('.raw-view__pre code').textContent).then(function () {
+        var b = document.getElementById('raw-copy-btn');
+        b.textContent = 'Copied';
+        setTimeout(function () { b.textContent = 'Copy'; }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>

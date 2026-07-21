@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Docs</title>
+<meta name="description" content="Component-level technical documentation, generated from force-app metadata.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="topbar__logo" href="#/overview"><span class="topbar__mark" aria-hidden="true">&#9889;</span><span id="site-name">Order Management Documentation</span></a>
+    <span id="snapshot-badge" class="badge badge--info">Static snapshot</span>
+    <div class="topbar__search">
+      <input id="search-input" type="text" placeholder="Search components, methods... ( / )" autocomplete="off">
+    </div>
+    <a class="topbar__back" href="../index.html">&larr; Business Docs</a>
+    <button id="theme-toggle" class="icon-btn" type="button" title="Toggle theme" aria-label="Toggle theme">&#9788;</button>
+  </header>
+
+  <div class="shell">
+    <nav class="nav" aria-label="Sections">
+      <a class="nav__link" data-route="overview" href="#/overview">Overview</a>
+      <a class="nav__link" data-route="index" href="#/index">Component Index</a>
+
+      <div class="nav__tree-head">
+        <span>Source tree</span>
+        <button id="expand-all" class="link-btn" type="button">expand all</button>
+      </div>
+      <div id="tree" class="tree"></div>
+    </nav>
+
+    <main id="main" class="main"></main>
+  </div>
+
+  <div id="search-results" class="search-results" hidden></div>
+
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

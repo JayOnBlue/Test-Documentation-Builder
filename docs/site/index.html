@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation Overview</title>
+<meta name="description" content="How this documentation is generated, and how to find your way around it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__logo" href="index.html">
+        <span class="topbar__mark" aria-hidden="true"></span>
+        Order Management Documentation
+      </a>
+      <button id="search-trigger" class="search-trigger" type="button">
+        <span class="search-trigger__icon" aria-hidden="true">&#128269;</span>
+        <span class="search-trigger__label">Search documentation...</span>
+        <span class="search-trigger__kbd">/</span>
+      </button>
+      <div class="topbar__actions">
+        <button id="export-trigger" class="topbar__btn" type="button">
+          <span aria-hidden="true">&#11015;</span>
+          <span>Download docs</span>
+        </button>
+        <a class="topbar__link" href="changelog.html">Changelog</a>
+        <a class="topbar__link" href="technical/index.html">Technical Docs</a>
+      </div>
+    </div>
+  </header>
+  
+  <div id="search-modal" class="search-modal" hidden>
+    <div class="search-modal__backdrop" data-close-search></div>
+    <div class="search-modal__panel" role="dialog" aria-modal="true" aria-label="Search documentation">
+      <div class="search-modal__input-row">
+        <span class="search-trigger__icon" aria-hidden="true">&#128269;</span>
+        <input id="search-input" type="text" placeholder="Search documentation..." autocomplete="off">
+        <span class="search-modal__esc">ESC</span>
+      </div>
+      <div id="search-results" class="search-results search-results--modal"></div>
+    </div>
+  </div>
+  
+  <div id="export-modal" class="modal" hidden>
+    <div class="modal__backdrop" data-close-export></div>
+    <div class="modal__panel export-panel" role="dialog" aria-modal="true" aria-label="Download documentation">
+      <div class="export-panel__head">
+        <h2 class="export-panel__title">Download documentation</h2>
+        <button type="button" class="export-panel__close" data-close-export aria-label="Close">&times;</button>
+      </div>
+      <div class="export-panel__body">
+        <label class="export-field">
+          <span class="export-field__label">Which documentation?</span>
+          <select id="export-category" class="export-select">
+            <option value="__all__">All documentation (2 pages)</option>
+            <option value="Getting Started">Getting Started</option><option value="Orders">Orders</option>
+          </select>
+        </label>
+        <div class="export-field">
+          <span class="export-field__label">Format</span>
+          <label class="export-radio"><input type="radio" name="export-format" value="pdf" checked> <span><strong>PDF</strong> — opens a print view; choose "Save as PDF"</span></label>
+          <label class="export-radio"><input type="radio" name="export-format" value="doc"> <span><strong>Word document (.doc)</strong> — downloads a Word-openable file</span></label>
+        </div>
+      </div>
+      <div class="export-panel__foot">
+        <button type="button" class="btn-secondary" data-close-export>Cancel</button>
+        <button type="button" class="btn-primary" id="export-run">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <nav aria-label="Documentation"><details class="nav-group" open>
+      <summary class="nav-group__label"><span class="nav-group__chevron" aria-hidden="true"></span>Getting Started</summary>
+      <ul class="nav-group__items">
+        <li><a class="nav-link nav-link--active" href="index.html">Overview</a></li>
+      </ul>
+    </details><details class="nav-group">
+      <summary class="nav-group__label"><span class="nav-group__chevron" aria-hidden="true"></span>Orders</summary>
+      <ul class="nav-group__items">
+        <li><a class="nav-link" href="orders--order-lifecycle.html">Order Lifecycle</a></li>
+      </ul>
+    </details></nav>
+    </aside>
+
+    <main id="main" class="content">
+      <div class="content__inner">
+        <div class="breadcrumbs">
+          <a href="index.html">Docs</a>
+          <span class="breadcrumbs__sep">/</span>
+          <span>Getting Started</span>
+          <span class="breadcrumbs__sep">/</span>
+          <span class="breadcrumbs__current">Overview</span>
+        </div>
+
+        <h1 class="page-title">Documentation Overview</h1>
+        <p class="page-lede">How this documentation is generated, and how to find your way around it.</p>
+        
+    <div class="action-bar" data-action-bar>
+      <button type="button" class="action-bar__item" data-action="copy-llm"><span aria-hidden="true">&#10024;</span>Copy for LLM</button><button type="button" class="action-bar__item" data-action="view-md"><span aria-hidden="true">&#128196;</span>View as Markdown</button><button type="button" class="action-bar__item" data-action="copy-url-md"><span aria-hidden="true">&#128279;</span>Copy URL to Markdown</button><button type="button" class="action-bar__item" data-action="download-pdf"><span aria-hidden="true">&#11015;</span>Download PDF</button>
+    </div>
+
+        
+
+        <article class="prose"><h2 id="overview">Overview</h2>
+<p>This documentation describes the sample Order Management feature in <code>force-app/</code>. It is not written by
+hand — it is generated automatically every time metadata changes are pushed to <code>main</code>, then published to
+this GitHub Pages site.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>None. This page always exists as the landing page for business/use-case documentation.</li>
+</ul>
+<h2 id="steps-to-navigate">Steps to Navigate</h2>
+<ol>
+<li>Use the tabs above to move between documentation categories.</li>
+<li>Use the sidebar on the left to jump to a specific feature within a category.</li>
+<li>Press <strong>/</strong> anywhere to search across every page.</li>
+<li>Use the <strong>Technical Docs</strong> link in the top bar to see the component-level view of the same codebase —
+classes, objects, flows, and how they depend on each other.</li>
+</ol>
+<h2 id="validations-business-rules">Validations &amp; Business Rules</h2>
+<ul>
+<li>None — this page is informational only.</li>
+</ul>
+<h2 id="related-features">Related Features</h2>
+<ul>
+<li>See <strong>Orders → Order Lifecycle</strong> for the one real example feature in this demo.</li>
+</ul>
+<h2 id="browse-by-area">Browse by area</h2>
+    <div class="home-cards"><a class="home-card" href="orders--order-lifecycle.html">
+      <span class="home-card__title">Orders</span>
+      <span class="home-card__count">1 page</span>
+    </a></div></article>
+
+        
+      </div>
+    </main>
+
+    <aside class="toc-rail">
+    <nav class="toc" aria-label="On this page">
+      <div class="toc__label">On this page</div>
+      <ul class="toc__list">
+        <li><a href="#overview">Overview</a></li><li><a href="#prerequisites">Prerequisites</a></li><li><a href="#steps-to-navigate">Steps to Navigate</a></li><li><a href="#validations-business-rules">Validations &amp; Business Rules</a></li><li><a href="#related-features">Related Features</a></li>
+      </ul>
+    </nav></aside>
+  </div>
+
+  <script>window.__SEARCH_INDEX__ = [{"title":"Documentation Overview","description":"How this documentation is generated, and how to find your way around it.","feature":"Overview","url":"index.html"},{"title":"Order Lifecycle","description":"How an order moves from Draft to Confirmed, and what happens automatically when it does.","feature":"Order Lifecycle","url":"orders--order-lifecycle.html"},{"title":"Changelog","description":"What changed, generated from force-app metadata diffs","feature":"Changelog","url":"changelog.html"}];</script>
+  <script id="raw-md-data" type="application/json">{"title":"Documentation Overview","url":"index.html","rawUrl":"raw/index.md","markdown":"\n## Overview\n\nThis documentation describes the sample Order Management feature in `force-app/`. It is not written by\nhand — it is generated automatically every time metadata changes are pushed to `main`, then published to\nthis GitHub Pages site.\n\n## Prerequisites\n\n- None. This page always exists as the landing page for business/use-case documentation.\n\n## Steps to Navigate\n\n1. Use the tabs above to move between documentation categories.\n2. Use the sidebar on the left to jump to a specific feature within a category.\n3. Press **/** anywhere to search across every page.\n4. Use the **Technical Docs** link in the top bar to see the component-level view of the same codebase —\n   classes, objects, flows, and how they depend on each other.\n\n## Validations & Business Rules\n\n- None — this page is informational only.\n\n## Related Features\n\n- See **Orders → Order Lifecycle** for the one real example feature in this demo.\n"}</script>
+  <script src="export-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

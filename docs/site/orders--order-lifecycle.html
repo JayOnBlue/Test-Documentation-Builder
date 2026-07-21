@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Lifecycle · Order Management Documentation</title>
+<meta name="description" content="How an order moves from Draft to Confirmed, and what happens automatically when it does.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__logo" href="index.html">
+        <span class="topbar__mark" aria-hidden="true"></span>
+        Order Management Documentation
+      </a>
+      <button id="search-trigger" class="search-trigger" type="button">
+        <span class="search-trigger__icon" aria-hidden="true">&#128269;</span>
+        <span class="search-trigger__label">Search documentation...</span>
+        <span class="search-trigger__kbd">/</span>
+      </button>
+      <div class="topbar__actions">
+        <button id="export-trigger" class="topbar__btn" type="button">
+          <span aria-hidden="true">&#11015;</span>
+          <span>Download docs</span>
+        </button>
+        <a class="topbar__link" href="changelog.html">Changelog</a>
+        <a class="topbar__link" href="technical/index.html">Technical Docs</a>
+      </div>
+    </div>
+  </header>
+  
+  <div id="search-modal" class="search-modal" hidden>
+    <div class="search-modal__backdrop" data-close-search></div>
+    <div class="search-modal__panel" role="dialog" aria-modal="true" aria-label="Search documentation">
+      <div class="search-modal__input-row">
+        <span class="search-trigger__icon" aria-hidden="true">&#128269;</span>
+        <input id="search-input" type="text" placeholder="Search documentation..." autocomplete="off">
+        <span class="search-modal__esc">ESC</span>
+      </div>
+      <div id="search-results" class="search-results search-results--modal"></div>
+    </div>
+  </div>
+  
+  <div id="export-modal" class="modal" hidden>
+    <div class="modal__backdrop" data-close-export></div>
+    <div class="modal__panel export-panel" role="dialog" aria-modal="true" aria-label="Download documentation">
+      <div class="export-panel__head">
+        <h2 class="export-panel__title">Download documentation</h2>
+        <button type="button" class="export-panel__close" data-close-export aria-label="Close">&times;</button>
+      </div>
+      <div class="export-panel__body">
+        <label class="export-field">
+          <span class="export-field__label">Which documentation?</span>
+          <select id="export-category" class="export-select">
+            <option value="__all__">All documentation (2 pages)</option>
+            <option value="Getting Started">Getting Started</option><option value="Orders">Orders</option>
+          </select>
+        </label>
+        <div class="export-field">
+          <span class="export-field__label">Format</span>
+          <label class="export-radio"><input type="radio" name="export-format" value="pdf" checked> <span><strong>PDF</strong> — opens a print view; choose "Save as PDF"</span></label>
+          <label class="export-radio"><input type="radio" name="export-format" value="doc"> <span><strong>Word document (.doc)</strong> — downloads a Word-openable file</span></label>
+        </div>
+      </div>
+      <div class="export-panel__foot">
+        <button type="button" class="btn-secondary" data-close-export>Cancel</button>
+        <button type="button" class="btn-primary" id="export-run">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <nav aria-label="Documentation"><details class="nav-group">
+      <summary class="nav-group__label"><span class="nav-group__chevron" aria-hidden="true"></span>Getting Started</summary>
+      <ul class="nav-group__items">
+        <li><a class="nav-link" href="index.html">Overview</a></li>
+      </ul>
+    </details><details class="nav-group" open>
+      <summary class="nav-group__label"><span class="nav-group__chevron" aria-hidden="true"></span>Orders</summary>
+      <ul class="nav-group__items">
+        <li><a class="nav-link nav-link--active" href="orders--order-lifecycle.html">Order Lifecycle</a></li>
+      </ul>
+    </details></nav>
+    </aside>
+
+    <main id="main" class="content">
+      <div class="content__inner">
+        <div class="breadcrumbs">
+          <a href="index.html">Docs</a>
+          <span class="breadcrumbs__sep">/</span>
+          <span>Orders</span>
+          <span class="breadcrumbs__sep">/</span>
+          <span class="breadcrumbs__current">Order Lifecycle</span>
+        </div>
+
+        <h1 class="page-title">Order Lifecycle</h1>
+        <p class="page-lede">How an order moves from Draft to Confirmed, and what happens automatically when it does.</p>
+        
+    <div class="action-bar" data-action-bar>
+      <button type="button" class="action-bar__item" data-action="copy-llm"><span aria-hidden="true">&#10024;</span>Copy for LLM</button><button type="button" class="action-bar__item" data-action="view-md"><span aria-hidden="true">&#128196;</span>View as Markdown</button><button type="button" class="action-bar__item" data-action="copy-url-md"><span aria-hidden="true">&#128279;</span>Copy URL to Markdown</button><button type="button" class="action-bar__item" data-action="download-pdf"><span aria-hidden="true">&#11015;</span>Download PDF</button>
+    </div>
+
+        
+    <div class="callout callout--info">
+      <div class="callout__title">Before you start</div>
+      <ul><li>&quot;Manage Orders&quot; permission (or equivalent) to edit an Order record</li></ul>
+    </div>
+
+        <article class="prose"><h2 id="overview">Overview</h2>
+<p>An Order tracks a customer’s purchase, made up of one or more Order Lines (products, quantities, and
+prices). Sales and fulfillment staff use the Order record to move a purchase from a working draft to a
+confirmed sale, at which point the customer is notified automatically.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>The Order must have at least one Order Line before it is confirmed.</li>
+<li>The customer’s email address must be set on the Order.</li>
+</ul>
+<h2 id="steps-to-navigate">Steps to Navigate</h2>
+<ol>
+<li>Open the Order record and review its Order Lines related list.</li>
+<li>Change <strong>Status</strong> from <em>Draft</em> to <em>Confirmed</em> and save.</li>
+<li>The system marks every Order Line on the order as confirmed and emails the customer automatically —
+no further action is needed.</li>
+</ol>
+<h2 id="validations-business-rules">Validations &amp; Business Rules</h2>
+<ul>
+<li>Changing Status to <em>Confirmed</em> triggers <code>OrderTrigger</code>, which calls <code>OrderTriggerHandler</code> →
+<code>OrderService.confirmOrders()</code>.</li>
+<li><code>OrderService.confirmOrders()</code> marks every related Order Line as confirmed, then queues a confirmation
+email via <code>OrderNotifier</code> (an <code>@future</code> call, so the email is sent asynchronously).</li>
+<li>The <strong>Order Confirmation Email</strong> flow also listens for the same Status change as a second, declarative
+path — see the Technical Docs tab for the full dependency picture.</li>
+</ul>
+<h2 id="related-features">Related Features</h2>
+<ul>
+<li>See <strong>Technical Docs → OrderService</strong> for the exact method-level behavior and everything that depends on it.</li>
+</ul>
+</article>
+
+        
+      </div>
+    </main>
+
+    <aside class="toc-rail">
+    <nav class="toc" aria-label="On this page">
+      <div class="toc__label">On this page</div>
+      <ul class="toc__list">
+        <li><a href="#overview">Overview</a></li><li><a href="#prerequisites">Prerequisites</a></li><li><a href="#steps-to-navigate">Steps to Navigate</a></li><li><a href="#validations-business-rules">Validations &amp; Business Rules</a></li><li><a href="#related-features">Related Features</a></li>
+      </ul>
+    </nav></aside>
+  </div>
+
+  <script>window.__SEARCH_INDEX__ = [{"title":"Documentation Overview","description":"How this documentation is generated, and how to find your way around it.","feature":"Overview","url":"index.html"},{"title":"Order Lifecycle","description":"How an order moves from Draft to Confirmed, and what happens automatically when it does.","feature":"Order Lifecycle","url":"orders--order-lifecycle.html"},{"title":"Changelog","description":"What changed, generated from force-app metadata diffs","feature":"Changelog","url":"changelog.html"}];</script>
+  <script id="raw-md-data" type="application/json">{"title":"Order Lifecycle","url":"orders--order-lifecycle.html","rawUrl":"raw/orders--order-lifecycle.md","markdown":"\n## Overview\n\nAn Order tracks a customer's purchase, made up of one or more Order Lines (products, quantities, and\nprices). Sales and fulfillment staff use the Order record to move a purchase from a working draft to a\nconfirmed sale, at which point the customer is notified automatically.\n\n## Prerequisites\n\n- The Order must have at least one Order Line before it is confirmed.\n- The customer's email address must be set on the Order.\n\n## Steps to Navigate\n\n1. Open the Order record and review its Order Lines related list.\n2. Change **Status** from *Draft* to *Confirmed* and save.\n3. The system marks every Order Line on the order as confirmed and emails the customer automatically —\n   no further action is needed.\n\n## Validations & Business Rules\n\n- Changing Status to *Confirmed* triggers `OrderTrigger`, which calls `OrderTriggerHandler` →\n  `OrderService.confirmOrders()`.\n- `OrderService.confirmOrders()` marks every related Order Line as confirmed, then queues a confirmation\n  email via `OrderNotifier` (an `@future` call, so the email is sent asynchronously).\n- The **Order Confirmation Email** flow also listens for the same Status change as a second, declarative\n  path — see the Technical Docs tab for the full dependency picture.\n\n## Related Features\n\n- See **Technical Docs → OrderService** for the exact method-level behavior and everything that depends on it.\n"}</script>
+  <script src="export-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

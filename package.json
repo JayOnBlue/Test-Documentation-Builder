@@ -1,0 +1,19 @@
+{
+  "name": "sf-docs-automation-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dummy end-to-end example: force-app metadata -> generated Markdown docs -> one GitHub Pages site.",
+  "scripts": {
+    "extract:technical": "node docs/scripts/extract-technical.js",
+    "author:business": "node docs/scripts/author-business-docs.mjs",
+    "changelog": "node docs/scripts/generate-changelog.js",
+    "build:site": "node docs/scripts/build-site.js",
+    "build": "npm run extract:technical && npm run author:business && npm run changelog && npm run build:site"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "highlight.js": "^11.11.1",
+    "js-yaml": "^5.2.1",
+    "markdown-it": "^14.3.0"
+  }
+}

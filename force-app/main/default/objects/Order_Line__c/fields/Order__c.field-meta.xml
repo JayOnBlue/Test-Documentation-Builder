@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Order__c</fullName>
+    <label>Order</label>
+    <type>MasterDetail</type>
+    <referenceTo>Order__c</referenceTo>
+    <relationshipName>Order_Lines</relationshipName>
+</CustomField>
