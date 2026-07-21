@@ -2,15 +2,22 @@
 'use strict';
 /**
  * Deterministic changelog: diffs force-app against the last commit this
- * pipeline documented (not the commit message), classifies each changed
- * file by metadata type, and writes one dated Markdown entry. Falls back to
- * "initial baseline" the first time it runs (no prior commit recorded, or
- * not inside a git repo at all).
+ * pipeline documented (not the commit message), classifies each changed file
+ * by metadata type, and appends one "release" entry to docs/CHANGELOG.md —
+ * grouped into Added / Changed / Removed (rendered on the site as GitHub
+ * Releases-style Features / Improvements / Fixes), with contributors and a
+ * compare link when the origin remote resolves to a GitHub repo.
+ *
+ * The Markdown file is the database: the site's changelog page is parsed
+ * straight out of these ## / ### headings, nothing is duplicated into JSON.
+ *
+ * Falls back to "initial baseline" the first time it runs (no prior commit
+ * recorded, or not inside a git repo at all).
  */
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const { discover, classify } = require('./lib/discover');
+const { discover, classify, relToDefault } = require('./lib/discover');
 
 const ROOT = path.join(__dirname, '..', '..');
 const FORCE_APP = path.join(ROOT, 'force-app', 'main', 'default');
@@ -31,10 +38,12 @@ function saveState(state) {
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 }
 
-function relToDefault(repoRelPath) {
-  const marker = 'force-app/main/default/';
-  const idx = repoRelPath.indexOf(marker);
-  return idx === -1 ? null : repoRelPath.slice(idx + marker.length);
+function compareUrl(fromSha, toSha) {
+  const remote = sh('git remote get-url origin');
+  if (!remote) return null;
+  const m = remote.match(/github\.com[:/]([^/]+)\/([^/.]+)(?:\.git)?$/);
+  if (!m) return null;
+  return `https://github.com/${m[1]}/${m[2]}/compare/${fromSha}...${toSha}`;
 }
 
 const state = loadState();
@@ -42,6 +51,7 @@ const headSha = sh('git rev-parse HEAD');
 const inGitRepo = headSha !== null;
 
 const STATUS_LABEL = { A: 'Added', M: 'Modified', D: 'Removed', R: 'Renamed' };
+const GROUP_FOR_STATUS = { Added: 'Added', Modified: 'Changed', Removed: 'Removed', Renamed: 'Changed' };
 const entries = []; // { status, type, name, path }
 
 if (inGitRepo && state.lastDocumentedCommit && sh(`git cat-file -e ${state.lastDocumentedCommit}`) !== null) {
@@ -58,12 +68,10 @@ if (inGitRepo && state.lastDocumentedCommit && sh(`git cat-file -e ${state.lastD
   }
 } else {
   for (const c of discover(FORCE_APP)) {
-    entries.push({ status: 'Added', type: c.type, name: c.type === 'LightningComponentBundle' ? c.name : c.name, path: c.path });
+    entries.push({ status: 'Added', type: c.type, name: c.name, path: c.path });
   }
 }
 
-// De-dupe (a field + its parent object edited together, etc. still list separately, but
-// the same file touched by more than one diff line should only appear once).
 const seen = new Set();
 const deduped = entries.filter((e) => {
   const key = `${e.status}|${e.type}|${e.name}`;
@@ -72,42 +80,54 @@ const deduped = entries.filter((e) => {
   return true;
 });
 
+if (deduped.length === 0) {
+  console.log('No force-app changes since the last documented commit — changelog untouched.');
+  if (inGitRepo) saveState({ ...state, lastDocumentedCommit: headSha });
+  process.exit(0);
+}
+
+const existingChangelog = fs.existsSync(CHANGELOG_FILE) ? fs.readFileSync(CHANGELOG_FILE, 'utf8') : '';
+const releaseNumber = (existingChangelog.match(/^## v\d+/gm) || []).length + 1;
 const dateStr = new Date().toISOString().slice(0, 10);
 const shortSha = headSha ? headSha.slice(0, 7) : 'local';
 
-let body;
-if (deduped.length === 0) {
-  body = null; // nothing changed under force-app — don't write an empty entry
-} else if (!inGitRepo || !state.lastDocumentedCommit) {
-  const byType = {};
-  for (const e of deduped) (byType[e.type] = byType[e.type] || []).push(e);
-  const lines = [`## ${dateStr} — Initial documentation baseline`, ''];
-  for (const [type, items] of Object.entries(byType)) {
-    lines.push(`**${type}** (${items.length})`, '');
-    for (const item of items) lines.push(`- \`${item.name}\``);
-    lines.push('');
-  }
-  body = lines.join('\n');
+const isBaseline = !inGitRepo || !state.lastDocumentedCommit;
+const contributors = isBaseline
+  ? (sh('git log -1 --format=%an') ? [sh('git log -1 --format=%an')] : ['local'])
+  : Array.from(new Set((sh(`git log --format=%an ${state.lastDocumentedCommit}..${headSha}`) || '').split('\n').filter(Boolean)));
+
+const grouped = { Added: [], Changed: [], Removed: [] };
+for (const e of deduped) grouped[GROUP_FOR_STATUS[e.status]].push(e);
+
+const lines = [];
+lines.push(`## v${releaseNumber} — ${dateStr}${inGitRepo ? ` — ${shortSha}` : ''}`, '');
+lines.push(`**Contributors:** ${contributors.join(', ')}`, '');
+if (!isBaseline) {
+  const cmp = compareUrl(state.lastDocumentedCommit.slice(0, 7), shortSha);
+  if (cmp) lines.push(`**Compare:** [${state.lastDocumentedCommit.slice(0, 7)}...${shortSha}](${cmp})`, '');
+}
+for (const [group, items] of Object.entries(grouped)) {
+  if (!items.length) continue;
+  lines.push(`### ${group}`, '');
+  for (const item of items) lines.push(`- **${item.type}** \`${item.name}\``);
+  lines.push('');
+}
+const body = lines.join('\n');
+
+// Prepend the new release right after the fixed top header (before any existing "## v..." entries) so the file reads newest-first.
+const firstReleaseIdx = existingChangelog.indexOf('\n## v');
+let output;
+if (!existingChangelog) {
+  output = '# Changelog\n\nGenerated from force-app metadata changes on every push to main. Newest first (each release is prepended).\n\n' + body + '\n';
+} else if (firstReleaseIdx === -1) {
+  output = existingChangelog.trimEnd() + '\n\n' + body + '\n';
 } else {
-  const byType = {};
-  for (const e of deduped) (byType[e.type] = byType[e.type] || []).push(e);
-  const lines = [`## ${dateStr} — ${shortSha}`, ''];
-  for (const [type, items] of Object.entries(byType)) {
-    lines.push(`**${type}**`, '');
-    for (const item of items) lines.push(`- ${item.status}: \`${item.name}\``);
-    lines.push('');
-  }
-  body = lines.join('\n');
+  output = existingChangelog.slice(0, firstReleaseIdx + 1) + body + '\n' + existingChangelog.slice(firstReleaseIdx + 1);
 }
 
-if (body) {
-  const existing = fs.existsSync(CHANGELOG_FILE) ? fs.readFileSync(CHANGELOG_FILE, 'utf8') : '# Changelog\n\nGenerated from force-app metadata changes on every push to main.\n\n';
-  fs.writeFileSync(CHANGELOG_FILE, existing.trimEnd() + '\n\n' + body + '\n');
-  console.log(`docs/CHANGELOG.md updated — ${deduped.length} changed component(s)`);
-} else {
-  console.log('No force-app changes since last documented commit — changelog untouched.');
-}
+fs.writeFileSync(CHANGELOG_FILE, output);
+console.log(`docs/CHANGELOG.md updated — v${releaseNumber}, ${deduped.length} changed component(s)`);
 
 if (inGitRepo) {
-  saveState({ lastDocumentedCommit: headSha });
+  saveState({ ...state, lastDocumentedCommit: headSha });
 }

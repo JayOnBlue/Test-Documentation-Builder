@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-07-21T17:56:31.423Z",
-  "version": 7,
+  "generatedAt": "2026-07-21T20:43:02.071Z",
+  "version": 12,
   "componentCount": 17,
   "edgeCount": 12,
   "componentsByType": {
     "ApexClass": 4,
     "Flow": 1,
     "LightningComponentBundle": 1,
-    "CustomObject": 2,
     "CustomField": 8,
+    "CustomObject": 2,
     "ApexTrigger": 1
   },
   "edgesByRelationship": {
@@ -25,12 +25,20 @@
       "name": "OrderNotifier",
       "type": "ApexClass",
       "path": "classes/OrderNotifier.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-21T17:00:24.224Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
       "methods": [
         {
           "name": "sendConfirmationEmails",
           "signature": "public sendConfirmationEmails(List<Order__c> orders)",
           "auraEnabled": false,
-          "future": true
+          "future": true,
+          "usedIn": []
         }
       ],
       "dependsOn": [],
@@ -42,25 +50,47 @@
           "confidence": "High"
         }
       ],
-      "health": "unreviewed",
       "purpose": null
     },
     {
       "name": "OrderService",
       "type": "ApexClass",
       "path": "classes/OrderService.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-21T17:00:14.914Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "note": "Performs SOQL — verify field-level security (FLS) is enforced (e.g. WITH SECURITY_ENFORCED, or explicit isAccessible() checks) before treating query results as safe to display."
+        },
+        {
+          "severity": "warning",
+          "note": "Performs DML — verify object/field CRUD permissions are checked (e.g. Security.stripInaccessible, or isCreateable()/isUpdateable()) rather than assuming the running user has access."
+        }
+      ],
       "methods": [
         {
           "name": "confirmOrders",
           "signature": "public confirmOrders(List<Order__c> orders)",
           "auraEnabled": false,
-          "future": false
+          "future": false,
+          "usedIn": []
         },
         {
           "name": "getOrderLines",
           "signature": "public getOrderLines(Id orderId)",
           "auraEnabled": true,
-          "future": false
+          "future": false,
+          "usedIn": [
+            {
+              "name": "orderSummary",
+              "relationship": "wire_adapter"
+            }
+          ]
         }
       ],
       "dependsOn": [
@@ -97,19 +127,26 @@
           "confidence": "High"
         }
       ],
-      "health": "unreviewed",
       "purpose": null
     },
     {
       "name": "OrderTriggerHandler",
       "type": "ApexClass",
       "path": "classes/OrderTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-21T17:00:12.501Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
       "methods": [
         {
           "name": "handleAfterUpdate",
           "signature": "public handleAfterUpdate(List<Order__c> newOrders, Map<Id, Order__c> oldMap)",
           "auraEnabled": false,
-          "future": false
+          "future": false,
+          "usedIn": []
         }
       ],
       "dependsOn": [
@@ -128,13 +165,28 @@
           "confidence": "High"
         }
       ],
-      "health": "unreviewed",
       "purpose": null
     },
     {
       "name": "OrderTriggerHandlerTest",
       "type": "ApexClass",
       "path": "classes/OrderTriggerHandlerTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-21T17:00:26.523Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "note": "Performs SOQL — verify field-level security (FLS) is enforced (e.g. WITH SECURITY_ENFORCED, or explicit isAccessible() checks) before treating query results as safe to display."
+        },
+        {
+          "severity": "warning",
+          "note": "Performs DML — verify object/field CRUD permissions are checked (e.g. Security.stripInaccessible, or isCreateable()/isUpdateable()) rather than assuming the running user has access."
+        }
+      ],
       "methods": [],
       "dependsOn": [
         {
@@ -157,13 +209,19 @@
         }
       ],
       "usedBy": [],
-      "health": "unreviewed",
       "purpose": null
     },
     {
       "name": "Order_Confirmation_Email",
       "type": "Flow",
       "path": "flows/Order_Confirmation_Email.flow-meta.xml",
+      "owner": "Automation Team",
+      "updated": "2026-07-21T17:01:27.804Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
       "methods": [],
       "dependsOn": [
         {
@@ -174,13 +232,19 @@
         }
       ],
       "usedBy": [],
-      "health": "unreviewed",
       "purpose": null
     },
     {
       "name": "orderSummary",
       "type": "LightningComponentBundle",
       "path": "lwc/orderSummary",
+      "owner": "Frontend Guild",
+      "updated": "2026-07-21T17:01:36.849Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
       "methods": [],
       "dependsOn": [
         {
@@ -191,13 +255,99 @@
         }
       ],
       "usedBy": [],
-      "health": "unreviewed",
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Confirmed__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Confirmed__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:17.544Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Order__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Order__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:05.218Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Price__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Price__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:12.445Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Product_Name__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Product_Name__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:10.166Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Quantity__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Quantity__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:11.330Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
       "purpose": null
     },
     {
       "name": "Order_Line__c",
       "type": "CustomObject",
       "path": "objects/Order_Line__c/Order_Line__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:04.063Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
       "methods": [],
       "dependsOn": [
         {
@@ -233,63 +383,67 @@
           "confidence": "Medium"
         }
       ],
-      "health": "unreviewed",
       "purpose": null
     },
     {
-      "name": "Order_Line__c.Confirmed__c",
+      "name": "Order__c.Customer_Email__c",
       "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Confirmed__c.field-meta.xml",
+      "path": "objects/Order__c/fields/Customer_Email__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:02.973Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
       "methods": [],
       "dependsOn": [],
       "usedBy": [],
-      "health": "unreviewed",
       "purpose": null
     },
     {
-      "name": "Order_Line__c.Order__c",
+      "name": "Order__c.Status__c",
       "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Order__c.field-meta.xml",
+      "path": "objects/Order__c/fields/Status__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:00:56.680Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
       "methods": [],
       "dependsOn": [],
       "usedBy": [],
-      "health": "unreviewed",
       "purpose": null
     },
     {
-      "name": "Order_Line__c.Price__c",
+      "name": "Order__c.Total_Amount__c",
       "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Price__c.field-meta.xml",
+      "path": "objects/Order__c/fields/Total_Amount__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:00:58.105Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
       "methods": [],
       "dependsOn": [],
       "usedBy": [],
-      "health": "unreviewed",
-      "purpose": null
-    },
-    {
-      "name": "Order_Line__c.Product_Name__c",
-      "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Product_Name__c.field-meta.xml",
-      "methods": [],
-      "dependsOn": [],
-      "usedBy": [],
-      "health": "unreviewed",
-      "purpose": null
-    },
-    {
-      "name": "Order_Line__c.Quantity__c",
-      "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Quantity__c.field-meta.xml",
-      "methods": [],
-      "dependsOn": [],
-      "usedBy": [],
-      "health": "unreviewed",
       "purpose": null
     },
     {
       "name": "Order__c",
       "type": "CustomObject",
       "path": "objects/Order__c/Order__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:00:54.444Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
       "methods": [],
       "dependsOn": [],
       "usedBy": [
@@ -318,43 +472,19 @@
           "confidence": "High"
         }
       ],
-      "health": "unreviewed",
-      "purpose": null
-    },
-    {
-      "name": "Order__c.Customer_Email__c",
-      "type": "CustomField",
-      "path": "objects/Order__c/fields/Customer_Email__c.field-meta.xml",
-      "methods": [],
-      "dependsOn": [],
-      "usedBy": [],
-      "health": "unreviewed",
-      "purpose": null
-    },
-    {
-      "name": "Order__c.Status__c",
-      "type": "CustomField",
-      "path": "objects/Order__c/fields/Status__c.field-meta.xml",
-      "methods": [],
-      "dependsOn": [],
-      "usedBy": [],
-      "health": "unreviewed",
-      "purpose": null
-    },
-    {
-      "name": "Order__c.Total_Amount__c",
-      "type": "CustomField",
-      "path": "objects/Order__c/fields/Total_Amount__c.field-meta.xml",
-      "methods": [],
-      "dependsOn": [],
-      "usedBy": [],
-      "health": "unreviewed",
       "purpose": null
     },
     {
       "name": "OrderTrigger",
       "type": "ApexTrigger",
       "path": "triggers/OrderTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-21T17:00:33.010Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
       "methods": [],
       "dependsOn": [
         {
@@ -371,8 +501,102 @@
         }
       ],
       "usedBy": [],
-      "health": "unreviewed",
       "purpose": null
+    }
+  ],
+  "schemas": {
+    "Order_Line__c": {
+      "label": "Order Line",
+      "apiName": "Order_Line__c",
+      "fields": [
+        {
+          "label": "Confirmed",
+          "apiName": "Confirmed__c",
+          "type": "Checkbox",
+          "required": false
+        },
+        {
+          "label": "Order",
+          "apiName": "Order__c",
+          "type": "MasterDetail",
+          "required": true
+        },
+        {
+          "label": "Price",
+          "apiName": "Price__c",
+          "type": "Currency",
+          "required": false
+        },
+        {
+          "label": "Product Name",
+          "apiName": "Product_Name__c",
+          "type": "Text",
+          "required": false
+        },
+        {
+          "label": "Quantity",
+          "apiName": "Quantity__c",
+          "type": "Number",
+          "required": false
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "Order__c",
+          "direction": "references"
+        }
+      ]
+    },
+    "Order__c": {
+      "label": "Order",
+      "apiName": "Order__c",
+      "fields": [
+        {
+          "label": "Customer Email",
+          "apiName": "Customer_Email__c",
+          "type": "Email",
+          "required": false
+        },
+        {
+          "label": "Status",
+          "apiName": "Status__c",
+          "type": "Picklist",
+          "required": false
+        },
+        {
+          "label": "Total Amount",
+          "apiName": "Total_Amount__c",
+          "type": "Currency",
+          "required": false
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "Order_Line__c",
+          "direction": "referenced by"
+        }
+      ]
+    }
+  },
+  "features": [
+    {
+      "slug": "feature-1",
+      "title": "Order Management",
+      "members": [
+        "OrderNotifier",
+        "OrderService",
+        "Order_Line__c",
+        "OrderTriggerHandler",
+        "orderSummary",
+        "OrderTriggerHandlerTest",
+        "Order__c",
+        "OrderTrigger",
+        "Order_Confirmation_Email"
+      ],
+      "memberCount": 9,
+      "quality": "Low"
     }
   ]
 }

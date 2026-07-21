@@ -2,9 +2,11 @@
 
 A small, runnable, end-to-end example of the pipeline described in the architecture memo: push
 Salesforce metadata changes to `main`, and get back an always-current **Changelog**, **Business /
-Use-Case Documentation**, and **Technical Documentation** — all Markdown-driven, all published as one
-GitHub Pages site. No screenshots/image capture in this version (dropped by request — everything here
-is text/Markdown).
+Use-Case Documentation**, and **Technical Reference** — all Markdown/JSON-driven, all published as
+**one** GitHub Pages site with a single light visual language. UI/UX follows the high-fidelity handoff
+in `design_handoff_qe360_docs/` (see `PAGE_FEATURES.md` and `DESIGN_TOKENS.md` there for the full spec
+this was built against). No screenshots/image capture in this version (dropped by request — everything
+here is text/Markdown/JSON).
 
 This folder is fully self-contained and does not touch anything outside itself. Copy it into its own
 GitHub repository (or push it as-is — see below) to try it.
@@ -19,44 +21,68 @@ sf-docs-automation-demo/
 ├── docs/
 │   ├── scripts/                        # all pipeline code
 │   │   ├── lib/discover.js             # what counts as a "component" in force-app
+│   │   ├── lib/util.js                 # git-derived "last updated" + read-time helpers
 │   │   ├── extract-technical.js        # deterministic: force-app -> docs/technical/data.json
-│   │   ├── generate-changelog.js       # deterministic: force-app diff -> docs/CHANGELOG.md
+│   │   ├── generate-version-history.js # deterministic: git log -> docs/technical/versions.json
+│   │   ├── generate-changelog.js       # deterministic: force-app diff -> docs/CHANGELOG.md (grouped releases)
 │   │   ├── author-business-docs.mjs    # the ONE AI step -> updates docs/business/*.md only
-│   │   ├── build-site.js               # renders business + technical + changelog -> docs/site/
-│   │   ├── business-assets/            # styles.css / app.js for the business-docs site (Stripe-style)
-│   │   └── technical-assets/           # index.html / app.js / styles.css for the technical wiki (dark theme)
-│   ├── business/                       # <- the business/use-case Markdown "database" (edit these by hand, or let the AI step do it)
+│   │   ├── build-site.js               # assembles docs/site/ (one shell + one data bundle)
+│   │   └── site-assets/                # index.html / app.js / styles.css — the unified SPA shell
+│   ├── business/                       # <- the business/use-case Markdown "database"
 │   │   ├── TEMPLATE.md
 │   │   ├── getting-started/overview.md
-│   │   └── orders/order-lifecycle.md
+│   │   └── orders/*.md                 # Order Lifecycle + Order Adjustments (real), Group Orders (stub), Fulfillment Orders (deprecated demo)
 │   ├── technical/data.json             # generated — do not hand-edit
-│   ├── CHANGELOG.md                    # generated — do not hand-edit
+│   ├── technical/versions.json         # generated — do not hand-edit
+│   ├── CHANGELOG.md                    # generated — do not hand-edit (the release data IS this file)
 │   ├── _state/progress.json            # generated — tracks the last commit this pipeline documented
 │   └── site/                           # generated — the GitHub Pages output; git-ignored, rebuilt every run
 └── .github/workflows/docs-pipeline.yml # the only file outside docs/
 ```
 
 `docs/site/` is listed in `.gitignore` — it's pure build output (derived entirely from `docs/business/`,
-`docs/technical/data.json`, and `docs/CHANGELOG.md`), so it's rebuilt fresh by CI and uploaded straight to
+`docs/technical/*.json`, and `docs/CHANGELOG.md`), so it's rebuilt fresh by CI and uploaded straight to
 Pages rather than committed. Everything else under `docs/` (the Markdown, the JSON graph, the changelog,
 the state pointer) **is** committed — that's the actual "database."
 
+## One shell, two modes
+
+The whole site is a single client-side app (`site-assets/app.js`, hash-routed so every page is still a
+real, shareable/bookmarkable URL — e.g. `#/tech/class/OrderService`). One top bar, one visual language;
+the left sidebar swaps content depending on whether you're in **business mode** (`/`, `/docs/*`,
+`/changelog`) or **technical mode** (`/tech/*`), exactly as specified in the design handoff's IA table.
+
+Pages implemented:
+
+| Route | Page | Notable behavior |
+|---|---|---|
+| `/` | Overview | Role picker (Sales/Operations/Developer/Everyone) filters the sidebar; key-terms glossary; "Browse by area" cards |
+| `/docs/:section/:page` | Business article | Collapsible `## ` sections, callout blocks (before/note/tip/warning), deprecation banner, Related chips, Prev/Next |
+| `/changelog` | Changelog | GitHub-Releases style: tag pill, Latest badge, grouped Added/Changed/Removed, contributor avatars, compare link |
+| `/tech` | Technical Overview | Stat cards + Components-by-type / Edges-by-relationship tables |
+| `/tech/index` | Component Index | Text filter, health chips (All/Needs attention/Healthy), sort (Name/Risk), coverage bar |
+| `/tech/class/:name` | Apex class detail | Purpose (saved to `localStorage`), AI Review (deterministic heuristic, see below), expandable Methods w/ used-in, Depends-on/Used-by, Impact blast-radius panel |
+| `/tech/object/:name` | Custom object schema | Fields table, Record Types, Relationships |
+| `/tech/features` | Features | Auto-clustered from the dependency graph (connected components) |
+| `/tech/versions` | Version History | GitHub-commit style timeline, generated from real `git log` on `force-app/` |
+| Download modal | — | Scope (All / Technical / a category) + PDF (print view) or Word (`.doc`) |
+
 ## What's real here vs. simplified
 
-- The **technical extractor** (`extract-technical.js`) is a small, from-scratch reimplementation of the
-  idea — regex-based static analysis over Apex/Flow/LWC/object metadata, same philosophy as a
-  production-grade version of this, just far less nuanced (no comment-stripping edge cases, no
-  case-insensitive Apex resolution, etc.). It's enough to show real dependency edges on the sample
-  `Order__c` domain, not enough to trust on a large, messy org without hardening.
-- The **business-docs site** (Stripe-style layout: top tabs, per-category sidebar, on-this-page outline,
-  search, "Copy for LLM" / "Download PDF" actions) is adapted directly from `client-business-docs-source-V2`'s
-  generator, with the screenshot-placeholder feature removed and the changelog switched from "fetched from
-  GitHub Releases" to "parsed from `docs/CHANGELOG.md`".
-- The **technical wiki** (dark theme, source tree, component detail pages with Depends-on/Used-by/Impact)
-  is a new, smaller client-side app built to look like the screenshot you shared, backed by
-  `docs/technical/data.json` instead of a live backend — there's no `Rebuild` button because there's no
-  server; regeneration only happens through the pipeline.
-- The **AI business-doc step** is new. It's the only place in this pipeline that writes prose rather than
+- **Coverage / health / AI Review are a static heuristic, not a real Apex test run.** A class counts as
+  "covered" if some `*Test` class in the repo references it (via a `calls_method`/`constructs` edge) —
+  there's no org connection, so this can't know what actually ran in a test execution. It's labeled as a
+  heuristic everywhere it's shown.
+- **Security findings** (the "Security" note under AI Review) are a simple rule: a class doing SOQL or
+  DML gets a static FLS/CRUD reminder. It's pattern-matching, not a real security scanner.
+- **Features** are connected components of the dependency graph, not curated. With this demo's small
+  `Order__c` domain everything is one connected cluster ("Order Management") — a real org's less-connected
+  graph naturally produces more, smaller features.
+- **The technical extractor** (`extract-technical.js`) is a small, from-scratch reimplementation — regex
+  static analysis, not the nuance of a production-grade version (no case-insensitive Apex resolution,
+  simpler comment stripping, etc.). Enough to show real dependency edges on the sample domain, not enough
+  to trust blindly on a large, messy org.
+- **The AI business-doc step** is the only place in this pipeline that writes prose rather than
   extracting facts.
 
 ## One-time setup, after pushing this to its own GitHub repo
@@ -97,29 +123,31 @@ git commit -m "tweak order handling"
 git push
 ```
 
-This second push is where you'll see: a new dated entry in the Changelog, a pull request proposing
-business-doc updates (if `CLAUDE_CODE_OAUTH_TOKEN` is set), and the technical docs refreshed — all
-before the site redeploys.
+This second push is where you'll see: a new release entry in the Changelog, a new commit in Version
+History, a pull request proposing business-doc updates (if `CLAUDE_CODE_OAUTH_TOKEN` is set), and the
+technical docs refreshed — all before the site redeploys.
 
 ## Run it locally without GitHub Actions
 
 ```bash
 npm install
-npm run build          # extract technical docs -> author business docs (skips gracefully without
-                        # git history or a Claude CLI/token) -> changelog -> build the site
+npm run build          # extract technical docs -> author business docs (skips gracefully without git
+                        # history or a Claude CLI/token) -> version history -> changelog -> build the site
 ```
 
-Then open `docs/site/index.html` directly in a browser (business docs) and `docs/site/technical/index.html`
-(technical wiki) — both are fully static, no server needed. Re-run `npm run build` any time you change
-something under `force-app/`.
+Then open `docs/site/index.html` directly in a browser — it's fully static, no server needed. Every page
+(business docs, changelog, technical reference, component detail, version history) is one app; navigate
+with the top bar and sidebar, or jump straight to a URL like `docs/site/index.html#/tech/index`. Re-run
+`npm run build` any time you change something under `force-app/` or `docs/business/`.
 
 Individual steps, if you want to run just one:
 
 ```bash
 node docs/scripts/extract-technical.js       # force-app -> docs/technical/data.json
 node docs/scripts/author-business-docs.mjs   # needs git history + CLAUDE_CODE_OAUTH_TOKEN + claude CLI
+node docs/scripts/generate-version-history.js# git log -> docs/technical/versions.json
 node docs/scripts/generate-changelog.js      # force-app diff -> docs/CHANGELOG.md
-node docs/scripts/build-site.js              # docs/business + docs/technical + docs/CHANGELOG.md -> docs/site
+node docs/scripts/build-site.js              # docs/business + docs/technical/*.json + docs/CHANGELOG.md -> docs/site
 ```
 
 ## Why the business-doc step is scoped so tightly
@@ -129,5 +157,5 @@ instruction to only touch `docs/business/`. The workflow adds a second, independ
 CLI call, anything changed outside `docs/business/` gets reverted before a commit or PR is ever created.
 The changes it does make land in a pull request, not a direct commit to `main` — this is the one layer of
 the pipeline where an LLM is writing something a person might read, so it gets a human glance first.
-Everything else (technical docs, changelog) is deterministic and commits straight to `main`, the same way
-`deploy-webapp.yml` already does in the main project this was modeled on.
+Everything else (technical docs, version history, changelog) is deterministic and commits straight to
+`main`, the same way `deploy-webapp.yml` already does in the main project this was modeled on.

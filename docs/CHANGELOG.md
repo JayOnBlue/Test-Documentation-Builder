@@ -1,78 +1,28 @@
 # Changelog
 
-Generated from force-app metadata changes on every push to main.
+Generated from force-app metadata changes on every push to main. Newest first (each release is prepended).
 
-## 2026-07-21 — Initial documentation baseline
+## v1 — 2026-07-21
 
-**ApexClass** (4)
+**Contributors:** local
 
-- `OrderNotifier`
-- `OrderService`
-- `OrderTriggerHandler`
-- `OrderTriggerHandlerTest`
+### Added
 
-**Flow** (1)
-
-- `Order_Confirmation_Email`
-
-**LightningComponentBundle** (1)
-
-- `orderSummary`
-
-**CustomField** (8)
-
-- `Order_Line__c.Confirmed__c`
-- `Order_Line__c.Order__c`
-- `Order_Line__c.Price__c`
-- `Order_Line__c.Product_Name__c`
-- `Order_Line__c.Quantity__c`
-- `Order__c.Customer_Email__c`
-- `Order__c.Status__c`
-- `Order__c.Total_Amount__c`
-
-**CustomObject** (2)
-
-- `Order_Line__c`
-- `Order__c`
-
-**ApexTrigger** (1)
-
-- `OrderTrigger`
-
-## 2026-07-21 — Initial documentation baseline
-
-**ApexClass** (4)
-
-- `OrderNotifier`
-- `OrderService`
-- `OrderTriggerHandler`
-- `OrderTriggerHandlerTest`
-
-**Flow** (1)
-
-- `Order_Confirmation_Email`
-
-**LightningComponentBundle** (1)
-
-- `orderSummary`
-
-**CustomObject** (2)
-
-- `Order_Line__c`
-- `Order__c`
-
-**CustomField** (8)
-
-- `Order_Line__c.Confirmed__c`
-- `Order_Line__c.Order__c`
-- `Order_Line__c.Price__c`
-- `Order_Line__c.Product_Name__c`
-- `Order_Line__c.Quantity__c`
-- `Order__c.Customer_Email__c`
-- `Order__c.Status__c`
-- `Order__c.Total_Amount__c`
-
-**ApexTrigger** (1)
-
-- `OrderTrigger`
+- **ApexClass** `OrderNotifier`
+- **ApexClass** `OrderService`
+- **ApexClass** `OrderTriggerHandler`
+- **ApexClass** `OrderTriggerHandlerTest`
+- **Flow** `Order_Confirmation_Email`
+- **LightningComponentBundle** `orderSummary`
+- **CustomField** `Order_Line__c.Confirmed__c`
+- **CustomField** `Order_Line__c.Order__c`
+- **CustomField** `Order_Line__c.Price__c`
+- **CustomField** `Order_Line__c.Product_Name__c`
+- **CustomField** `Order_Line__c.Quantity__c`
+- **CustomObject** `Order_Line__c`
+- **CustomField** `Order__c.Customer_Email__c`
+- **CustomField** `Order__c.Status__c`
+- **CustomField** `Order__c.Total_Amount__c`
+- **CustomObject** `Order__c`
+- **ApexTrigger** `OrderTrigger`
 

@@ -3,8 +3,12 @@ title: "Order Lifecycle"
 feature: "Order Lifecycle"
 category: "Orders"
 description: "How an order moves from Draft to Confirmed, and what happens automatically when it does."
+owner: "Ops Enablement"
+verified: true
 prerequisites:
   - "\"Manage Orders\" permission (or equivalent) to edit an Order record"
+related:
+  - "order-adjustments-cancellations"
 order: 10
 slug: "order-lifecycle"
 ---
@@ -14,6 +18,12 @@ slug: "order-lifecycle"
 An Order tracks a customer's purchase, made up of one or more Order Lines (products, quantities, and
 prices). Sales and fulfillment staff use the Order record to move a purchase from a working draft to a
 confirmed sale, at which point the customer is notified automatically.
+
+```callout
+type: before
+The Order needs at least one Order Line, and the Order's Customer Email must be set, before you
+confirm it — otherwise the confirmation email has nothing to send and nowhere to send it.
+```
 
 ## Prerequisites
 
@@ -27,6 +37,12 @@ confirmed sale, at which point the customer is notified automatically.
 3. The system marks every Order Line on the order as confirmed and emails the customer automatically —
    no further action is needed.
 
+```callout
+type: note
+Sending the confirmation email happens asynchronously (`@future`), so it won't appear in the same
+transaction — allow a few seconds after saving before the email is actually sent.
+```
+
 ## Validations & Business Rules
 
 - Changing Status to *Confirmed* triggers `OrderTrigger`, which calls `OrderTriggerHandler` →
@@ -34,8 +50,15 @@ confirmed sale, at which point the customer is notified automatically.
 - `OrderService.confirmOrders()` marks every related Order Line as confirmed, then queues a confirmation
   email via `OrderNotifier` (an `@future` call, so the email is sent asynchronously).
 - The **Order Confirmation Email** flow also listens for the same Status change as a second, declarative
-  path — see the Technical Docs tab for the full dependency picture.
+  path — see Technical Reference for the full dependency picture.
+
+```callout
+type: warning
+There is no undo for confirming an order from this screen. To reverse a confirmed order, see
+**Order Adjustments & Cancellations**.
+```
 
 ## Related Features
 
-- See **Technical Docs → OrderService** for the exact method-level behavior and everything that depends on it.
+- See **Technical Reference → OrderService** for the exact method-level behavior and everything that
+  depends on it.

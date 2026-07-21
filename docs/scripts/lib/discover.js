@@ -68,4 +68,11 @@ function discover(forceAppDir) {
   return components;
 }
 
-module.exports = { discover, walk, classify };
+/** Strip a repo-relative path down to "relative to force-app/main/default", or null if outside it. */
+function relToDefault(repoRelPath) {
+  const marker = 'force-app/main/default/';
+  const idx = repoRelPath.indexOf(marker);
+  return idx === -1 ? null : repoRelPath.slice(idx + marker.length);
+}
+
+module.exports = { discover, walk, classify, relToDefault };

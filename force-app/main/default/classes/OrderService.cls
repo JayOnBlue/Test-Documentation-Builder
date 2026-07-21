@@ -11,8 +11,6 @@ public with sharing class OrderService {
             FROM Order_Line__c
             WHERE Order__c IN :orderIds
         ];
-
-
         for (Order_Line__c line : lines) {
             line.Confirmed__c = true;
         }
