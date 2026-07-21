@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-07-21T17:32:41.319Z",
-  "version": 6,
+  "generatedAt": "2026-07-21T17:56:31.423Z",
+  "version": 7,
   "componentCount": 17,
   "edgeCount": 12,
   "componentsByType": {
     "ApexClass": 4,
     "Flow": 1,
     "LightningComponentBundle": 1,
-    "CustomField": 8,
     "CustomObject": 2,
+    "CustomField": 8,
     "ApexTrigger": 1
   },
   "edgesByRelationship": {
@@ -195,6 +195,48 @@
       "purpose": null
     },
     {
+      "name": "Order_Line__c",
+      "type": "CustomObject",
+      "path": "objects/Order_Line__c/Order_Line__c.object-meta.xml",
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Order__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "OrderService",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "OrderService",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "OrderTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "OrderTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "health": "unreviewed",
+      "purpose": null
+    },
+    {
       "name": "Order_Line__c.Confirmed__c",
       "type": "CustomField",
       "path": "objects/Order_Line__c/fields/Confirmed__c.field-meta.xml",
@@ -245,42 +287,35 @@
       "purpose": null
     },
     {
-      "name": "Order_Line__c",
+      "name": "Order__c",
       "type": "CustomObject",
-      "path": "objects/Order_Line__c/Order_Line__c.object-meta.xml",
+      "path": "objects/Order__c/Order__c.object-meta.xml",
       "methods": [],
-      "dependsOn": [
+      "dependsOn": [],
+      "usedBy": [
         {
-          "name": "Order__c",
+          "name": "OrderTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Order_Confirmation_Email",
+          "type": "Flow",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "Order_Line__c",
           "type": "CustomObject",
           "relationship": "references_object",
           "confidence": "High"
-        }
-      ],
-      "usedBy": [
+        },
         {
-          "name": "OrderService",
-          "type": "ApexClass",
-          "relationship": "soql_read",
+          "name": "OrderTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
           "confidence": "High"
-        },
-        {
-          "name": "OrderService",
-          "type": "ApexClass",
-          "relationship": "dml_write",
-          "confidence": "Medium"
-        },
-        {
-          "name": "OrderTriggerHandlerTest",
-          "type": "ApexClass",
-          "relationship": "soql_read",
-          "confidence": "High"
-        },
-        {
-          "name": "OrderTriggerHandlerTest",
-          "type": "ApexClass",
-          "relationship": "dml_write",
-          "confidence": "Medium"
         }
       ],
       "health": "unreviewed",
@@ -313,41 +348,6 @@
       "methods": [],
       "dependsOn": [],
       "usedBy": [],
-      "health": "unreviewed",
-      "purpose": null
-    },
-    {
-      "name": "Order__c",
-      "type": "CustomObject",
-      "path": "objects/Order__c/Order__c.object-meta.xml",
-      "methods": [],
-      "dependsOn": [],
-      "usedBy": [
-        {
-          "name": "OrderTriggerHandlerTest",
-          "type": "ApexClass",
-          "relationship": "dml_write",
-          "confidence": "Medium"
-        },
-        {
-          "name": "Order_Confirmation_Email",
-          "type": "Flow",
-          "relationship": "trigger_on",
-          "confidence": "High"
-        },
-        {
-          "name": "Order_Line__c",
-          "type": "CustomObject",
-          "relationship": "references_object",
-          "confidence": "High"
-        },
-        {
-          "name": "OrderTrigger",
-          "type": "ApexTrigger",
-          "relationship": "trigger_on",
-          "confidence": "High"
-        }
-      ],
       "health": "unreviewed",
       "purpose": null
     },
