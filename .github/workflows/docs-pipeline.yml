@@ -60,6 +60,9 @@ jobs:
       - name: Regenerate technical docs (deterministic)
         run: node docs/scripts/extract-technical.js
 
+      - name: Regenerate version history from git log (deterministic)
+        run: node docs/scripts/generate-version-history.js
+
       - name: Install Claude Code CLI
         run: npm install -g @anthropic-ai/claude-code
 
