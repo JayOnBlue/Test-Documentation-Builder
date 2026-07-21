@@ -14,6 +14,7 @@ public with sharing class OrderService {
         for (Order_Line__c line : lines) {
             line.Confirmed__c = true;
         }
+
         update lines;
 
         OrderNotifier.sendConfirmationEmails(orders);
