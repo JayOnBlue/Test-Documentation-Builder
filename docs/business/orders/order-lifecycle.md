@@ -59,11 +59,12 @@ step: Click New on the Orders tab and fill in the Customer Email field
 url_pattern: /lightning/o/Order__c/new
 ```
 
-4. Open the Order record and review its Order Lines related list.
+4. Open the Order record and review its Order Lines related list. The **Order Summary** card on the
+   record page also lists each Order Line's product, quantity, and price at a glance.
 
 ```screenshot
 id: order-lifecycle-record-page
-alt: Salesforce Lightning Order record page showing Status, Customer Email, Total Amount, and the Order Lines related list
+alt: Salesforce Lightning Order record page showing Status, Customer Email, Total Amount, the Order Summary card, and the Order Lines related list
 step: Open the Order record just created
 url_pattern: /lightning/r/Order__c/{recordId}/view
 ```
