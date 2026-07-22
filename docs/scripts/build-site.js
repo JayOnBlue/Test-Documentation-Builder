@@ -198,6 +198,10 @@ function parseChangelog(text) {
     const compareMatch = block.match(/\*\*Compare:\*\* \[([^\]]+)\]\(([^)]+)\)/);
     const compareRange = compareMatch ? compareMatch[1] : null;
     const compareUrl = compareMatch ? compareMatch[2] : null;
+    const technicalSummary = (block.match(/\*\*Technical summary:\*\* (.+)/) || [])[1] || '';
+    const businessSummary = (block.match(/\*\*Business summary:\*\* (.+)/) || [])[1] || '';
+    const businessFeaturesRaw = (block.match(/\*\*Business features:\*\* (.+)/) || [])[1] || '';
+    const businessFeatures = businessFeaturesRaw ? businessFeaturesRaw.split(',').map((s) => s.trim()).filter(Boolean) : [];
 
     const groups = { Added: [], Changed: [], Removed: [] };
     const groupBlocks = block.split(/\n(?=### )/);
@@ -208,7 +212,7 @@ function parseChangelog(text) {
       let im;
       while ((im = itemRe.exec(gb))) groups[gm[1]].push({ type: im[1], name: im[2] });
     }
-    return { version, date, hash, contributors, compareUrl, compareRange, groups };
+    return { version, date, hash, contributors, compareUrl, compareRange, technicalSummary, businessSummary, businessFeatures, groups };
   });
 }
 const changelogText = fs.existsSync(CHANGELOG_FILE) ? fs.readFileSync(CHANGELOG_FILE, 'utf8') : '';

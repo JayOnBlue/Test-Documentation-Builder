@@ -73,6 +73,9 @@ jobs:
 
       - name: Open a PR for any AI-authored business-doc changes
         id: business_pr
+        continue-on-error: true  # a failed PR (e.g. permissions not yet set up) must never block the
+                                  # deploy below — the deploy uses this run's freshly-built docs/site/
+                                  # regardless of whether this push succeeded.
         run: |
           if [ -z "$(git status --porcelain -- docs/business)" ]; then
             echo "No business-doc changes to review."
@@ -103,6 +106,14 @@ jobs:
         run: node docs/scripts/build-site.js
 
       - name: Commit regenerated technical docs and changelog
+        id: commit_facts
+        continue-on-error: true  # IMPORTANT: never let a failed push (e.g. branch protection, or repo
+                                  # permissions not yet set to "Read and write" — see the setup notes at
+                                  # the top of this file) block the deploy step below. docs/site/ was
+                                  # already built from this run's fresh data regardless of whether this
+                                  # commit lands, so the live site must still get the correct content —
+                                  # only the *committed source* would be a push behind, and it self-heals
+                                  # on the very next push once permissions are fixed.
         run: |
           git add docs/technical docs/CHANGELOG.md docs/_state
           if git diff --cached --quiet; then
@@ -111,6 +122,15 @@ jobs:
             git commit -m "chore(docs): regenerate technical docs and changelog [skip ci]"
             git push origin main
           fi
+
+      - name: Warn if the facts commit failed
+        if: steps.commit_facts.outcome == 'failure'
+        run: |
+          echo "::warning::Committing docs/technical + docs/CHANGELOG.md back to main FAILED — the site below"
+          echo "::warning::still deploys with this run's correct data, but the repo's committed copy is now"
+          echo "::warning::one push behind. This is almost always a permissions problem: Settings -> Actions ->"
+          echo "::warning::General -> Workflow permissions -> 'Read and write permissions'. Fix it and the next"
+          echo "::warning::push to force-app/ will catch the repo back up automatically."
 
       - uses: actions/configure-pages@v5
       - name: Upload docs/site as the Pages artifact

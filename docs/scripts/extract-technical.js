@@ -253,6 +253,19 @@ function titleForCluster(members) {
   return `${schemas[primary]?.label || primary} Management`;
 }
 
+function describeCluster(members) {
+  const byType = {};
+  for (const n of members) {
+    const t = byName.get(n)?.type || 'component';
+    byType[t] = (byType[t] || 0) + 1;
+  }
+  const typeStr = Object.entries(byType)
+    .sort((a, b) => b[1] - a[1])
+    .map(([t, n]) => `${t} (${n})`)
+    .join(', ');
+  return `${members.length} connected components across ${typeStr}.`;
+}
+
 const features = clusters
   .filter((cluster) => cluster.length > 1) // a single isolated component isn't really a "feature"
   .map((members, i) => {
@@ -262,6 +275,7 @@ const features = clusters
     return {
       slug: `feature-${i + 1}`,
       title: titleForCluster(members) || `Feature ${i + 1}`,
+      description: describeCluster(members),
       members,
       memberCount: members.length,
       quality: qualityFromCoverage(avgCoverage) || 'Medium',

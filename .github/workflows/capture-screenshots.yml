@@ -36,7 +36,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install doc-site dependencies
         run: npm ci
@@ -54,8 +54,37 @@ jobs:
       - name: Install Robot Framework Browser library's Playwright binaries
         run: rfbrowser init
 
+      - name: Install OS packages the Playwright browser needs to actually launch
+        run: sudo npx --yes playwright install-deps
+
       - name: Install Salesforce CLI
         run: npm install --global @salesforce/cli
+
+      - name: Diagnose SF_AUTH_URL shape (never prints the secret itself)
+        run: |
+          VAL="${{ secrets.SF_AUTH_URL }}"
+          if [ -z "$VAL" ]; then
+            echo "::error::SF_AUTH_URL is empty."
+            exit 1
+          fi
+          echo "Length: ${#VAL} characters"
+          case "$VAL" in
+            force://*) echo "Starts with 'force://': yes" ;;
+            *) echo "::warning::Starts with 'force://': NO — the value must start with force:// (with no leading quote/space)." ;;
+          esac
+          AT_COUNT=$(printf '%s' "$VAL" | tr -cd '@' | wc -c)
+          echo "Number of '@' characters: $AT_COUNT (should be exactly 1)"
+          AFTER_AT="${VAL#*@}"
+          case "$AFTER_AT" in
+            http://*|https://*) echo "::warning::The part after '@' starts with http(s):// — the instance URL must NOT include the protocol." ;;
+            *) echo "Part after '@' has no http(s):// prefix: OK" ;;
+          esac
+          BEFORE_AT="${VAL%@*}"
+          CREDS="${BEFORE_AT#force://}"
+          COLON_COUNT=$(printf '%s' "$CREDS" | tr -cd ':' | wc -c)
+          echo "Colons between 'force://' and '@': $COLON_COUNT (should be exactly 2 — clientId:clientSecret:refreshToken)"
+          NEWLINES=$(printf '%s' "$VAL" | wc -l)
+          echo "Embedded newlines: $NEWLINES (should be 0)"
 
       - name: Authenticate (reuses an already-logged-in session, no login screen, no MFA/passkey)
         run: |
@@ -63,7 +92,12 @@ jobs:
             echo "::error::Repo secret SF_AUTH_URL is not set. See the comment at the top of this workflow file for how to generate it." >&2
             exit 1
           fi
-          echo "${{ secrets.SF_AUTH_URL }}" | sf org login sfdx-url --sfdx-url-stdin --alias ci --set-default
+          AUTH_FILE="$(mktemp)"
+          # Strip CRLF and any stray surrounding quotes/whitespace a copy-paste might have introduced —
+          # the value must be exactly force://<clientId>:<clientSecret>:<refreshToken>@<instanceUrl-without-protocol>
+          printf '%s' "${{ secrets.SF_AUTH_URL }}" | tr -d '\r' | sed -e 's/^[[:space:]"'"'"']*//' -e 's/[[:space:]"'"'"']*$//' > "$AUTH_FILE"
+          sf org login sfdx-url --sfdx-url-file "$AUTH_FILE" --alias ci --set-default
+          rm -f "$AUTH_FILE"
 
       - name: Deploy the demo metadata (Order__c, its tab/app, and the docs-capture permission set)
         run: sf project deploy start --source-dir force-app --target-org ci --wait 10

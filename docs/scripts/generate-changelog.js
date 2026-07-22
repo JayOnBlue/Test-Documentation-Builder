@@ -18,11 +18,13 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const { discover, classify, relToDefault } = require('./lib/discover');
+const { loadFeatureMap, summarizeImpact } = require('./lib/impact');
 
 const ROOT = path.join(__dirname, '..', '..');
 const FORCE_APP = path.join(ROOT, 'force-app', 'main', 'default');
 const STATE_FILE = path.join(ROOT, 'docs', '_state', 'progress.json');
 const CHANGELOG_FILE = path.join(ROOT, 'docs', 'CHANGELOG.md');
+const TECH_DATA_FILE = path.join(ROOT, 'docs', 'technical', 'data.json');
 
 function sh(cmd) {
   try { return execSync(cmd, { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); }
@@ -99,6 +101,13 @@ const contributors = isBaseline
 const grouped = { Added: [], Changed: [], Removed: [] };
 for (const e of deduped) grouped[GROUP_FOR_STATUS[e.status]].push(e);
 
+// Deterministic summary: what kinds of components, and which business Feature
+// they belong to (from the same connected-component clusters the Features
+// page uses) — cross-referenced, not written by anyone.
+const componentTypeByName = new Map(deduped.map((e) => [e.name, e.type]));
+const groupedNames = Object.fromEntries(Object.entries(grouped).map(([g, items]) => [g, items.map((i) => i.name)]));
+const impact = summarizeImpact(groupedNames, componentTypeByName, loadFeatureMap(TECH_DATA_FILE));
+
 const lines = [];
 lines.push(`## v${releaseNumber} — ${dateStr}${inGitRepo ? ` — ${shortSha}` : ''}`, '');
 lines.push(`**Contributors:** ${contributors.join(', ')}`, '');
@@ -106,6 +115,9 @@ if (!isBaseline) {
   const cmp = compareUrl(state.lastDocumentedCommit.slice(0, 7), shortSha);
   if (cmp) lines.push(`**Compare:** [${state.lastDocumentedCommit.slice(0, 7)}...${shortSha}](${cmp})`, '');
 }
+lines.push(`**Technical summary:** ${impact.technicalText}`, '');
+lines.push(`**Business summary:** ${impact.businessText}`, '');
+if (impact.features.length) lines.push(`**Business features:** ${impact.features.join(', ')}`, '');
 for (const [group, items] of Object.entries(grouped)) {
   if (!items.length) continue;
   lines.push(`### ${group}`, '');

@@ -1,8 +1,9 @@
 /* Design tokens — see design_handoff_qe360_docs/DESIGN_TOKENS.md */
 :root {
-  --accent: #6455f0;
-  --accent-tint: rgba(100, 85, 240, .09);
-  --accent-ring: rgba(100, 85, 240, .35);
+  --accent: #0284c7;
+  --accent-strong: #026aa2;
+  --accent-tint: rgba(2, 132, 199, .09);
+  --accent-ring: rgba(2, 132, 199, .35);
   --ink: #131a2e;
   --body: #3f4657;
   --secondary: #5b6270;
@@ -67,7 +68,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; text-wrap: balance; }
 }
 .topbar__logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; color: var(--ink); flex-shrink: 0; }
 .topbar__logo:hover { text-decoration: none; }
-.topbar__mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), #9b8cff); flex-shrink: 0; }
+.topbar__mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), #38bdf8); flex-shrink: 0; }
 .topbar__search {
   flex: 1; max-width: 560px; margin: 0 auto;
   width: 100%; border: 1px solid var(--border); background: var(--card-bg); border-radius: var(--radius-input);
@@ -84,10 +85,14 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; text-wrap: balance; }
 .topbar__btn:hover { border-color: var(--accent); text-decoration: none; }
 .topbar__btn.is-active { border-color: var(--accent); background: var(--accent-tint); color: var(--accent); }
 .topbar__btn--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.topbar__btn--primary:hover { background: #5544d8; }
+.topbar__btn--primary:hover { background: var(--accent-strong); }
 
 /* ---------- shell / sidebar / main / toc ---------- */
-.shell { display: grid; grid-template-columns: 300px minmax(0, 1fr) 230px; max-width: 1240px; margin: 0 auto; align-items: start; }
+/* Full-bleed: sidebar and TOC hug the viewport edges, like the reference
+   design — only the prose/table content inside #main is width-capped
+   (via .prose-width / .wide-width) and left-aligned within its column, so a
+   wide viewport doesn't leave big dead margins on either side of the shell. */
+.shell { display: grid; grid-template-columns: 300px minmax(0, 1fr) 230px; width: 100%; align-items: start; }
 @media (max-width: 1180px) { .shell { grid-template-columns: 280px minmax(0, 1fr); } .toc-rail { display: none; } }
 @media (max-width: 860px) { .shell { grid-template-columns: 1fr; } .sidebar { display: none; } }
 
@@ -117,7 +122,8 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; text-wrap: balance; }
 .tech-nav a.is-active .tech-nav__icon { color: var(--accent); }
 .source-tree-label { padding: 16px 22px 6px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); font-weight: 700; }
 .tree { padding: 0 12px 20px; font-size: 13px; }
-.tree--path { padding: 0 22px 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.tree--path { padding: 0 22px 4px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-weight: 700; }
+.tree--nested { margin: 0 12px 20px 22px; padding-left: 10px; border-left: 1px dotted var(--border); font-size: 13px; }
 .tree__folder > summary { list-style: none; cursor: pointer; padding: 5px 10px; border-radius: 6px; color: var(--secondary); font-family: var(--font-mono); font-size: 12.5px; }
 .tree__folder > summary::-webkit-details-marker { display: none; }
 .tree__folder > summary:hover { background: var(--hover-row); }
@@ -193,24 +199,32 @@ h1.page-title--tech { font-size: 36px; }
 /* ---------- screenshots ---------- */
 .screenshot { margin: 20px 0; }
 .screenshot img { display: block; max-width: 100%; border-radius: var(--radius-card); border: 1px solid var(--border); }
-.screenshot--pending .screenshot__placeholder { display: flex; gap: 14px; align-items: flex-start; border: 1px dashed var(--border); border-radius: var(--radius-card); padding: 18px 20px; background: var(--panel-bg, var(--accent-tint)); }
-.screenshot__icon { font-size: 22px; line-height: 1; }
-.screenshot__badge { display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); background: var(--accent-tint); border-radius: 999px; padding: 2px 10px; margin-bottom: 6px; }
-.screenshot__alt { color: var(--faint); margin: 0 0 4px; }
-.screenshot__step { margin: 0; }
+.screenshot--pending .screenshot__placeholder { display: flex; gap: 14px; align-items: flex-start; border: 1px dashed var(--border); border-radius: var(--radius-card); padding: 18px 20px; background: var(--card-bg); }
+.screenshot__icon { font-size: 22px; line-height: 1; opacity: .7; }
+.screenshot__meta { min-width: 0; }
+.screenshot__badge { display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); background: var(--accent-tint); border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; }
+.screenshot__alt { color: var(--secondary); font-style: italic; margin: 0 0 8px; }
+.screenshot__step { margin: 0; color: var(--secondary); }
 
 /* ---------- prose ---------- */
-.prose { font-size: 16.5px; }
+/* Numbered "Steps to Navigate" lists are often interrupted by a screenshot
+   figure in the source markdown, which forces a NEW <ol> per CommonMark
+   rules — a naive `counter-reset` on every <ol> would restart at 1 each time
+   (1, 1, 1... instead of 1, 2, 3...). Reset the counter once per section
+   (.h2-body, added client-side around each H2's content) instead, so every
+   <ol> within the same "Steps to Navigate" section shares one running count;
+   a fallback reset on .prose covers any list content ahead of the first H2. */
+.prose { font-size: 16.5px; counter-reset: step; }
 .prose h2 { font-size: 25px; letter-spacing: -.02em; margin: 44px 0 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .prose h2:first-child { margin-top: 0; }
 .prose h2 .caret { font-size: 14px; color: var(--faint); transition: transform .15s; }
 .prose h2.is-collapsed .caret { transform: rotate(-90deg); }
-.prose .h2-body { }
+.prose .h2-body { counter-reset: step; }
 .prose .h2-body.is-collapsed { display: none; }
 .prose p { margin: 0 0 16px; }
 .prose ul, .prose ol { padding-left: 1.3em; margin: 0 0 16px; }
 .prose li { margin-bottom: 10px; }
-.prose ol { list-style: none; padding-left: 0; counter-reset: step; }
+.prose ol { list-style: none; padding-left: 0; }
 .prose ol > li { counter-increment: step; position: relative; padding-left: 40px; margin-bottom: 18px; }
 .prose ol > li::before {
   content: counter(step); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%;
@@ -256,6 +270,8 @@ h1.page-title--tech { font-size: 36px; }
 @media (max-width: 700px) { .split-tables { grid-template-columns: 1fr; } }
 .panel { border: 1px solid var(--border); border-radius: var(--radius-card); overflow: hidden; margin-bottom: 20px; background: #fff; }
 .panel__head { padding: 13px 18px; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--border); }
+.panel__scroll { overflow-x: auto; }
+.panel__scroll > table { min-width: 640px; }
 table.kv { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 table.kv td { padding: 9px 18px; border-bottom: 1px solid var(--row-divider); }
 table.kv tr:last-child td { border-bottom: none; }
@@ -378,6 +394,8 @@ table.rel-table a:hover { color: var(--accent); }
 .commit__impact-row { display: flex; gap: 10px; padding: 8px 12px; font-size: 13px; color: var(--secondary); border-top: 1px solid var(--border); }
 .commit__impact-row:first-child { border-top: none; }
 .commit__impact-label { flex-shrink: 0; width: 68px; font-weight: 700; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.feature-pointer-list { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: 8px; }
+.feature-pointer { font-size: 11.5px; font-weight: 700; background: var(--accent-tint); color: var(--accent); border-radius: var(--radius-chip); padding: 2px 8px; }
 
 /* ---------- changelog ---------- */
 .release { display: grid; grid-template-columns: 160px 1fr; gap: 24px; margin-bottom: 34px; }

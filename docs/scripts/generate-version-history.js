@@ -16,6 +16,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const { classify, relToDefault } = require('./lib/discover');
+const { loadFeatureMap, loadComponentTypes, summarizeImpact } = require('./lib/impact');
 
 const ROOT = path.join(__dirname, '..', '..');
 const OUT_FILE = path.join(ROOT, 'docs', 'technical', 'versions.json');
@@ -24,7 +25,7 @@ const MAX_COMMITS = 30;
 const FS = '\x1f'; // unit separator — field boundary within one commit record
 const RS = '\x1e'; // record separator — boundary between commits (commit bodies may contain newlines)
 
-const AVATAR_PALETTE = ['#6455f0', '#2563eb', '#0ea5a3', '#d97706', '#dc2626', '#7c3aed', '#059669', '#db2777'];
+const AVATAR_PALETTE = ['#0284c7', '#0891b2', '#0d9488', '#2563eb', '#0369a1', '#0e7490', '#155e75', '#1d4ed8'];
 const STATUS_LABEL = { A: 'Added', M: 'Modified', D: 'Removed' };
 
 function sh(cmd) {
@@ -52,17 +53,11 @@ if (!headSha) {
   process.exit(0);
 }
 
-// Feature membership, for the business-impact cross-reference. Best-effort: if
-// extract-technical.js hasn't run yet, versions just skip the business summary.
-let featuresByComponent = new Map();
-if (fs.existsSync(TECH_DATA_FILE)) {
-  try {
-    const techData = JSON.parse(fs.readFileSync(TECH_DATA_FILE, 'utf8'));
-    for (const feature of techData.features || []) {
-      for (const member of feature.members) featuresByComponent.set(member, feature.title);
-    }
-  } catch (e) { /* malformed/missing data.json — business summary just won't be available */ }
-}
+// Feature membership + component types, for the impact cross-reference.
+// Best-effort: if extract-technical.js hasn't run yet, these are just empty
+// and the summaries degrade to "no components changed" / no feature match.
+const featuresByComponent = loadFeatureMap(TECH_DATA_FILE);
+const componentTypeByName = loadComponentTypes(TECH_DATA_FILE);
 
 const rawLog = sh(`git log --format=%H${FS}%an${FS}%aI${FS}%s${FS}%b${RS} -n ${MAX_COMMITS} -- force-app`) || '';
 const commits = rawLog.split(RS).map((rec) => rec.replace(/^\n/, '')).filter(Boolean).map((rec) => {
@@ -108,40 +103,13 @@ const componentChangesByHash = new Map();
   }
 }
 
-function technicalSummary(changes, typeOf) {
-  const parts = [];
-  for (const [key, label] of [['added', 'Added'], ['modified', 'Modified'], ['removed', 'Removed']]) {
-    const names = Array.from(changes[key]);
-    if (!names.length) continue;
-    const byType = {};
-    for (const n of names) { const t = typeOf(n) || 'component'; byType[t] = (byType[t] || 0) + 1; }
-    const typeStr = Object.entries(byType).map(([t, n]) => `${n} ${t}${n > 1 ? '' : ''}`).join(', ');
-    parts.push(`${label} ${names.length} (${typeStr})`);
-  }
-  return parts.length ? parts.join('; ') + '.' : 'No components changed.';
-}
-
-function businessSummary(changes) {
-  const allNames = [...changes.added, ...changes.modified, ...changes.removed];
-  const features = new Set();
-  for (const n of allNames) { const f = featuresByComponent.get(n); if (f) features.add(f); }
-  if (!allNames.length) return 'No business area affected.';
-  if (!features.size) return 'No mapped business feature yet (these components aren\'t clustered into a Feature — see Technical Reference → Features).';
-  return 'Likely affects: ' + Array.from(features).join(', ') + '.';
-}
-
 const total = commits.length;
-const componentTypeByName = new Map();
-if (fs.existsSync(TECH_DATA_FILE)) {
-  try {
-    const techData = JSON.parse(fs.readFileSync(TECH_DATA_FILE, 'utf8'));
-    for (const c of techData.components || []) componentTypeByName.set(c.name, c.type);
-  } catch (e) { /* ignore */ }
-}
 
 const versions = commits.map((c, i) => {
   const stats = statsByHash.get(c.hash) || { additions: 0, deletions: 0, filesChanged: 0 };
   const changes = componentChangesByHash.get(c.hash) || { added: new Set(), modified: new Set(), removed: new Set() };
+  const groupedNames = { Added: Array.from(changes.added), Modified: Array.from(changes.modified), Removed: Array.from(changes.removed) };
+  const impact = summarizeImpact(groupedNames, componentTypeByName, featuresByComponent);
   return {
     version: `v${total - i}`,
     hash: c.hash.slice(0, 7),
@@ -155,11 +123,12 @@ const versions = commits.map((c, i) => {
     filesChanged: stats.filesChanged,
     additions: stats.additions,
     deletions: stats.deletions,
-    added: Array.from(changes.added),
-    modified: Array.from(changes.modified),
-    removed: Array.from(changes.removed),
-    technicalSummary: technicalSummary(changes, (n) => componentTypeByName.get(n)),
-    businessSummary: businessSummary(changes),
+    added: groupedNames.Added,
+    modified: groupedNames.Modified,
+    removed: groupedNames.Removed,
+    technicalSummary: impact.technicalText,
+    businessSummary: impact.businessText,
+    businessFeatures: impact.features,
   };
 });
 

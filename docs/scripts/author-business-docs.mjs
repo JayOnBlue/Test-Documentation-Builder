@@ -32,9 +32,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execSync, spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { discover } = require('./lib/discover');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..', '..');
+const FORCE_APP = path.join(ROOT, 'force-app', 'main', 'default');
 const BUSINESS_DIR = path.join(ROOT, 'docs', 'business');
 const TEMPLATE_FILE = path.join(BUSINESS_DIR, 'TEMPLATE.md');
 const STATE_FILE = path.join(ROOT, 'docs', '_state', 'progress.json');
@@ -72,20 +77,39 @@ if (!headSha) {
   console.log('Not a git repo (or no commits yet) — skipping AI business-doc authorship.');
   process.exit(0);
 }
-if (!state.lastDocumentedCommit || sh(`git cat-file -e ${state.lastDocumentedCommit}`) === null) {
-  console.log('No prior documented commit — this is the initial baseline. Skipping AI authorship on the ' +
-    'first run (nothing to diff against yet); it will run starting from the second push.');
-  process.exit(0);
-}
 
-const nameStatusRaw = sh(`git diff --name-status ${state.lastDocumentedCommit}..${headSha} -- force-app`) || '';
+const isBaseline = !state.lastDocumentedCommit || sh(`git cat-file -e ${state.lastDocumentedCommit}`) === null;
 const STATUS_LABEL = { A: 'Added', M: 'Modified', D: 'Removed', R: 'Renamed' };
-const changes = nameStatusRaw.split('\n').filter(Boolean).map((line) => {
-  const [statusRaw, ...pathParts] = line.split('\t');
-  const filePath = pathParts[pathParts.length - 1];
-  const hit = classifyForceAppPath(filePath.split(path.sep).join('/'));
-  return hit ? { status: STATUS_LABEL[statusRaw[0]] || 'Modified', path: filePath, ...hit } : null;
-}).filter(Boolean);
+let changes;
+
+if (isBaseline) {
+  // No prior commit to diff against — but that does NOT mean nothing needs docs. A
+  // repo that's bootstrapped with a large pre-existing force-app (this project's own
+  // history included) would otherwise NEVER get AI-authored business docs for
+  // anything in that first commit, forever — the technical layer always does a full
+  // sweep (see extract-technical.js) and this needs the same "baseline = everything
+  // is new" treatment, not a skip. Every discovered component is treated as Added;
+  // step 1 of the prompt below ("read what's already documented first") is what
+  // keeps this from duplicating pages for features that already have hand-written
+  // docs (e.g. this demo's own Order Management) — it only fills in the gaps.
+  console.log('No prior documented commit — treating this as an initial baseline: every discovered ' +
+    'component is in scope, but existing docs/business pages are read first so nothing already ' +
+    'documented gets duplicated.');
+  changes = discover(FORCE_APP).map((c) => ({
+    status: 'Added',
+    type: c.type,
+    name: c.name,
+    path: path.join('force-app', 'main', 'default', c.path).split(path.sep).join('/'),
+  }));
+} else {
+  const nameStatusRaw = sh(`git diff --name-status ${state.lastDocumentedCommit}..${headSha} -- force-app`) || '';
+  changes = nameStatusRaw.split('\n').filter(Boolean).map((line) => {
+    const [statusRaw, ...pathParts] = line.split('\t');
+    const filePath = pathParts[pathParts.length - 1];
+    const hit = classifyForceAppPath(filePath.split(path.sep).join('/'));
+    return hit ? { status: STATUS_LABEL[statusRaw[0]] || 'Modified', path: filePath, ...hit } : null;
+  }).filter(Boolean);
+}
 
 if (changes.length === 0) {
   console.log('No force-app changes since the last documented commit — nothing for the AI step to write about.');
@@ -146,8 +170,9 @@ ${template}
 
 You are updating docs for ONE feature area: "${featureTitle}"${batchCount > 1 ? ` (batch ${batchIndex + 1} of ${batchCount} for this feature — there are more changed files in this same feature besides the ones listed below; only handle the ones listed here, another batch covers the rest)` : ''}.
 
-The following force-app files changed for this feature between commit ${state.lastDocumentedCommit.slice(0, 7)}
-and ${headSha.slice(0, 7)} (status: Added/Modified/Removed/Renamed):
+${isBaseline
+  ? `This is the initial documentation baseline (commit ${headSha.slice(0, 7)}) — the force-app files below\nare this feature's full current membership, not necessarily all newly written today:`
+  : `The following force-app files changed for this feature between commit ${state.lastDocumentedCommit.slice(0, 7)}\nand ${headSha.slice(0, 7)} (status: Added/Modified/Removed/Renamed):`}
 
 ${manifest}
 
@@ -177,6 +202,14 @@ let totalBatches = 0;
 for (const [, list] of groups) totalBatches += chunk(list, MAX_FILES_PER_BATCH).length;
 console.log(`Asking Claude to update docs/business/ for ${changes.length} changed file(s) across ${groups.size} feature area(s), in ${totalBatches} batch(es)...`);
 
+// Snapshot what's ALREADY dirty before Claude runs at all — extract-technical.js and
+// generate-version-history.js both ran earlier in this same pipeline and legitimately
+// leave docs/technical/*.json modified-but-uncommitted at this point. The safety net
+// below must only catch files that become dirty DURING this script (i.e. Claude's own
+// doing), or it would revert that upstream work right before the later commit step
+// ever sees it.
+const dirtyBefore = new Set((sh('git status --porcelain') || '').split('\n').filter(Boolean).map((line) => line.slice(3).trim()));
+
 let batchNumber = 0;
 let failures = 0;
 for (const [featureTitle, list] of groups) {
@@ -198,11 +231,13 @@ for (const [featureTitle, list] of groups) {
 }
 
 // Safety net: even though --allowedTools scopes the CLI's own tools, confirm nothing
-// outside docs/business/ was touched before the workflow commits anything.
-const dirty = (sh('git status --porcelain') || '').split('\n').filter(Boolean);
-const outOfScope = dirty
+// outside docs/business/ was touched before the workflow commits anything. Only files
+// that are NEWLY dirty since dirtyBefore count — anything already dirty (technical
+// docs regenerated earlier in this pipeline) is left alone.
+const dirtyAfter = (sh('git status --porcelain') || '').split('\n').filter(Boolean);
+const outOfScope = dirtyAfter
   .map((line) => line.slice(3).trim())
-  .filter((f) => f && !f.startsWith('docs/business/'));
+  .filter((f) => f && !f.startsWith('docs/business/') && !dirtyBefore.has(f));
 
 if (outOfScope.length) {
   console.warn(`Claude touched ${outOfScope.length} file(s) outside docs/business/ — reverting those:`);

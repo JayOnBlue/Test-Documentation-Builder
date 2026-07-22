@@ -136,8 +136,13 @@ git remote add origin <your-new-empty-repo-url>
 git push -u origin main
 ```
 
-That first push runs the pipeline, does a full baseline sweep (no AI step yet — nothing to diff against
-on the very first commit), and deploys the site. Then make a real change to see the incremental behavior:
+That first push runs the pipeline and does a full baseline sweep. The technical layer always does a
+complete scan regardless (see below), and — since fixing this was the whole point of the baseline case —
+the AI business-doc step also treats every discovered component as in-scope on this first run (there's no
+prior commit to diff against, but that's not the same as "nothing needs docs"). It reads what's already
+under `docs/business/` first, so anything already hand-written (like this demo's own Order Management
+pages) doesn't get duplicated — it only fills in what's missing. Then make a real change to see the
+incremental behavior:
 
 ```bash
 # e.g. add a field, tweak OrderService.cls, whatever

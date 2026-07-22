@@ -54,7 +54,7 @@
   function localSet(key, val) {
     try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable — non-fatal */ }
   }
-  var AVATAR_PALETTE = ['#6455f0', '#2563eb', '#0ea5a3', '#d97706', '#dc2626', '#7c3aed', '#059669', '#db2777'];
+  var AVATAR_PALETTE = ['#0284c7', '#0891b2', '#0d9488', '#2563eb', '#0369a1', '#0e7490', '#155e75', '#1d4ed8'];
   function hashString(s) {
     var h = 0;
     for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
@@ -66,7 +66,7 @@
     if (!parts.length) return '?';
     return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
   }
-  var CATEGORY_PALETTE = ['#6455f0', '#0ea5a3', '#d97706', '#db2777', '#2563eb', '#7c3aed', '#64748b', '#059669'];
+  var CATEGORY_PALETTE = ['#0284c7', '#0d9488', '#0891b2', '#2563eb', '#0369a1', '#1d4ed8', '#64748b', '#0e7490'];
   function categoryColor(cat) { return CATEGORY_PALETTE[hashString(cat) % CATEGORY_PALETTE.length]; }
   function categoryLetter(cat) { return String(cat).trim()[0].toUpperCase(); }
 
@@ -98,6 +98,7 @@
     if (parts[0] === 'tech') {
       if (!parts[1]) return { name: 'tech-overview' };
       if (parts[1] === 'index') return { name: 'tech-index' };
+      if (parts[1] === 'features' && parts[2]) return { name: 'tech-feature-detail', target: decodeURIComponent(parts[2]) };
       if (parts[1] === 'features') return { name: 'tech-features' };
       if (parts[1] === 'versions') return { name: 'tech-versions' };
       if (parts[1] === 'class' && parts[2]) return { name: 'tech-class', target: decodeURIComponent(parts[2]) };
@@ -198,8 +199,9 @@
       ['tech-features', '#/tech/features', '&#10022;', 'Features'],
       ['tech-versions', '#/tech/versions', '&#128340;', 'Version History'],
     ];
+    var effectiveRoute = route.name === 'tech-feature-detail' ? 'tech-features' : route.name;
     var nav = navItems.map(function (item) {
-      var active = route.name === item[0] ? ' is-active' : '';
+      var active = effectiveRoute === item[0] ? ' is-active' : '';
       return '<a class="' + active.trim() + '" href="' + item[1] + '"><span class="tech-nav__icon">' + item[2] + '</span>' + item[3] + '</a>';
     }).join('');
     var tree = buildTree();
@@ -207,8 +209,8 @@
       '<a class="sidebar__back" href="#/">&larr; Back to business docs</a>' +
       '<nav class="tech-nav">' + nav + '</nav>' +
       '<div class="source-tree-label">Source tree</div>' +
-      '<div class="tree tree--path">&#128193; force-app / main / default</div>' +
-      '<div class="tree">' + renderTreeNode(tree, activeName) + '</div>';
+      '<div class="tree--path">&#128193; force-app / main / default</div>' +
+      '<div class="tree tree--nested">' + renderTreeNode(tree, activeName) + '</div>';
     qsa('.tree__folder', qs('#sidebar')).forEach(function (el) {
       el.addEventListener('toggle', function () { state.treeOpen[el.getAttribute('data-tree-key')] = el.open; });
     });
@@ -440,6 +442,10 @@
           '<div class="release-card">' +
           '<div class="release-card__title">Release ' + esc(r.version) + (r.hash ? ' <span class="mono" style="color:var(--faint);font-size:14px">(' + esc(r.hash) + ')</span>' : '') + '</div>' +
           '<div class="release-card__byline"><span class="avatar-sm" style="background:' + colorFor(firstContributor) + '">' + esc(initialsOf(firstContributor)) + '</span> ' + esc(firstContributor) + ' released this</div>' +
+          (r.technicalSummary || r.businessSummary ? '<div class="commit__impact" style="margin-bottom:18px">' +
+            (r.technicalSummary ? '<div class="commit__impact-row"><span class="commit__impact-label">Technical</span>' + esc(r.technicalSummary) + '</div>' : '') +
+            (r.businessSummary ? '<div class="commit__impact-row"><span class="commit__impact-label">Business</span><span>' + esc(r.businessSummary) + featurePointerChips(r.businessFeatures) + '</span></div>' : '') +
+            '</div>' : '') +
           groupsHtml +
           '<div class="release-card__footer"><div class="avatar-stack">' + contributorAvatars + '</div>' +
           (r.compareUrl ? '<a class="compare-link" href="' + esc(r.compareUrl) + '" target="_blank" rel="noopener">' + esc(r.compareRange || 'compare') + '</a>' : '<span></span>') +
@@ -475,8 +481,8 @@
       '<p class="page-subtitle">Generated ' + esc(tech.generatedAt || '') + ' &middot; v' + esc(tech.version || 1) + ' &middot; ' + (tech.componentCount || 0) + ' components &middot; ' + (tech.edgeCount || 0) + ' edges</p>' +
       '<div class="stat-row">' + statCard(tech.componentCount, 'Components') + statCard(tech.edgeCount, 'Edges') + statCard(tech.features.length, 'Features') + statCard(versions.length, 'Versions') + '</div>' +
       '<div class="split-tables">' +
-      '<div class="panel" id="by-type"><div class="panel__head">Components by type</div><table class="kv">' + typeRows + '</table></div>' +
-      '<div class="panel" id="by-rel"><div class="panel__head">Edges by relationship</div><table class="kv">' + relRows + '</table></div>' +
+      '<div class="panel" id="by-type"><div class="panel__head">Components by type</div><div class="panel__scroll"><table class="kv">' + typeRows + '</table></div></div>' +
+      '<div class="panel" id="by-rel"><div class="panel__head">Edges by relationship</div><div class="panel__scroll"><table class="kv">' + relRows + '</table></div></div>' +
       '</div></div>';
     buildTOC([{ id: 'by-type', text: 'Components by type' }, { id: 'by-rel', text: 'Edges by relationship' }]);
   }
@@ -516,7 +522,7 @@
       }).join('');
 
       var tableOrEmpty = list.length
-        ? '<div class="panel"><table class="data-table" id="index-table"><thead><tr><th>Name</th><th>Type</th><th>Coverage</th><th>Updated</th><th>Health</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+        ? '<div class="panel"><div class="panel__scroll"><table class="data-table" id="index-table"><thead><tr><th>Name</th><th>Type</th><th>Coverage</th><th>Updated</th><th>Health</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
         : '<div class="empty-state"><div>&#128269;</div><p>No components match these filters.</p><button type="button" id="clear-filters" class="btn-secondary">Clear filters</button></div>';
 
       qs('#index-body').innerHTML =
@@ -662,8 +668,8 @@
       purposePanel + aiReview +
       '<h2 id="methods">Methods (' + (c.methods ? c.methods.length : 0) + ')</h2>' + methodsHtml +
       '<div class="split-tables" style="margin-top:36px">' +
-      '<div><h2 id="depends-on">Depends on (' + c.dependsOn.length + ')</h2><div class="panel">' + relTable(c.dependsOn) + '</div></div>' +
-      '<div><h2 id="used-by">Used by (' + c.usedBy.length + ')</h2><div class="panel">' + relTable(c.usedBy) + '</div></div>' +
+      '<div><h2 id="depends-on">Depends on (' + c.dependsOn.length + ')</h2><div class="panel"><div class="panel__scroll">' + relTable(c.dependsOn) + '</div></div></div>' +
+      '<div><h2 id="used-by">Used by (' + c.usedBy.length + ')</h2><div class="panel"><div class="panel__scroll">' + relTable(c.usedBy) + '</div></div></div>' +
       '</div>' +
       '<div id="impact-panel"></div>' +
       '<h2 style="margin-top:36px">Related Pages</h2>' + renderRelatedPages([
@@ -712,8 +718,8 @@
         '</div>' +
         '<p class="impact-panel__note">Changing this class could ripple through its direct dependents and their callers. Review the Used-by list and run the highlighted test classes before deploying.</p>';
       levels.forEach(function (level, i) {
-        html += '<div class="panel"><div class="panel__head">Depth ' + (i + 1) + '</div><table class="rel-table">' +
-          level.map(function (n) { return '<tr><td><a href="' + componentRouteHref(n) + '">' + esc(n) + '</a></td></tr>'; }).join('') + '</table></div>';
+        html += '<div class="panel"><div class="panel__head">Depth ' + (i + 1) + '</div><div class="panel__scroll"><table class="rel-table">' +
+          level.map(function (n) { return '<tr><td><a href="' + componentRouteHref(n) + '">' + esc(n) + '</a></td></tr>'; }).join('') + '</table></div></div>';
       });
       html += '<p style="color:var(--muted);font-size:13px">Static analysis only — this can\'t see org-side jobs, external API callers, or Flow/Process Builder config not in source.</p></div>';
       panel.innerHTML = html;
@@ -747,7 +753,7 @@
       '<a class="back-link" href="#/tech/index">&larr; Back to Component Index</a>' +
       '<h1 class="page-title page-title--tech">' + esc(c.name) + '</h1>' +
       '<div class="detail-path"><span class="type-badge">CustomObject</span> ' + esc(schema.label) + '</div>' +
-      '<h2 id="fields">Fields (' + schema.fields.length + ')</h2><div class="panel"><table class="data-table"><thead><tr><th>Label</th><th>API Name</th><th>Type</th><th>Req</th></tr></thead><tbody>' + fieldRows + '</tbody></table></div>' +
+      '<h2 id="fields">Fields (' + schema.fields.length + ')</h2><div class="panel"><div class="panel__scroll"><table class="data-table"><thead><tr><th>Label</th><th>API Name</th><th>Type</th><th>Req</th></tr></thead><tbody>' + fieldRows + '</tbody></table></div></div>' +
       '<h2 id="record-types">Record Types</h2>' + recordTypesHtml +
       '<h2 id="relationships">Relationships</h2>' + relHtml +
       '<h2 style="margin-top:36px">Related Pages</h2>' + renderRelatedPages([
@@ -761,19 +767,65 @@
   // ================================================================
   // FEATURES
   // ================================================================
+  function qualityPillClass(q) { return q === 'High' ? 'pill--good' : q === 'Medium' ? 'pill--warn' : 'pill--danger'; }
+
+  function featurePointerChips(titles) {
+    if (!titles || !titles.length) return '';
+    return '<span class="feature-pointer-list">' + titles.map(function (title) {
+      var feat = tech.features.find(function (f) { return f.title === title; });
+      return feat ? '<a class="feature-pointer" href="#/tech/features/' + encodeURIComponent(feat.slug) + '">' + esc(title) + '</a>' : '<span class="feature-pointer">' + esc(title) + '</span>';
+    }).join('') + '</span>';
+  }
+
   function renderFeatures() {
     var cards = tech.features.map(function (f) {
-      return '<div class="feature-card"><span class="feature-card__title">' + esc(f.title) + '</span>' +
-        '<span class="feature-card__desc">Members: ' + f.members.map(esc).join(', ') + '</span>' +
+      return '<a class="feature-card" href="#/tech/features/' + encodeURIComponent(f.slug) + '">' +
+        '<span class="feature-card__title">' + esc(f.title) + '</span>' +
+        '<span class="feature-card__desc">' + esc(f.description || '') + '</span>' +
         '<span class="feature-card__footer"><span class="feature-card__meta">' + f.memberCount + ' members</span><span class="sep">&middot;</span>' +
-        '<span class="pill ' + (f.quality === 'High' ? 'pill--good' : f.quality === 'Medium' ? 'pill--warn' : 'pill--danger') + '">' + esc(f.quality) + '</span></span></div>';
+        '<span class="pill ' + qualityPillClass(f.quality) + '">' + esc(f.quality) + '</span></span></a>';
     }).join('');
     qs('#main').innerHTML = '<div class="wide-width">' +
       '<div class="crumbs"><a href="#/">Docs</a> <span>/</span> <a href="#/tech">Technical Reference</a> <span>/</span> <span>Features</span></div>' +
       '<h1 class="page-title page-title--tech">Features (' + tech.features.length + ')</h1>' +
+      '<p class="page-subtitle">Auto-clustered from the dependency graph — click a feature to see everything in it.</p>' +
       (tech.features.length ? '<div class="features-grid">' + cards + '</div>' : '<p style="color:var(--muted)">No multi-component clusters detected yet — features emerge as more of the codebase is connected by real dependencies.</p>') +
       '</div>';
     buildTOC([]);
+  }
+
+  function renderFeatureDetail(slug) {
+    var f = tech.features.find(function (x) { return x.slug === slug; });
+    if (!f) { qs('#main').innerHTML = '<div class="wide-width"><h1 class="page-title">Not found</h1><p>No feature named "' + esc(slug) + '".</p></div>'; buildTOC([]); return; }
+
+    var contextKey = 'qe360:feature-context:' + f.slug;
+    var savedContext = localGet(contextKey, '');
+    var memberChips = f.members.slice().sort().map(function (name) {
+      var c = byComponentName[name];
+      return '<a class="record-type-chip" href="' + componentRouteHref(name) + '">' + esc(name) + (c ? ' <span style="color:var(--faint)">(' + esc(c.type) + ')</span>' : '') + '</a>';
+    }).join('');
+
+    qs('#main').innerHTML = '<div class="wide-width">' +
+      '<div class="crumbs"><a href="#/">Docs</a> <span>/</span> <a href="#/tech">Technical Reference</a> <span>/</span> <a href="#/tech/features">Features</a> <span>/</span> <span>' + esc(f.title) + '</span></div>' +
+      '<a class="back-link" href="#/tech/features">&larr; Back to Features</a>' +
+      '<h1 class="page-title page-title--tech">' + esc(f.title) + '</h1>' +
+      '<p class="page-subtitle">' + esc(f.description || '') + '</p>' +
+      '<div class="review-panel" id="business-context"><label class="review-panel__label">Business context <span class="pill ' + qualityPillClass(f.quality) + '">' + esc(f.quality) + '</span></label>' +
+      '<textarea id="context-input" placeholder="What does this feature do for the business, in plain language?">' + esc(savedContext) + '</textarea>' +
+      '<button type="button" class="save-btn" id="save-context">Save</button>' +
+      (!savedContext ? '<p style="color:var(--muted);font-size:13px;margin:10px 0 0"><em>(needs enrichment &mdash; inferred from naming; confirm with a product owner)</em></p>' : '') +
+      '</div>' +
+      '<h2 id="members">Members (' + f.memberCount + ')</h2>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:0">' + memberChips + '</div>' +
+      '</div>';
+
+    var saveBtn = qs('#save-context');
+    saveBtn.addEventListener('click', function () {
+      localSet(contextKey, qs('#context-input').value);
+      flashButton(saveBtn, 'Saved');
+    });
+
+    buildTOC([{ id: 'members', text: 'Members' }]);
   }
 
   // ================================================================
@@ -799,7 +851,7 @@
           '<div class="change-chips">' + addedChips + modifiedChips + removedChips + '</div>' +
           '<div class="commit__impact">' +
           '<div class="commit__impact-row"><span class="commit__impact-label">Technical</span>' + esc(v.technicalSummary || '') + '</div>' +
-          '<div class="commit__impact-row"><span class="commit__impact-label">Business</span>' + esc(v.businessSummary || '') + '</div>' +
+          '<div class="commit__impact-row"><span class="commit__impact-label">Business</span><span>' + esc(v.businessSummary || '') + featurePointerChips(v.businessFeatures) + '</span></div>' +
           '</div>' +
           '</div></div>';
       }).join('') + '</div>';
@@ -951,6 +1003,7 @@
     else if (r.name === 'tech-overview') renderTechOverview();
     else if (r.name === 'tech-index') renderComponentIndex();
     else if (r.name === 'tech-features') renderFeatures();
+    else if (r.name === 'tech-feature-detail') renderFeatureDetail(r.target);
     else if (r.name === 'tech-versions') renderVersionHistory();
     else if (r.name === 'tech-class' || r.name === 'tech-object' || r.name === 'tech-component') renderComponentDetail(r.target);
     else renderOverview();
