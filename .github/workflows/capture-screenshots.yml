@@ -67,7 +67,9 @@ jobs:
             exit 1
           fi
           AUTH_FILE="$(mktemp)"
-          echo "${{ secrets.SF_AUTH_URL }}" > "$AUTH_FILE"
+          # Strip CRLF and any stray surrounding quotes/whitespace a copy-paste might have introduced —
+          # the value must be exactly force://<clientId>:<clientSecret>:<refreshToken>@<instanceUrl-without-protocol>
+          printf '%s' "${{ secrets.SF_AUTH_URL }}" | tr -d '\r' | sed -e 's/^[[:space:]"'"'"']*//' -e 's/[[:space:]"'"'"']*$//' > "$AUTH_FILE"
           sf org login sfdx-url --sfdx-url-file "$AUTH_FILE" --alias ci --set-default
           rm -f "$AUTH_FILE"
 
