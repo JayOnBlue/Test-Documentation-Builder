@@ -1,1 +1,2 @@
 cumulusci>=3.90.0
+robotframework-browser
