@@ -1,0 +1,7 @@
+<template>
+    <lightning-card title="Open Tickets">
+        <template for:each={tickets.data} for:item="t">
+            <p key={t.Id}>{t.Subject__c} — {t.Priority__c}</p>
+        </template>
+    </lightning-card>
+</template>

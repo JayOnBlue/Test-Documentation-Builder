@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Primary_Warehouse__c</fullName>
+    <label>Primary Warehouse</label>
+    <type>Lookup</type>
+    <referenceTo>Warehouse__c</referenceTo>
+    <relationshipName>Primary_Warehouses</relationshipName>
+</CustomField>

@@ -1,0 +1,7 @@
+<template>
+    <lightning-card title="Campaign Performance">
+        <template for:each={metrics.data} for:item="m">
+            <p key={m.Id}>{m.Impressions__c} impressions, {m.Clicks__c} clicks</p>
+        </template>
+    </lightning-card>
+</template>

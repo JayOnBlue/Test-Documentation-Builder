@@ -28,6 +28,9 @@ const ASSETS_DIR = path.join(__dirname, 'site-assets');
 const TECH_DATA_FILE = path.join(ROOT, 'docs', 'technical', 'data.json');
 const VERSIONS_FILE = path.join(ROOT, 'docs', 'technical', 'versions.json');
 const CHANGELOG_FILE = path.join(ROOT, 'docs', 'CHANGELOG.md');
+const IMAGES_DIR = path.join(ROOT, 'docs', 'images');
+const SCREENSHOT_MANIFEST_FILE = path.join(ROOT, 'docs', 'screenshot-manifest.json');
+const screenshotManifest = [];
 
 const CATEGORY_ORDER = { 'Getting Started': 0 };
 const CALLOUT_LABELS = { before: 'Before you start', note: 'Note', tip: 'Tip', warning: 'Warning', deprecated: 'Deprecated', placeholder: 'Placeholder' };
@@ -76,6 +79,7 @@ const defaultFence = md.renderer.rules.fence
 md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
   const token = tokens[idx];
   const lang = token.info.trim();
+  if (lang === 'screenshot') return renderScreenshot(token, idx, env);
   if (lang !== 'callout') return defaultFence(tokens, idx, options, env, slf);
 
   const lines = token.content.split('\n');
@@ -88,13 +92,46 @@ md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
   return `<div class="callout callout--${type}"><span class="callout__label">${esc(label)}</span>${bodyHtml}</div>`;
 };
 
+// Renders a ```screenshot block as a real <img> if docs/images/<id>.{png,jpg} exists,
+// otherwise a "Screenshot pending" placeholder — and records the block in the
+// screenshot-manifest.json that the robot-capture workflow reads to know what to shoot.
+function renderScreenshot(token, idx, env) {
+  let data = {};
+  try { data = yaml.load(token.content) || {}; } catch (e) { data = {}; }
+  const id = data.id || `screenshot-${idx}`;
+  const alt = esc(data.alt || '');
+  const step = data.step || '';
+  const urlPattern = data.url_pattern || '';
+
+  screenshotManifest.push({ id, alt: data.alt || '', step, url_pattern: urlPattern, source: env.relPath });
+
+  let imgFile = null;
+  for (const ext of ['.png', '.jpg', '.jpeg']) {
+    if (fs.existsSync(path.join(IMAGES_DIR, id + ext))) { imgFile = id + ext; break; }
+  }
+
+  if (imgFile) {
+    return `<figure class="screenshot"><img src="images/${imgFile}" alt="${alt}" loading="lazy"></figure>`;
+  }
+  return `<figure class="screenshot screenshot--pending" data-screenshot-id="${id}">
+    <div class="screenshot__placeholder">
+      <span class="screenshot__icon" aria-hidden="true">&#128247;</span>
+      <div class="screenshot__meta">
+        <span class="screenshot__badge">Screenshot pending</span>
+        <p class="screenshot__alt">${alt}</p>
+        ${step ? `<p class="screenshot__step"><strong>Capture:</strong> ${esc(step)}</p>` : ''}
+      </div>
+    </div>
+  </figure>`;
+}
+
 // ---------- parse all business pages ----------
 const files = walk(CONTENT_DIR);
 const rawPages = files.map((full) => {
   const raw = fs.readFileSync(full, 'utf8');
   const relPath = path.relative(CONTENT_DIR, full);
   const { data, content } = matter(raw);
-  const env = { headings: [] };
+  const env = { headings: [], relPath };
   const html = md.render(content, env);
 
   const category = data.category || 'General';
@@ -211,6 +248,7 @@ function build() {
   fs.rmSync(SITE_DIR, { recursive: true, force: true });
   fs.mkdirSync(SITE_DIR, { recursive: true });
   fs.mkdirSync(path.join(SITE_DIR, 'raw'), { recursive: true });
+  fs.mkdirSync(IMAGES_DIR, { recursive: true });
 
   for (const p of pages) fs.writeFileSync(path.join(SITE_DIR, 'raw', `${p.base}.md`), p.fullRaw, 'utf8');
 
@@ -220,7 +258,10 @@ function build() {
   fs.copyFileSync(path.join(ASSETS_DIR, 'styles.css'), path.join(SITE_DIR, 'styles.css'));
   fs.writeFileSync(path.join(SITE_DIR, 'data.js'), `window.__SITE_DATA__ = ${JSON.stringify(siteData)};`, 'utf8');
 
+  fs.writeFileSync(SCREENSHOT_MANIFEST_FILE, JSON.stringify(screenshotManifest, null, 2), 'utf8');
+
   console.log(`Built ${pages.length} business page(s), ${technical.components.length} technical component(s), ${releases.length} changelog release(s), ${versionsData.versions.length} version(s) -> ${SITE_DIR}`);
+  console.log(`Screenshot manifest: ${screenshotManifest.length} placeholder(s) -> docs/screenshot-manifest.json`);
 }
 
 build();

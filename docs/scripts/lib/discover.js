@@ -41,6 +41,10 @@ function classify(rel, base) {
   if (base.endsWith('.flow-meta.xml')) {
     return { type: 'Flow', name: base.replace(/\.flow-meta\.xml$/, '') };
   }
+  if (base.endsWith('.recordType-meta.xml')) {
+    const objectName = path.basename(path.dirname(path.dirname(rel)));
+    return { type: 'RecordType', name: `${objectName}.${base.replace(/\.recordType-meta\.xml$/, '')}`, parentObject: objectName };
+  }
   if (base.endsWith('.js-meta.xml') && (rel.startsWith('lwc/') || rel.includes('/lwc/'))) {
     return { type: 'LightningComponentBundle', name: path.basename(path.dirname(rel)) };
   }

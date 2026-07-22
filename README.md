@@ -5,19 +5,18 @@ Salesforce metadata changes to `main`, and get back an always-current **Changelo
 Use-Case Documentation**, and **Technical Reference** — all Markdown/JSON-driven, all published as
 **one** GitHub Pages site with a single light visual language. UI/UX follows the high-fidelity handoff
 in `design_handoff_qe360_docs/` (see `PAGE_FEATURES.md` and `DESIGN_TOKENS.md` there for the full spec
-this was built against). No screenshots/image capture in this version (dropped by request — everything
-here is text/Markdown/JSON).
+this was built against). Business docs can also include `screenshot` blocks (see `docs/business/TEMPLATE.md`)
+that render as real images once captured — see **Screenshot capture** below.
 
 This folder is fully self-contained and does not touch anything outside itself. Copy it into its own
 GitHub repository (or push it as-is — see below) to try it.
 
 ## Layout
 
-Everything lives under `docs/`, except the one workflow file GitHub requires at `.github/workflows/`:
-
 ```
 sf-docs-automation-demo/
-├── force-app/                          # a small dummy Salesforce project (Order Management)
+├── force-app/                          # a dummy Salesforce project — 6 business domains, ~190 files
+│   └── main/default/{tabs,applications,permissionsets}/  # Order__c tab/app + the docs-capture permission set
 ├── docs/
 │   ├── scripts/                        # all pipeline code
 │   │   ├── lib/discover.js             # what counts as a "component" in force-app
@@ -26,24 +25,30 @@ sf-docs-automation-demo/
 │   │   ├── generate-version-history.js # deterministic: git log -> docs/technical/versions.json
 │   │   ├── generate-changelog.js       # deterministic: force-app diff -> docs/CHANGELOG.md (grouped releases)
 │   │   ├── author-business-docs.mjs    # the ONE AI step -> updates docs/business/*.md only
-│   │   ├── build-site.js               # assembles docs/site/ (one shell + one data bundle)
+│   │   ├── build-site.js               # assembles docs/site/ (one shell + one data bundle) + docs/screenshot-manifest.json
 │   │   └── site-assets/                # index.html / app.js / styles.css — the unified SPA shell
 │   ├── business/                       # <- the business/use-case Markdown "database"
-│   │   ├── TEMPLATE.md
+│   │   ├── TEMPLATE.md                 # documents the `callout` and `screenshot` fenced-block conventions
 │   │   ├── getting-started/overview.md
-│   │   └── orders/*.md                 # Order Lifecycle + Order Adjustments (real), Group Orders (stub), Fulfillment Orders (deprecated demo)
+│   │   └── orders/*.md                 # Order Lifecycle (has screenshot blocks) + Order Adjustments (real), Group Orders (stub), Fulfillment Orders (deprecated demo)
 │   ├── technical/data.json             # generated — do not hand-edit
 │   ├── technical/versions.json         # generated — do not hand-edit
 │   ├── CHANGELOG.md                    # generated — do not hand-edit (the release data IS this file)
+│   ├── screenshot-manifest.json        # generated — every `screenshot` block found across docs/business/**/*.md
+│   ├── images/                         # captured screenshots (<screenshot-id>.png), committed by the workflow below
 │   ├── _state/progress.json            # generated — tracks the last commit this pipeline documented
 │   └── site/                           # generated — the GitHub Pages output; git-ignored, rebuilt every run
-└── .github/workflows/docs-pipeline.yml # the only file outside docs/
+├── robot-capture/                      # CumulusCI + Robot Framework (SalesforcePlaywright) screenshot capture — see its own README
+└── .github/workflows/
+    ├── docs-pipeline.yml               # force-app push -> Changelog/Business docs/Technical Reference -> GitHub Pages
+    └── capture-screenshots.yml         # manual trigger -> runs robot-capture/, commits new docs/images
 ```
 
 `docs/site/` is listed in `.gitignore` — it's pure build output (derived entirely from `docs/business/`,
 `docs/technical/*.json`, and `docs/CHANGELOG.md`), so it's rebuilt fresh by CI and uploaded straight to
 Pages rather than committed. Everything else under `docs/` (the Markdown, the JSON graph, the changelog,
-the state pointer) **is** committed — that's the actual "database."
+the state pointer, the screenshot manifest, the captured images) **is** committed — that's the actual
+"database."
 
 ## One shell, two modes
 
@@ -75,13 +80,22 @@ Pages implemented:
   heuristic everywhere it's shown.
 - **Security findings** (the "Security" note under AI Review) are a simple rule: a class doing SOQL or
   DML gets a static FLS/CRUD reminder. It's pattern-matching, not a real security scanner.
-- **Features** are connected components of the dependency graph, not curated. With this demo's small
-  `Order__c` domain everything is one connected cluster ("Order Management") — a real org's less-connected
-  graph naturally produces more, smaller features.
+- **Features** are connected components of the dependency graph, not curated. `force-app` has six business
+  domains (Order Management, Inventory, Customer Support, Marketing Campaigns, Billing & Invoicing, Partner
+  Management) — most stay separate clusters, but a deliberate cross-cutting service
+  (`CrossModuleReconciliation...ServiceImplementation`) bridges two of them into one, which is realistic:
+  shared/reconciliation services really do merge otherwise-unrelated features in a real org's graph.
 - **The technical extractor** (`extract-technical.js`) is a small, from-scratch reimplementation — regex
-  static analysis, not the nuance of a production-grade version (no case-insensitive Apex resolution,
-  simpler comment stripping, etc.). Enough to show real dependency edges on the sample domain, not enough
-  to trust blindly on a large, messy org.
+  static analysis, not the nuance of a production-grade version (no case-insensitive Apex resolution, no
+  awareness of dynamic SOQL, etc.). It does strip both comments and string-literal contents before scanning
+  (so a class name or "FROM Object" mentioned in a log message or old commented-out code isn't mistaken for
+  a real reference — see `LegacyCommentTrapService` in `force-app` for the regression case that caught this).
+- **Deliberate edge cases live in `force-app`** to exercise the pipeline honestly rather than just look busy:
+  a fully orphaned class (`DeprecatedLegacyHelper`, zero dependents/dependencies), an empty test class
+  (`EmptyPlaceholderTest`), a 40-method class (`BulkDataProcessingUtility`, throughput check), a Flow with no
+  associated object, a Lightning component with no Apex import at all, two triggers on one object
+  (`Product__c`), an intentionally very long class name (word-wrap check), Record Types on `Invoice__c`, and
+  a multiselect picklist + an explicitly-required non-master-detail field.
 - **The AI business-doc step** is the only place in this pipeline that writes prose rather than
   extracting facts.
 
@@ -101,6 +115,15 @@ Pages implemented:
    **`CLAUDE_CODE_OAUTH_TOKEN`** (Settings → Secrets and variables → Actions → New repository secret).
    If you skip this, the pipeline still runs and deploys — it just skips the AI business-doc step and
    tells you so in the log.
+4. **(Optional) Enable screenshot capture** — `capture-screenshots.yml` is a separate, manually-triggered
+   workflow (Actions tab → "Capture Documentation Screenshots" → Run workflow). One-time setup:
+   ```bash
+   sf org display --verbose --json --target-org <your-already-logged-in-org>   # copy the "sfdxAuthUrl" value
+   ```
+   Add that value as a repo secret named **`SF_AUTH_URL`**. This is a refresh-token URL derived from a
+   session you already satisfied MFA/passkey on — the workflow reuses it silently on every run, so no
+   login screen or MFA/passkey prompt ever appears in CI. See `robot-capture/README.md` for what it
+   captures and how to run it locally first.
 
 ## Try it
 
@@ -180,5 +203,8 @@ fixed character count, quietly dropping real changes. Instead:
    one batch — nothing is dropped for being "too much," which is the actual point of the "handle a huge
    changeset without missing details" requirement this was built against.
 
-This demo's own `force-app` is tiny (one feature, a couple of files at a time), so you'll typically see
-"1 batch" in the log — the mechanism is there and logged either way; it just doesn't have to work hard yet.
+A typical single-commit tweak here still only touches one feature at a time, so you'll usually see "1
+batch" in the log for any given push — but with six domains and 120+ components now in `force-app`, a
+change that touches several domains at once (edit one file in Orders, one in Billing, one in Inventory)
+will visibly fan out into multiple feature groups and log a batch count > 1, which is the mechanism this
+was built to demonstrate.

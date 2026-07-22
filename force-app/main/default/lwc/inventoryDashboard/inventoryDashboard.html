@@ -1,0 +1,9 @@
+<template>
+    <lightning-card title="Low Stock Products">
+        <template if:true={hasProducts}>
+            <template for:each={products.data} for:item="p">
+                <p key={p.Id}>{p.SKU__c} — {p.QuantityOnHand__c} on hand</p>
+            </template>
+        </template>
+    </lightning-card>
+</template>

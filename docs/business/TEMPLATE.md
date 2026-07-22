@@ -59,4 +59,26 @@ Any **markdown** body text goes here, on the lines after `type:`.
 
 `type` is one of: before | note | tip | warning. (A `deprecated` banner instead comes from this page's own
 frontmatter — see `deprecated`/`replacement` above — not from a callout block.)
+
+SCREENSHOT BLOCK CONVENTION
+----------------------------
+Use a fenced code block tagged `screenshot` inside "Steps to Navigate" wherever a step needs a picture:
+
+```screenshot
+id: feature-name-some-step
+alt: Plain-language description of exactly what the screenshot shows
+step: The action to perform to reach this screen (what the capture workflow will do)
+url_pattern: /lightning/r/Object__c/{recordId}/view
+```
+
+- `id` — unique across all docs, kebab-case, prefixed with the page slug (e.g. `order-lifecycle-record-page`).
+- `alt` — used as the image's alt text and shown under the placeholder until captured.
+- `step` — shown as "Capture: ..." under the placeholder; also read by the capture workflow.
+- `url_pattern` — the page to navigate to. Use `{recordId}` for a record page — it's resolved automatically
+  via SOQL. Omit or leave generic for a step that needs real clicks (App Launcher, filling a form, etc.);
+  give the capture workflow's `robot-capture/` a dedicated test case for those instead (see its README).
+
+`build-site.js` renders a real `<img>` once a matching file exists at `docs/images/<id>.png` (or `.jpg`),
+otherwise a dashed "Screenshot pending" placeholder with the `alt`/`step` text. `docs/screenshot-manifest.json`
+is generated from every `screenshot` block across all pages — it's the input the capture workflow reads.
 -->

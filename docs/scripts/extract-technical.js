@@ -26,6 +26,7 @@ const OWNER_BY_TYPE = {
   ApexTrigger: 'Platform Engineering',
   CustomObject: 'Data Architecture',
   CustomField: 'Data Architecture',
+  RecordType: 'Data Architecture',
   Flow: 'Automation Team',
   LightningComponentBundle: 'Frontend Guild',
 };
@@ -34,6 +35,17 @@ function stripComments(src) {
   return src
     .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
     .replace(/\/\/[^\n]*/g, '');
+}
+
+/**
+ * Blank out Apex string-literal contents (single-quoted; Apex has no other
+ * string syntax) so a class name or "FROM Object" mentioned inside a log
+ * message or error string can't be mistaken for a real reference. Run this
+ * AFTER stripComments — a quote character inside a comment must already be
+ * gone before this looks for string boundaries.
+ */
+function stripStrings(src) {
+  return src.replace(/'(?:\\.|[^'\\])*'/g, (m) => m.replace(/[^\n]/g, ' '));
 }
 
 function readSource(component) {
@@ -68,7 +80,7 @@ const isTestClass = new Map(); // name -> boolean
 for (const c of components) {
   if (c.type === 'ApexClass') {
     const raw = readSource(c);
-    const clean = stripComments(raw);
+    const clean = stripStrings(stripComments(raw));
     isTestClass.set(c.name, /@IsTest/i.test(clean) || /Test$/.test(c.name));
 
     const methods = [];
@@ -101,7 +113,7 @@ for (const c of components) {
   }
 
   if (c.type === 'ApexTrigger') {
-    const clean = stripComments(readSource(c));
+    const clean = stripStrings(stripComments(readSource(c)));
     const trigOn = clean.match(/trigger\s+\w+\s+on\s+(\w+)\s*\(/);
     if (trigOn) addEdge(c.name, trigOn[1], 'trigger_on', 'High');
     for (const other of classNames) {
@@ -191,6 +203,11 @@ for (const c of components) {
     const fieldType = (xml.match(/<type>(\w+)<\/type>/) || [])[1] || 'Text';
     const required = /<required>true<\/required>/.test(xml) || fieldType === 'MasterDetail';
     schemas[c.parentObject].fields.push({ label, apiName: c.name.split('.').pop(), type: fieldType, required });
+  }
+  if (c.type === 'RecordType' && schemas[c.parentObject]) {
+    const xml = readSource(c);
+    const label = (xml.match(/<label>(.*?)<\/label>/) || [])[1] || c.name.split('.').pop();
+    schemas[c.parentObject].recordTypes.push(label);
   }
 }
 for (const objName of Object.keys(schemas)) {

@@ -32,9 +32,44 @@ confirm it — otherwise the confirmation email has nothing to send and nowhere 
 
 ## Steps to Navigate
 
-1. Open the Order record and review its Order Lines related list.
-2. Change **Status** from *Draft* to *Confirmed* and save.
-3. The system marks every Order Line on the order as confirmed and emails the customer automatically —
+1. Open the **App Launcher** and select the **Order Management** app.
+
+```screenshot
+id: order-lifecycle-app-launcher
+alt: Salesforce App Launcher showing the Order Management app tile
+step: Open the App Launcher and select the Order Management app
+url_pattern: /lightning/app/AppLauncher
+```
+
+2. Click the **Orders** tab.
+
+```screenshot
+id: order-lifecycle-orders-tab
+alt: Orders tab list view showing existing Order records
+step: Click the Orders tab in the navigation bar
+url_pattern: /lightning/o/Order__c/home
+```
+
+3. Click **New**, fill in the Customer Email, and save to create an Order.
+
+```screenshot
+id: order-lifecycle-create-order
+alt: New Order form with the Customer Email field filled in, before saving
+step: Click New on the Orders tab and fill in the Customer Email field
+url_pattern: /lightning/o/Order__c/new
+```
+
+4. Open the Order record and review its Order Lines related list.
+
+```screenshot
+id: order-lifecycle-record-page
+alt: Salesforce Lightning Order record page showing Status, Customer Email, Total Amount, and the Order Lines related list
+step: Open the Order record just created
+url_pattern: /lightning/r/Order__c/{recordId}/view
+```
+
+5. Change **Status** from *Draft* to *Confirmed* and save.
+6. The system marks every Order Line on the order as confirmed and emails the customer automatically —
    no further action is needed.
 
 ```callout

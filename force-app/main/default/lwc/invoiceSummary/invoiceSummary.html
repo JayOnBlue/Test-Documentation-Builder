@@ -1,0 +1,7 @@
+<template>
+    <lightning-card title="Open Invoices">
+        <template for:each={invoices.data} for:item="inv">
+            <p key={inv.Id}>{inv.Name} — {inv.Status__c} — due {inv.Due_Date__c}</p>
+        </template>
+    </lightning-card>
+</template>

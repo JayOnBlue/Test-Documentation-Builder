@@ -1,0 +1,7 @@
+<template>
+    <lightning-card title="Expiring Vendor Contracts">
+        <template for:each={contracts.data} for:item="c">
+            <p key={c.Id}>Contract {c.Id} — expires {c.End_Date__c}</p>
+        </template>
+    </lightning-card>
+</template>

@@ -1,0 +1,17 @@
+minimum_cumulusci_version: "3.90.0"
+project:
+    name: OrderDemoDocs
+    package:
+        name: Order Demo Docs
+        api_version: "60.0"
+    git:
+        default_branch: main
+
+tasks:
+    capture_docs:
+        description: Capture all documentation screenshots against the target org.
+        class_path: cumulusci.tasks.robotframework.Robot
+        options:
+            suites: robot/OrderDemo/tests/docs_capture.robot
+            options:
+                outputdir: robot/OrderDemo/results

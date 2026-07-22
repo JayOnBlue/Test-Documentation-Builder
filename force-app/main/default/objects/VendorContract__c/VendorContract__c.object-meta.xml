@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Vendor Contract</label>
+    <pluralLabel>Vendor Contracts</pluralLabel>
+    <nameField>
+        <label>Vendor Contract Number</label>
+        <type>AutoNumber</type>
+        <displayFormat>VE-{0000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

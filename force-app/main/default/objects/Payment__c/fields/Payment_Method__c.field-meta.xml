@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Payment_Method__c</fullName>
+    <label>Payment Method</label>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <value><fullName>Credit Card</fullName><default>true</default></value>
+            <value><fullName>ACH</fullName><default>false</default></value>
+            <value><fullName>Wire</fullName><default>false</default></value>
+            <value><fullName>Check</fullName><default>false</default></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

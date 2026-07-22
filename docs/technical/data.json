@@ -1,32 +1,1441 @@
 {
-  "generatedAt": "2026-07-22T13:22:42.833Z",
-  "version": 14,
-  "componentCount": 17,
-  "edgeCount": 12,
+  "generatedAt": "2026-07-22T14:39:28.359Z",
+  "version": 19,
+  "componentCount": 122,
+  "edgeCount": 94,
   "componentsByType": {
-    "ApexClass": 4,
-    "Flow": 1,
-    "LightningComponentBundle": 1,
-    "CustomObject": 2,
-    "CustomField": 8,
-    "ApexTrigger": 1
+    "ApexClass": 41,
+    "Flow": 7,
+    "LightningComponentBundle": 7,
+    "CustomObject": 12,
+    "CustomField": 44,
+    "RecordType": 2,
+    "ApexTrigger": 9
   },
   "edgesByRelationship": {
-    "calls_method": 2,
-    "soql_read": 2,
-    "dml_write": 3,
-    "trigger_on": 2,
-    "wire_adapter": 1,
-    "references_object": 1,
-    "handled_by": 1
+    "soql_read": 18,
+    "dml_write": 18,
+    "calls_method": 20,
+    "constructs": 2,
+    "trigger_on": 15,
+    "wire_adapter": 6,
+    "references_object": 6,
+    "handled_by": 9
   },
   "components": [
+    {
+      "name": "BulkDataProcessingUtility",
+      "type": "ApexClass",
+      "path": "classes/BulkDataProcessingUtility.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T14:08:52.584Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "getHeader0",
+          "signature": "private getHeader0(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "createHeader1",
+          "signature": "public createHeader1(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "updateHeader2",
+          "signature": "public updateHeader2(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "deleteHeader3",
+          "signature": "public deleteHeader3(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "validateHeader4",
+          "signature": "public validateHeader4(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "processHeader5",
+          "signature": "private processHeader5(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "handleHeader6",
+          "signature": "public handleHeader6(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "buildHeader7",
+          "signature": "public buildHeader7(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "calculateHeader8",
+          "signature": "public calculateHeader8(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "syncHeader9",
+          "signature": "public syncHeader9(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "getFooter10",
+          "signature": "private getFooter10(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "createFooter11",
+          "signature": "public createFooter11(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "updateFooter12",
+          "signature": "public updateFooter12(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "deleteFooter13",
+          "signature": "public deleteFooter13(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "validateFooter14",
+          "signature": "public validateFooter14(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "processFooter15",
+          "signature": "private processFooter15(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "handleFooter16",
+          "signature": "public handleFooter16(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "buildFooter17",
+          "signature": "public buildFooter17(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "calculateFooter18",
+          "signature": "public calculateFooter18(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "syncFooter19",
+          "signature": "public syncFooter19(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "getSummary20",
+          "signature": "private getSummary20(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "createSummary21",
+          "signature": "public createSummary21(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "updateSummary22",
+          "signature": "public updateSummary22(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "deleteSummary23",
+          "signature": "public deleteSummary23(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "validateSummary24",
+          "signature": "public validateSummary24(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "processSummary25",
+          "signature": "private processSummary25(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "handleSummary26",
+          "signature": "public handleSummary26(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "buildSummary27",
+          "signature": "public buildSummary27(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "calculateSummary28",
+          "signature": "public calculateSummary28(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "syncSummary29",
+          "signature": "public syncSummary29(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "getDetail30",
+          "signature": "private getDetail30(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "createDetail31",
+          "signature": "public createDetail31(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "updateDetail32",
+          "signature": "public updateDetail32(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "deleteDetail33",
+          "signature": "public deleteDetail33(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "validateDetail34",
+          "signature": "public validateDetail34(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "processDetail35",
+          "signature": "private processDetail35(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "handleDetail36",
+          "signature": "public handleDetail36(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "buildDetail37",
+          "signature": "public buildDetail37(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "calculateDetail38",
+          "signature": "public calculateDetail38(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "syncDetail39",
+          "signature": "public syncDetail39(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignAdPlatformCallout",
+      "type": "ApexClass",
+      "path": "classes/CampaignAdPlatformCallout.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.352Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        }
+      ],
+      "methods": [
+        {
+          "name": "pushCampaigns",
+          "signature": "public pushCampaigns(Set<Id> campaignRequestIds)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "CampaignRequest__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "CampaignSyncService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "CampaignMetricsBatch",
+      "type": "ApexClass",
+      "path": "classes/CampaignMetricsBatch.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.355Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        },
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [
+        {
+          "name": "execute",
+          "signature": "public execute(Database.BatchableContext bc, List<CampaignMetric__c> scope)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "finish",
+          "signature": "public finish(Database.BatchableContext bc)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "CampaignMetric__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignMetric__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignRequestTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/CampaignRequestTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.340Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "handleAfterUpdate",
+          "signature": "public handleAfterUpdate(List<CampaignRequest__c> newRequests, Map<Id, CampaignRequest__c> oldMap)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "CampaignSyncService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "CampaignRequestTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "CampaignRequestTriggerHandlerTest",
+      "type": "ApexClass",
+      "path": "classes/CampaignRequestTriggerHandlerTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.357Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "CampaignRequest__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignSyncService",
+      "type": "ApexClass",
+      "path": "classes/CampaignSyncService.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.344Z",
+      "isTestClass": false,
+      "coverage": 85,
+      "health": "good",
+      "quality": "High",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        }
+      ],
+      "methods": [
+        {
+          "name": "syncToAdPlatform",
+          "signature": "public syncToAdPlatform(List<CampaignRequest__c> campaigns)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "getCampaignMetrics",
+          "signature": "public getCampaignMetrics(Id campaignRequestId)",
+          "auraEnabled": true,
+          "future": false,
+          "usedIn": [
+            {
+              "name": "campaignPerformance",
+              "relationship": "wire_adapter"
+            }
+          ]
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "CampaignAdPlatformCallout",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignMetric__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "CampaignRequestTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignSyncServiceTest",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "campaignPerformance",
+          "type": "LightningComponentBundle",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "CampaignSyncServiceTest",
+      "type": "ApexClass",
+      "path": "classes/CampaignSyncServiceTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.359Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "CampaignSyncService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignRequest__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "CampaignMetric__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "ContractExpiryBatch",
+      "type": "ApexClass",
+      "path": "classes/ContractExpiryBatch.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.460Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        }
+      ],
+      "methods": [
+        {
+          "name": "execute",
+          "signature": "public execute(Database.BatchableContext bc, List<VendorContract__c> scope)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "finish",
+          "signature": "public finish(Database.BatchableContext bc)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "ContractRenewalService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "VendorContract__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "ContractRenewalService",
+      "type": "ApexClass",
+      "path": "classes/ContractRenewalService.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.457Z",
+      "isTestClass": false,
+      "coverage": 85,
+      "health": "good",
+      "quality": "High",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        }
+      ],
+      "methods": [
+        {
+          "name": "flagUpcomingExpiry",
+          "signature": "public flagUpcomingExpiry(List<VendorContract__c> contracts)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "getExpiringContracts",
+          "signature": "public getExpiringContracts()",
+          "auraEnabled": true,
+          "future": false,
+          "usedIn": [
+            {
+              "name": "vendorContracts",
+              "relationship": "wire_adapter"
+            }
+          ]
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "VendorContract__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "ContractExpiryBatch",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "ContractRenewalServiceTest",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "CrossModuleReconciliationAndAuditTrailSynchronizationServiceImplementation",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "VendorContractTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "VendorRestResource",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "vendorContracts",
+          "type": "LightningComponentBundle",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "ContractRenewalServiceTest",
+      "type": "ApexClass",
+      "path": "classes/ContractRenewalServiceTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.465Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "ContractRenewalService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "Vendor__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CrossModuleReconciliationAndAuditTrailSynchronizationServiceImplementation",
+      "type": "ApexClass",
+      "path": "classes/CrossModuleReconciliationAndAuditTrailSynchronizationServiceImplementation.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T14:08:52.577Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "execute",
+          "signature": "public execute(SchedulableContext sc)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "reconcileInvoicesAndContracts",
+          "signature": "public reconcileInvoicesAndContracts()",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "ContractRenewalService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "DeprecatedLegacyHelper",
+      "type": "ApexClass",
+      "path": "classes/DeprecatedLegacyHelper.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T14:08:52.580Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "formatLegacyCode",
+          "signature": "public formatLegacyCode(String input)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "EmptyPlaceholderTest",
+      "type": "ApexClass",
+      "path": "classes/EmptyPlaceholderTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T14:08:52.582Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "InventoryRestResource",
+      "type": "ApexClass",
+      "path": "classes/InventoryRestResource.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.265Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "getLowStockProducts",
+          "signature": "global getLowStockProducts()",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "InventoryService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "InventoryService",
+      "type": "ApexClass",
+      "path": "classes/InventoryService.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.259Z",
+      "isTestClass": false,
+      "coverage": 85,
+      "health": "good",
+      "quality": "High",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        }
+      ],
+      "methods": [
+        {
+          "name": "flagLowStock",
+          "signature": "public flagLowStock(List<Product__c> products)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "getLowStockProducts",
+          "signature": "public getLowStockProducts()",
+          "auraEnabled": true,
+          "future": false,
+          "usedIn": [
+            {
+              "name": "inventoryDashboard",
+              "relationship": "wire_adapter"
+            }
+          ]
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "LowStockAlertQueueable",
+          "type": "ApexClass",
+          "relationship": "constructs",
+          "confidence": "High"
+        },
+        {
+          "name": "Product__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "InventoryRestResource",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "InventoryServiceTest",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "LowStockCheckBatch",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "ProductTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "inventoryDashboard",
+          "type": "LightningComponentBundle",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "InventoryServiceTest",
+      "type": "ApexClass",
+      "path": "classes/InventoryServiceTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.269Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "InventoryService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "InvoiceOverdueBatch",
+      "type": "ApexClass",
+      "path": "classes/InvoiceOverdueBatch.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.409Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        },
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [
+        {
+          "name": "execute",
+          "signature": "public execute(Database.BatchableContext bc, List<Invoice__c> scope)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "finish",
+          "signature": "public finish(Database.BatchableContext bc)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "InvoiceReminderQueueable",
+      "type": "ApexClass",
+      "path": "classes/InvoiceReminderQueueable.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.419Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        }
+      ],
+      "methods": [
+        {
+          "name": "execute",
+          "signature": "public execute(QueueableContext context)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "InvoiceService",
+          "type": "ApexClass",
+          "relationship": "constructs",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "InvoiceService",
+      "type": "ApexClass",
+      "path": "classes/InvoiceService.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.399Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        },
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [
+        {
+          "name": "queueReminders",
+          "signature": "public queueReminders(List<Invoice__c> invoices)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "applyPayment",
+          "signature": "public applyPayment(Payment__c payment)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "getOpenInvoices",
+          "signature": "public getOpenInvoices()",
+          "auraEnabled": true,
+          "future": false,
+          "usedIn": [
+            {
+              "name": "invoiceSummary",
+              "relationship": "wire_adapter"
+            }
+          ]
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "InvoiceReminderQueueable",
+          "type": "ApexClass",
+          "relationship": "constructs",
+          "confidence": "High"
+        },
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "Payment__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "CrossModuleReconciliationAndAuditTrailSynchronizationServiceImplementation",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "PaymentTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "invoiceSummary",
+          "type": "LightningComponentBundle",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "InvoiceServiceTest",
+      "type": "ApexClass",
+      "path": "classes/InvoiceServiceTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.424Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        },
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Payment__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "InvoiceTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/InvoiceTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.397Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "handleAfterUpdate",
+          "signature": "public handleAfterUpdate(List<Invoice__c> newInvoices, Map<Id, Invoice__c> oldMap)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "InvoiceService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "InvoiceTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "InvoiceTriggerHandlerTest",
+      "type": "ApexClass",
+      "path": "classes/InvoiceTriggerHandlerTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.426Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "LegacyCommentTrapService",
+      "type": "ApexClass",
+      "path": "classes/LegacyCommentTrapService.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T14:08:52.578Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "logDiagnostic",
+          "signature": "public logDiagnostic()",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "LowStockAlertQueueable",
+      "type": "ApexClass",
+      "path": "classes/LowStockAlertQueueable.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.261Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        }
+      ],
+      "methods": [
+        {
+          "name": "execute",
+          "signature": "public execute(QueueableContext context)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "Product__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "InventoryService",
+          "type": "ApexClass",
+          "relationship": "constructs",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "LowStockCheckBatch",
+      "type": "ApexClass",
+      "path": "classes/LowStockCheckBatch.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.263Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        }
+      ],
+      "methods": [
+        {
+          "name": "execute",
+          "signature": "public execute(Database.BatchableContext bc, List<Product__c> scope)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "finish",
+          "signature": "public finish(Database.BatchableContext bc)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "InventoryService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "Product__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
     {
       "name": "OrderNotifier",
       "type": "ApexClass",
       "path": "classes/OrderNotifier.cls",
       "owner": "Platform Engineering",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:00:24.224Z",
       "isTestClass": false,
       "coverage": 40,
       "health": "warn",
@@ -57,7 +1466,7 @@
       "type": "ApexClass",
       "path": "classes/OrderService.cls",
       "owner": "Platform Engineering",
-      "updated": "2026-07-22T18:52:22+05:30",
+      "updated": "2026-07-21T17:00:14.914Z",
       "isTestClass": false,
       "coverage": 40,
       "health": "warn",
@@ -136,7 +1545,7 @@
       "type": "ApexClass",
       "path": "classes/OrderTriggerHandler.cls",
       "owner": "Platform Engineering",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:00:12.501Z",
       "isTestClass": false,
       "coverage": 40,
       "health": "warn",
@@ -174,7 +1583,7 @@
       "type": "ApexClass",
       "path": "classes/OrderTriggerHandlerTest.cls",
       "owner": "Platform Engineering",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:00:26.523Z",
       "isTestClass": true,
       "coverage": null,
       "health": "n/a",
@@ -216,11 +1625,623 @@
       "purpose": null
     },
     {
+      "name": "PaymentGatewayService",
+      "type": "ApexClass",
+      "path": "classes/PaymentGatewayService.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.405Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "confirmSettlement",
+          "signature": "public confirmSettlement(List<Payment__c> payments)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "PaymentTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "PaymentTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/PaymentTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.401Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "handleAfterInsert",
+          "signature": "public handleAfterInsert(List<Payment__c> payments)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "InvoiceService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "PaymentGatewayService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "PaymentTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "ProductAuditTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/ProductAuditTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T14:08:52.573Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "handleAfterUpdate",
+          "signature": "public handleAfterUpdate(List<Product__c> newProducts, Map<Id, Product__c> oldMap)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "ProductAuditTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "ProductTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/ProductTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.256Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "handleBeforeUpdate",
+          "signature": "public handleBeforeUpdate(List<Product__c> newProducts, Map<Id, Product__c> oldMap)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "InventoryService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "ProductTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "ProductTriggerHandlerTest",
+      "type": "ApexClass",
+      "path": "classes/ProductTriggerHandlerTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.267Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Warehouse__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Product__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketCommentTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/SupportTicketCommentTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.305Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "handleAfterInsert",
+          "signature": "public handleAfterInsert(List<SupportTicketComment__c> comments)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "SupportTicketCommentTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/SupportTicketTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.297Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "handleAfterInsert",
+          "signature": "public handleAfterInsert(List<SupportTicket__c> newTickets)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "handleAfterUpdate",
+          "signature": "public handleAfterUpdate(List<SupportTicket__c> newTickets, Map<Id, SupportTicket__c> oldMap)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "TicketAssignmentService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "SupportTicketTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketTriggerHandlerTest",
+      "type": "ApexClass",
+      "path": "classes/SupportTicketTriggerHandlerTest.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.308Z",
+      "isTestClass": true,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        },
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "TicketAssignmentService",
+      "type": "ApexClass",
+      "path": "classes/TicketAssignmentService.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.299Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        },
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [
+        {
+          "name": "assignOwners",
+          "signature": "public assignOwners(List<SupportTicket__c> tickets)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "notifyEscalationTeam",
+          "signature": "public notifyEscalationTeam(List<SupportTicket__c> tickets)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        },
+        {
+          "name": "getOpenTickets",
+          "signature": "public getOpenTickets()",
+          "auraEnabled": true,
+          "future": false,
+          "usedIn": [
+            {
+              "name": "ticketQueue",
+              "relationship": "wire_adapter"
+            }
+          ]
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "SupportTicketTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "TicketEscalationSchedulable",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "ticketQueue",
+          "type": "LightningComponentBundle",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "TicketEscalationSchedulable",
+      "type": "ApexClass",
+      "path": "classes/TicketEscalationSchedulable.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.302Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [
+        {
+          "severity": "warning",
+          "label": "No USER_MODE on SOQL",
+          "note": "SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results."
+        },
+        {
+          "severity": "warning",
+          "label": "No CRUD check on DML",
+          "note": "DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access."
+        }
+      ],
+      "methods": [
+        {
+          "name": "execute",
+          "signature": "public execute(SchedulableContext sc)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "TicketAssignmentService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "VendorContractTriggerHandler",
+      "type": "ApexClass",
+      "path": "classes/VendorContractTriggerHandler.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.454Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "handleAfterSave",
+          "signature": "public handleAfterSave(List<VendorContract__c> contracts)",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "ContractRenewalService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "VendorContractTrigger",
+          "type": "ApexTrigger",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "VendorRestResource",
+      "type": "ApexClass",
+      "path": "classes/VendorRestResource.cls",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.462Z",
+      "isTestClass": false,
+      "coverage": 40,
+      "health": "warn",
+      "quality": "Low",
+      "securityFindings": [],
+      "methods": [
+        {
+          "name": "getExpiringContracts",
+          "signature": "global getExpiringContracts()",
+          "auraEnabled": false,
+          "future": false,
+          "usedIn": []
+        }
+      ],
+      "dependsOn": [
+        {
+          "name": "ContractRenewalService",
+          "type": "ApexClass",
+          "relationship": "calls_method",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Campaign_Budget_Approval",
+      "type": "Flow",
+      "path": "flows/Campaign_Budget_Approval.flow-meta.xml",
+      "owner": "Automation Team",
+      "updated": "2026-07-22T13:53:53.363Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "CampaignRequest__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Contract_Renewal_Reminder",
+      "type": "Flow",
+      "path": "flows/Contract_Renewal_Reminder.flow-meta.xml",
+      "owner": "Automation Team",
+      "updated": "2026-07-22T13:53:53.468Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "VendorContract__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Invoice_Overdue_Reminder",
+      "type": "Flow",
+      "path": "flows/Invoice_Overdue_Reminder.flow-meta.xml",
+      "owner": "Automation Team",
+      "updated": "2026-07-22T13:53:53.431Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Low_Stock_Notification",
+      "type": "Flow",
+      "path": "flows/Low_Stock_Notification.flow-meta.xml",
+      "owner": "Automation Team",
+      "updated": "2026-07-22T13:53:53.271Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Product__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Nightly_Cleanup_Utility",
+      "type": "Flow",
+      "path": "flows/Nightly_Cleanup_Utility.flow-meta.xml",
+      "owner": "Automation Team",
+      "updated": "2026-07-22T14:08:52.587Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
       "name": "Order_Confirmation_Email",
       "type": "Flow",
       "path": "flows/Order_Confirmation_Email.flow-meta.xml",
       "owner": "Automation Team",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:01:27.804Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -239,11 +2260,103 @@
       "purpose": null
     },
     {
+      "name": "Ticket_Escalation_Notification",
+      "type": "Flow",
+      "path": "flows/Ticket_Escalation_Notification.flow-meta.xml",
+      "owner": "Automation Team",
+      "updated": "2026-07-22T13:53:53.311Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "campaignPerformance",
+      "type": "LightningComponentBundle",
+      "path": "lwc/campaignPerformance",
+      "owner": "Frontend Guild",
+      "updated": "2026-07-22T13:53:53.366Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "CampaignSyncService",
+          "type": "ApexClass",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "inventoryDashboard",
+      "type": "LightningComponentBundle",
+      "path": "lwc/inventoryDashboard",
+      "owner": "Frontend Guild",
+      "updated": "2026-07-22T13:53:53.274Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "InventoryService",
+          "type": "ApexClass",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "invoiceSummary",
+      "type": "LightningComponentBundle",
+      "path": "lwc/invoiceSummary",
+      "owner": "Frontend Guild",
+      "updated": "2026-07-22T13:53:53.432Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "InvoiceService",
+          "type": "ApexClass",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
       "name": "orderSummary",
       "type": "LightningComponentBundle",
       "path": "lwc/orderSummary",
       "owner": "Frontend Guild",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:01:36.849Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -262,11 +2375,545 @@
       "purpose": null
     },
     {
+      "name": "staticBrandingBanner",
+      "type": "LightningComponentBundle",
+      "path": "lwc/staticBrandingBanner",
+      "owner": "Frontend Guild",
+      "updated": "2026-07-22T14:08:52.588Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "ticketQueue",
+      "type": "LightningComponentBundle",
+      "path": "lwc/ticketQueue",
+      "owner": "Frontend Guild",
+      "updated": "2026-07-22T13:53:53.312Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "TicketAssignmentService",
+          "type": "ApexClass",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "vendorContracts",
+      "type": "LightningComponentBundle",
+      "path": "lwc/vendorContracts",
+      "owner": "Frontend Guild",
+      "updated": "2026-07-22T13:53:53.470Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "ContractRenewalService",
+          "type": "ApexClass",
+          "relationship": "wire_adapter",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignMetric__c",
+      "type": "CustomObject",
+      "path": "objects/CampaignMetric__c/CampaignMetric__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.331Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "CampaignRequest__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "CampaignMetricsBatch",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignMetricsBatch",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "CampaignSyncService",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignSyncServiceTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "CampaignMetric__c.CampaignRequest__c",
+      "type": "CustomField",
+      "path": "objects/CampaignMetric__c/fields/CampaignRequest__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.332Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignMetric__c.Clicks__c",
+      "type": "CustomField",
+      "path": "objects/CampaignMetric__c/fields/Clicks__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.338Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignMetric__c.Impressions__c",
+      "type": "CustomField",
+      "path": "objects/CampaignMetric__c/fields/Impressions__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.336Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignRequest__c",
+      "type": "CustomObject",
+      "path": "objects/CampaignRequest__c/CampaignRequest__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.316Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "CampaignAdPlatformCallout",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignRequestTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "CampaignSyncServiceTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Campaign_Budget_Approval",
+          "type": "Flow",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignMetric__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignRequestTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "CampaignRequest__c.Budget__c",
+      "type": "CustomField",
+      "path": "objects/CampaignRequest__c/fields/Budget__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.326Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignRequest__c.Campaign_Name__c",
+      "type": "CustomField",
+      "path": "objects/CampaignRequest__c/fields/Campaign_Name__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.318Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignRequest__c.Status__c",
+      "type": "CustomField",
+      "path": "objects/CampaignRequest__c/fields/Status__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.320Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "CampaignRequest__c.Target_Audience__c",
+      "type": "CustomField",
+      "path": "objects/CampaignRequest__c/fields/Target_Audience__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.328Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Invoice__c.Billing_Email__c",
+      "type": "CustomField",
+      "path": "objects/Invoice__c/fields/Billing_Email__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.382Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Invoice__c.Due_Date__c",
+      "type": "CustomField",
+      "path": "objects/Invoice__c/fields/Due_Date__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.380Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Invoice__c.Status__c",
+      "type": "CustomField",
+      "path": "objects/Invoice__c/fields/Status__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.375Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Invoice__c.Total_Amount__c",
+      "type": "CustomField",
+      "path": "objects/Invoice__c/fields/Total_Amount__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.377Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Invoice__c",
+      "type": "CustomObject",
+      "path": "objects/Invoice__c/Invoice__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.371Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "InvoiceOverdueBatch",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceOverdueBatch",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "InvoiceReminderQueueable",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceService",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceService",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "InvoiceServiceTest",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceServiceTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "InvoiceTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Invoice_Overdue_Reminder",
+          "type": "Flow",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "Payment__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "Invoice__c.Recurring_Invoice",
+      "type": "RecordType",
+      "path": "objects/Invoice__c/recordTypes/Recurring_Invoice.recordType-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T14:08:52.570Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Invoice__c.Standard_Invoice",
+      "type": "RecordType",
+      "path": "objects/Invoice__c/recordTypes/Standard_Invoice.recordType-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T14:08:52.569Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Confirmed__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Confirmed__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:17.544Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Order__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Order__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:05.218Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Price__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Price__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:12.445Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Product_Name__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Product_Name__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:10.166Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Order_Line__c.Quantity__c",
+      "type": "CustomField",
+      "path": "objects/Order_Line__c/fields/Quantity__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-21T17:01:11.330Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
       "name": "Order_Line__c",
       "type": "CustomObject",
       "path": "objects/Order_Line__c/Order_Line__c.object-meta.xml",
       "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:01:04.063Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -310,11 +2957,11 @@
       "purpose": null
     },
     {
-      "name": "Order_Line__c.Confirmed__c",
+      "name": "Order__c.Customer_Email__c",
       "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Confirmed__c.field-meta.xml",
+      "path": "objects/Order__c/fields/Customer_Email__c.field-meta.xml",
       "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:01:02.973Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -326,11 +2973,11 @@
       "purpose": null
     },
     {
-      "name": "Order_Line__c.Order__c",
+      "name": "Order__c.Status__c",
       "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Order__c.field-meta.xml",
+      "path": "objects/Order__c/fields/Status__c.field-meta.xml",
       "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:00:56.680Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -342,43 +2989,11 @@
       "purpose": null
     },
     {
-      "name": "Order_Line__c.Price__c",
+      "name": "Order__c.Total_Amount__c",
       "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Price__c.field-meta.xml",
+      "path": "objects/Order__c/fields/Total_Amount__c.field-meta.xml",
       "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
-      "isTestClass": false,
-      "coverage": null,
-      "health": "n/a",
-      "quality": null,
-      "securityFindings": [],
-      "methods": [],
-      "dependsOn": [],
-      "usedBy": [],
-      "purpose": null
-    },
-    {
-      "name": "Order_Line__c.Product_Name__c",
-      "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Product_Name__c.field-meta.xml",
-      "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
-      "isTestClass": false,
-      "coverage": null,
-      "health": "n/a",
-      "quality": null,
-      "securityFindings": [],
-      "methods": [],
-      "dependsOn": [],
-      "usedBy": [],
-      "purpose": null
-    },
-    {
-      "name": "Order_Line__c.Quantity__c",
-      "type": "CustomField",
-      "path": "objects/Order_Line__c/fields/Quantity__c.field-meta.xml",
-      "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:00:58.105Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -394,7 +3009,7 @@
       "type": "CustomObject",
       "path": "objects/Order__c/Order__c.object-meta.xml",
       "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:00:54.444Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -431,11 +3046,11 @@
       "purpose": null
     },
     {
-      "name": "Order__c.Customer_Email__c",
+      "name": "Payment__c.Amount__c",
       "type": "CustomField",
-      "path": "objects/Order__c/fields/Customer_Email__c.field-meta.xml",
+      "path": "objects/Payment__c/fields/Amount__c.field-meta.xml",
       "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-22T13:53:53.388Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -447,11 +3062,11 @@
       "purpose": null
     },
     {
-      "name": "Order__c.Status__c",
+      "name": "Payment__c.Invoice__c",
       "type": "CustomField",
-      "path": "objects/Order__c/fields/Status__c.field-meta.xml",
+      "path": "objects/Payment__c/fields/Invoice__c.field-meta.xml",
       "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-22T13:53:53.387Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -463,11 +3078,11 @@
       "purpose": null
     },
     {
-      "name": "Order__c.Total_Amount__c",
+      "name": "Payment__c.Payment_Method__c",
       "type": "CustomField",
-      "path": "objects/Order__c/fields/Total_Amount__c.field-meta.xml",
+      "path": "objects/Payment__c/fields/Payment_Method__c.field-meta.xml",
       "owner": "Data Architecture",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-22T13:53:53.391Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -475,6 +3090,731 @@
       "securityFindings": [],
       "methods": [],
       "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Payment__c",
+      "type": "CustomObject",
+      "path": "objects/Payment__c/Payment__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.384Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "InvoiceService",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceServiceTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "PaymentTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "Product__c.Price__c",
+      "type": "CustomField",
+      "path": "objects/Product__c/fields/Price__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.243Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Product__c.Primary_Warehouse__c",
+      "type": "CustomField",
+      "path": "objects/Product__c/fields/Primary_Warehouse__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.247Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Product__c.QuantityOnHand__c",
+      "type": "CustomField",
+      "path": "objects/Product__c/fields/QuantityOnHand__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.245Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Product__c.ReorderThreshold__c",
+      "type": "CustomField",
+      "path": "objects/Product__c/fields/ReorderThreshold__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.246Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Product__c.SKU__c",
+      "type": "CustomField",
+      "path": "objects/Product__c/fields/SKU__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.241Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Product__c.Tags__c",
+      "type": "CustomField",
+      "path": "objects/Product__c/fields/Tags__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T14:08:52.592Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Product__c",
+      "type": "CustomObject",
+      "path": "objects/Product__c/Product__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.238Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Warehouse__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "InventoryService",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "LowStockAlertQueueable",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "LowStockCheckBatch",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "ProductTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Low_Stock_Notification",
+          "type": "Flow",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "ProductAuditTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "ProductTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketComment__c.Author__c",
+      "type": "CustomField",
+      "path": "objects/SupportTicketComment__c/fields/Author__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.292Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketComment__c.Comment_Text__c",
+      "type": "CustomField",
+      "path": "objects/SupportTicketComment__c/fields/Comment_Text__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.290Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketComment__c.SupportTicket__c",
+      "type": "CustomField",
+      "path": "objects/SupportTicketComment__c/fields/SupportTicket__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.289Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketComment__c",
+      "type": "CustomObject",
+      "path": "objects/SupportTicketComment__c/SupportTicketComment__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.287Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "SupportTicketCommentTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicket__c.Customer_Email__c",
+      "type": "CustomField",
+      "path": "objects/SupportTicket__c/fields/Customer_Email__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.285Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicket__c.Priority__c",
+      "type": "CustomField",
+      "path": "objects/SupportTicket__c/fields/Priority__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.284Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicket__c.Status__c",
+      "type": "CustomField",
+      "path": "objects/SupportTicket__c/fields/Status__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.281Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicket__c.Subject__c",
+      "type": "CustomField",
+      "path": "objects/SupportTicket__c/fields/Subject__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.280Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicket__c",
+      "type": "CustomObject",
+      "path": "objects/SupportTicket__c/SupportTicket__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.279Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "SupportTicketTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicketTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "TicketAssignmentService",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "TicketAssignmentService",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "TicketEscalationSchedulable",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "TicketEscalationSchedulable",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Ticket_Escalation_Notification",
+          "type": "Flow",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicketComment__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicketTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "VendorContract__c.Contract_Value__c",
+      "type": "CustomField",
+      "path": "objects/VendorContract__c/fields/Contract_Value__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.450Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "VendorContract__c.End_Date__c",
+      "type": "CustomField",
+      "path": "objects/VendorContract__c/fields/End_Date__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.451Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "VendorContract__c.Vendor__c",
+      "type": "CustomField",
+      "path": "objects/VendorContract__c/fields/Vendor__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.447Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "VendorContract__c",
+      "type": "CustomObject",
+      "path": "objects/VendorContract__c/VendorContract__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.446Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Vendor__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [
+        {
+          "name": "ContractExpiryBatch",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "ContractRenewalService",
+          "type": "ApexClass",
+          "relationship": "soql_read",
+          "confidence": "High"
+        },
+        {
+          "name": "Contract_Renewal_Reminder",
+          "type": "Flow",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "VendorContractTrigger",
+          "type": "ApexTrigger",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "Vendor__c.Contact_Email__c",
+      "type": "CustomField",
+      "path": "objects/Vendor__c/fields/Contact_Email__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.441Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Vendor__c.Rating__c",
+      "type": "CustomField",
+      "path": "objects/Vendor__c/fields/Rating__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.445Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Vendor__c.Status__c",
+      "type": "CustomField",
+      "path": "objects/Vendor__c/fields/Status__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.440Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Vendor__c",
+      "type": "CustomObject",
+      "path": "objects/Vendor__c/Vendor__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.437Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "ContractRenewalServiceTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "VendorContract__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "Warehouse__c.Capacity__c",
+      "type": "CustomField",
+      "path": "objects/Warehouse__c/fields/Capacity__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.253Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Warehouse__c.Location__c",
+      "type": "CustomField",
+      "path": "objects/Warehouse__c/fields/Location__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.251Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Warehouse__c.Manager_Name__c",
+      "type": "CustomField",
+      "path": "objects/Warehouse__c/fields/Manager_Name__c.field-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T14:08:52.593Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "Warehouse__c",
+      "type": "CustomObject",
+      "path": "objects/Warehouse__c/Warehouse__c.object-meta.xml",
+      "owner": "Data Architecture",
+      "updated": "2026-07-22T13:53:53.249Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [],
+      "usedBy": [
+        {
+          "name": "ProductTriggerHandlerTest",
+          "type": "ApexClass",
+          "relationship": "dml_write",
+          "confidence": "Medium"
+        },
+        {
+          "name": "Product__c",
+          "type": "CustomObject",
+          "relationship": "references_object",
+          "confidence": "High"
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "CampaignRequestTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/CampaignRequestTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.339Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "CampaignRequest__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "CampaignRequestTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "InvoiceTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/InvoiceTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.392Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Invoice__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "InvoiceTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
       "usedBy": [],
       "purpose": null
     },
@@ -483,7 +3823,7 @@
       "type": "ApexTrigger",
       "path": "triggers/OrderTrigger.trigger",
       "owner": "Platform Engineering",
-      "updated": "2026-07-21T23:12:45+05:30",
+      "updated": "2026-07-21T17:00:33.010Z",
       "isTestClass": false,
       "coverage": null,
       "health": "n/a",
@@ -506,9 +3846,291 @@
       ],
       "usedBy": [],
       "purpose": null
+    },
+    {
+      "name": "PaymentTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/PaymentTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.394Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Payment__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "PaymentTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "ProductAuditTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/ProductAuditTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T14:08:52.571Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Product__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "ProductAuditTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "ProductTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/ProductTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.254Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "Product__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "ProductTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketCommentTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/SupportTicketCommentTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.294Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "SupportTicketComment__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicketCommentTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "SupportTicketTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/SupportTicketTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.292Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "SupportTicket__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "SupportTicketTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
+    },
+    {
+      "name": "VendorContractTrigger",
+      "type": "ApexTrigger",
+      "path": "triggers/VendorContractTrigger.trigger",
+      "owner": "Platform Engineering",
+      "updated": "2026-07-22T13:53:53.452Z",
+      "isTestClass": false,
+      "coverage": null,
+      "health": "n/a",
+      "quality": null,
+      "securityFindings": [],
+      "methods": [],
+      "dependsOn": [
+        {
+          "name": "VendorContract__c",
+          "type": "CustomObject",
+          "relationship": "trigger_on",
+          "confidence": "High"
+        },
+        {
+          "name": "VendorContractTriggerHandler",
+          "type": "ApexClass",
+          "relationship": "handled_by",
+          "confidence": "High"
+        }
+      ],
+      "usedBy": [],
+      "purpose": null
     }
   ],
   "schemas": {
+    "CampaignMetric__c": {
+      "label": "Campaign Metric",
+      "apiName": "CampaignMetric__c",
+      "fields": [
+        {
+          "label": "Campaign Request",
+          "apiName": "CampaignRequest__c",
+          "type": "MasterDetail",
+          "required": true
+        },
+        {
+          "label": "Clicks",
+          "apiName": "Clicks__c",
+          "type": "Number",
+          "required": false
+        },
+        {
+          "label": "Impressions",
+          "apiName": "Impressions__c",
+          "type": "Number",
+          "required": false
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "CampaignRequest__c",
+          "direction": "references"
+        }
+      ]
+    },
+    "CampaignRequest__c": {
+      "label": "Campaign Request",
+      "apiName": "CampaignRequest__c",
+      "fields": [
+        {
+          "label": "Budget",
+          "apiName": "Budget__c",
+          "type": "Currency",
+          "required": false
+        },
+        {
+          "label": "Campaign Name",
+          "apiName": "Campaign_Name__c",
+          "type": "Text",
+          "required": false
+        },
+        {
+          "label": "Status",
+          "apiName": "Status__c",
+          "type": "Picklist",
+          "required": false
+        },
+        {
+          "label": "Target Audience",
+          "apiName": "Target_Audience__c",
+          "type": "Text",
+          "required": false
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "CampaignMetric__c",
+          "direction": "referenced by"
+        }
+      ]
+    },
+    "Invoice__c": {
+      "label": "Invoice",
+      "apiName": "Invoice__c",
+      "fields": [
+        {
+          "label": "Billing Email",
+          "apiName": "Billing_Email__c",
+          "type": "Email",
+          "required": false
+        },
+        {
+          "label": "Due Date",
+          "apiName": "Due_Date__c",
+          "type": "Date",
+          "required": false
+        },
+        {
+          "label": "Status",
+          "apiName": "Status__c",
+          "type": "Picklist",
+          "required": false
+        },
+        {
+          "label": "Total Amount",
+          "apiName": "Total_Amount__c",
+          "type": "Currency",
+          "required": false
+        }
+      ],
+      "recordTypes": [
+        "Recurring Invoice",
+        "Standard Invoice"
+      ],
+      "relationships": [
+        {
+          "name": "Payment__c",
+          "direction": "referenced by"
+        }
+      ]
+    },
     "Order_Line__c": {
       "label": "Order Line",
       "apiName": "Order_Line__c",
@@ -582,11 +4204,345 @@
           "direction": "referenced by"
         }
       ]
+    },
+    "Payment__c": {
+      "label": "Payment",
+      "apiName": "Payment__c",
+      "fields": [
+        {
+          "label": "Amount",
+          "apiName": "Amount__c",
+          "type": "Currency",
+          "required": false
+        },
+        {
+          "label": "Invoice",
+          "apiName": "Invoice__c",
+          "type": "MasterDetail",
+          "required": true
+        },
+        {
+          "label": "Payment Method",
+          "apiName": "Payment_Method__c",
+          "type": "Picklist",
+          "required": false
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "Invoice__c",
+          "direction": "references"
+        }
+      ]
+    },
+    "Product__c": {
+      "label": "Product",
+      "apiName": "Product__c",
+      "fields": [
+        {
+          "label": "Price",
+          "apiName": "Price__c",
+          "type": "Currency",
+          "required": false
+        },
+        {
+          "label": "Primary Warehouse",
+          "apiName": "Primary_Warehouse__c",
+          "type": "Lookup",
+          "required": false
+        },
+        {
+          "label": "Quantity On Hand",
+          "apiName": "QuantityOnHand__c",
+          "type": "Number",
+          "required": false
+        },
+        {
+          "label": "Reorder Threshold",
+          "apiName": "ReorderThreshold__c",
+          "type": "Number",
+          "required": false
+        },
+        {
+          "label": "SKU",
+          "apiName": "SKU__c",
+          "type": "Text",
+          "required": false
+        },
+        {
+          "label": "Tags",
+          "apiName": "Tags__c",
+          "type": "MultiselectPicklist",
+          "required": false
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "Warehouse__c",
+          "direction": "references"
+        }
+      ]
+    },
+    "SupportTicketComment__c": {
+      "label": "Support Ticket Comment",
+      "apiName": "SupportTicketComment__c",
+      "fields": [
+        {
+          "label": "Author",
+          "apiName": "Author__c",
+          "type": "Text",
+          "required": false
+        },
+        {
+          "label": "Comment Text",
+          "apiName": "Comment_Text__c",
+          "type": "LongTextArea",
+          "required": false
+        },
+        {
+          "label": "Support Ticket",
+          "apiName": "SupportTicket__c",
+          "type": "MasterDetail",
+          "required": true
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "SupportTicket__c",
+          "direction": "references"
+        }
+      ]
+    },
+    "SupportTicket__c": {
+      "label": "Support Ticket",
+      "apiName": "SupportTicket__c",
+      "fields": [
+        {
+          "label": "Customer Email",
+          "apiName": "Customer_Email__c",
+          "type": "Email",
+          "required": false
+        },
+        {
+          "label": "Priority",
+          "apiName": "Priority__c",
+          "type": "Picklist",
+          "required": false
+        },
+        {
+          "label": "Status",
+          "apiName": "Status__c",
+          "type": "Picklist",
+          "required": false
+        },
+        {
+          "label": "Subject",
+          "apiName": "Subject__c",
+          "type": "Text",
+          "required": false
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "SupportTicketComment__c",
+          "direction": "referenced by"
+        }
+      ]
+    },
+    "VendorContract__c": {
+      "label": "Vendor Contract",
+      "apiName": "VendorContract__c",
+      "fields": [
+        {
+          "label": "Contract Value",
+          "apiName": "Contract_Value__c",
+          "type": "Currency",
+          "required": false
+        },
+        {
+          "label": "End Date",
+          "apiName": "End_Date__c",
+          "type": "Date",
+          "required": false
+        },
+        {
+          "label": "Vendor",
+          "apiName": "Vendor__c",
+          "type": "MasterDetail",
+          "required": true
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "Vendor__c",
+          "direction": "references"
+        }
+      ]
+    },
+    "Vendor__c": {
+      "label": "Vendor",
+      "apiName": "Vendor__c",
+      "fields": [
+        {
+          "label": "Contact Email",
+          "apiName": "Contact_Email__c",
+          "type": "Email",
+          "required": false
+        },
+        {
+          "label": "Rating",
+          "apiName": "Rating__c",
+          "type": "Number",
+          "required": false
+        },
+        {
+          "label": "Status",
+          "apiName": "Status__c",
+          "type": "Picklist",
+          "required": false
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "VendorContract__c",
+          "direction": "referenced by"
+        }
+      ]
+    },
+    "Warehouse__c": {
+      "label": "Warehouse",
+      "apiName": "Warehouse__c",
+      "fields": [
+        {
+          "label": "Capacity",
+          "apiName": "Capacity__c",
+          "type": "Number",
+          "required": false
+        },
+        {
+          "label": "Location",
+          "apiName": "Location__c",
+          "type": "Text",
+          "required": false
+        },
+        {
+          "label": "Manager Name",
+          "apiName": "Manager_Name__c",
+          "type": "Text",
+          "required": true
+        }
+      ],
+      "recordTypes": [],
+      "relationships": [
+        {
+          "name": "Product__c",
+          "direction": "referenced by"
+        }
+      ]
     }
   },
   "features": [
     {
+      "slug": "feature-2",
+      "title": "Invoice Management",
+      "members": [
+        "ContractExpiryBatch",
+        "ContractRenewalService",
+        "VendorContract__c",
+        "ContractRenewalServiceTest",
+        "CrossModuleReconciliationAndAuditTrailSynchronizationServiceImplementation",
+        "VendorContractTriggerHandler",
+        "VendorRestResource",
+        "vendorContracts",
+        "Contract_Renewal_Reminder",
+        "Vendor__c",
+        "VendorContractTrigger",
+        "InvoiceService",
+        "InvoiceReminderQueueable",
+        "Invoice__c",
+        "Payment__c",
+        "InvoiceTriggerHandler",
+        "PaymentTriggerHandler",
+        "invoiceSummary",
+        "InvoiceOverdueBatch",
+        "InvoiceServiceTest",
+        "InvoiceTriggerHandlerTest",
+        "Invoice_Overdue_Reminder",
+        "InvoiceTrigger",
+        "PaymentTrigger",
+        "PaymentGatewayService"
+      ],
+      "memberCount": 25,
+      "quality": "Low"
+    },
+    {
+      "slug": "feature-3",
+      "title": "Product Management",
+      "members": [
+        "InventoryRestResource",
+        "InventoryService",
+        "LowStockAlertQueueable",
+        "Product__c",
+        "InventoryServiceTest",
+        "LowStockCheckBatch",
+        "ProductTriggerHandler",
+        "inventoryDashboard",
+        "ProductTriggerHandlerTest",
+        "Low_Stock_Notification",
+        "Warehouse__c",
+        "ProductAuditTrigger",
+        "ProductTrigger",
+        "ProductAuditTriggerHandler"
+      ],
+      "memberCount": 14,
+      "quality": "Low"
+    },
+    {
       "slug": "feature-1",
+      "title": "Campaign Request Management",
+      "members": [
+        "CampaignAdPlatformCallout",
+        "CampaignRequest__c",
+        "CampaignSyncService",
+        "CampaignRequestTriggerHandlerTest",
+        "CampaignSyncServiceTest",
+        "Campaign_Budget_Approval",
+        "CampaignMetric__c",
+        "CampaignRequestTrigger",
+        "CampaignRequestTriggerHandler",
+        "campaignPerformance",
+        "CampaignMetricsBatch"
+      ],
+      "memberCount": 11,
+      "quality": "Medium"
+    },
+    {
+      "slug": "feature-5",
+      "title": "Support Ticket Management",
+      "members": [
+        "SupportTicketCommentTriggerHandler",
+        "SupportTicketCommentTrigger",
+        "SupportTicketComment__c",
+        "SupportTicket__c",
+        "SupportTicketTriggerHandlerTest",
+        "TicketAssignmentService",
+        "TicketEscalationSchedulable",
+        "Ticket_Escalation_Notification",
+        "SupportTicketTrigger",
+        "SupportTicketTriggerHandler",
+        "ticketQueue"
+      ],
+      "memberCount": 11,
+      "quality": "Low"
+    },
+    {
+      "slug": "feature-4",
       "title": "Order Management",
       "members": [
         "OrderNotifier",

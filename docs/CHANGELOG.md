@@ -2,42 +2,83 @@
 
 Generated from force-app metadata changes on every push to main. Newest first (each release is prepended).
 
-## v2 — 2026-07-22 — 2243050
-
-**Contributors:** JayOnBlue
-
-### Added
-
-- **ApexClass** `OrderNotifier`
-- **ApexClass** `OrderService`
-- **ApexClass** `OrderTriggerHandler`
-- **ApexClass** `OrderTriggerHandlerTest`
-- **Flow** `Order_Confirmation_Email`
-- **LightningComponentBundle** `orderSummary`
-- **CustomObject** `Order_Line__c`
-- **CustomField** `Order_Line__c.Confirmed__c`
-- **CustomField** `Order_Line__c.Order__c`
-- **CustomField** `Order_Line__c.Price__c`
-- **CustomField** `Order_Line__c.Product_Name__c`
-- **CustomField** `Order_Line__c.Quantity__c`
-- **CustomObject** `Order__c`
-- **CustomField** `Order__c.Customer_Email__c`
-- **CustomField** `Order__c.Status__c`
-- **CustomField** `Order__c.Total_Amount__c`
-- **ApexTrigger** `OrderTrigger`
-
 ## v1 — 2026-07-22
 
 **Contributors:** local
 
 ### Added
 
+- **ApexClass** `BulkDataProcessingUtility`
+- **ApexClass** `CampaignAdPlatformCallout`
+- **ApexClass** `CampaignMetricsBatch`
+- **ApexClass** `CampaignRequestTriggerHandler`
+- **ApexClass** `CampaignRequestTriggerHandlerTest`
+- **ApexClass** `CampaignSyncService`
+- **ApexClass** `CampaignSyncServiceTest`
+- **ApexClass** `ContractExpiryBatch`
+- **ApexClass** `ContractRenewalService`
+- **ApexClass** `ContractRenewalServiceTest`
+- **ApexClass** `CrossModuleReconciliationAndAuditTrailSynchronizationServiceImplementation`
+- **ApexClass** `DeprecatedLegacyHelper`
+- **ApexClass** `EmptyPlaceholderTest`
+- **ApexClass** `InventoryRestResource`
+- **ApexClass** `InventoryService`
+- **ApexClass** `InventoryServiceTest`
+- **ApexClass** `InvoiceOverdueBatch`
+- **ApexClass** `InvoiceReminderQueueable`
+- **ApexClass** `InvoiceService`
+- **ApexClass** `InvoiceServiceTest`
+- **ApexClass** `InvoiceTriggerHandler`
+- **ApexClass** `InvoiceTriggerHandlerTest`
+- **ApexClass** `LegacyCommentTrapService`
+- **ApexClass** `LowStockAlertQueueable`
+- **ApexClass** `LowStockCheckBatch`
 - **ApexClass** `OrderNotifier`
 - **ApexClass** `OrderService`
 - **ApexClass** `OrderTriggerHandler`
 - **ApexClass** `OrderTriggerHandlerTest`
+- **ApexClass** `PaymentGatewayService`
+- **ApexClass** `PaymentTriggerHandler`
+- **ApexClass** `ProductAuditTriggerHandler`
+- **ApexClass** `ProductTriggerHandler`
+- **ApexClass** `ProductTriggerHandlerTest`
+- **ApexClass** `SupportTicketCommentTriggerHandler`
+- **ApexClass** `SupportTicketTriggerHandler`
+- **ApexClass** `SupportTicketTriggerHandlerTest`
+- **ApexClass** `TicketAssignmentService`
+- **ApexClass** `TicketEscalationSchedulable`
+- **ApexClass** `VendorContractTriggerHandler`
+- **ApexClass** `VendorRestResource`
+- **Flow** `Campaign_Budget_Approval`
+- **Flow** `Contract_Renewal_Reminder`
+- **Flow** `Invoice_Overdue_Reminder`
+- **Flow** `Low_Stock_Notification`
+- **Flow** `Nightly_Cleanup_Utility`
 - **Flow** `Order_Confirmation_Email`
+- **Flow** `Ticket_Escalation_Notification`
+- **LightningComponentBundle** `campaignPerformance`
+- **LightningComponentBundle** `inventoryDashboard`
+- **LightningComponentBundle** `invoiceSummary`
 - **LightningComponentBundle** `orderSummary`
+- **LightningComponentBundle** `staticBrandingBanner`
+- **LightningComponentBundle** `ticketQueue`
+- **LightningComponentBundle** `vendorContracts`
+- **CustomObject** `CampaignMetric__c`
+- **CustomField** `CampaignMetric__c.CampaignRequest__c`
+- **CustomField** `CampaignMetric__c.Clicks__c`
+- **CustomField** `CampaignMetric__c.Impressions__c`
+- **CustomObject** `CampaignRequest__c`
+- **CustomField** `CampaignRequest__c.Budget__c`
+- **CustomField** `CampaignRequest__c.Campaign_Name__c`
+- **CustomField** `CampaignRequest__c.Status__c`
+- **CustomField** `CampaignRequest__c.Target_Audience__c`
+- **CustomField** `Invoice__c.Billing_Email__c`
+- **CustomField** `Invoice__c.Due_Date__c`
+- **CustomField** `Invoice__c.Status__c`
+- **CustomField** `Invoice__c.Total_Amount__c`
+- **CustomObject** `Invoice__c`
+- **RecordType** `Invoice__c.Recurring_Invoice`
+- **RecordType** `Invoice__c.Standard_Invoice`
 - **CustomField** `Order_Line__c.Confirmed__c`
 - **CustomField** `Order_Line__c.Order__c`
 - **CustomField** `Order_Line__c.Price__c`
@@ -48,5 +89,45 @@ Generated from force-app metadata changes on every push to main. Newest first (e
 - **CustomField** `Order__c.Status__c`
 - **CustomField** `Order__c.Total_Amount__c`
 - **CustomObject** `Order__c`
+- **CustomField** `Payment__c.Amount__c`
+- **CustomField** `Payment__c.Invoice__c`
+- **CustomField** `Payment__c.Payment_Method__c`
+- **CustomObject** `Payment__c`
+- **CustomField** `Product__c.Price__c`
+- **CustomField** `Product__c.Primary_Warehouse__c`
+- **CustomField** `Product__c.QuantityOnHand__c`
+- **CustomField** `Product__c.ReorderThreshold__c`
+- **CustomField** `Product__c.SKU__c`
+- **CustomField** `Product__c.Tags__c`
+- **CustomObject** `Product__c`
+- **CustomField** `SupportTicketComment__c.Author__c`
+- **CustomField** `SupportTicketComment__c.Comment_Text__c`
+- **CustomField** `SupportTicketComment__c.SupportTicket__c`
+- **CustomObject** `SupportTicketComment__c`
+- **CustomField** `SupportTicket__c.Customer_Email__c`
+- **CustomField** `SupportTicket__c.Priority__c`
+- **CustomField** `SupportTicket__c.Status__c`
+- **CustomField** `SupportTicket__c.Subject__c`
+- **CustomObject** `SupportTicket__c`
+- **CustomField** `VendorContract__c.Contract_Value__c`
+- **CustomField** `VendorContract__c.End_Date__c`
+- **CustomField** `VendorContract__c.Vendor__c`
+- **CustomObject** `VendorContract__c`
+- **CustomField** `Vendor__c.Contact_Email__c`
+- **CustomField** `Vendor__c.Rating__c`
+- **CustomField** `Vendor__c.Status__c`
+- **CustomObject** `Vendor__c`
+- **CustomField** `Warehouse__c.Capacity__c`
+- **CustomField** `Warehouse__c.Location__c`
+- **CustomField** `Warehouse__c.Manager_Name__c`
+- **CustomObject** `Warehouse__c`
+- **ApexTrigger** `CampaignRequestTrigger`
+- **ApexTrigger** `InvoiceTrigger`
 - **ApexTrigger** `OrderTrigger`
+- **ApexTrigger** `PaymentTrigger`
+- **ApexTrigger** `ProductAuditTrigger`
+- **ApexTrigger** `ProductTrigger`
+- **ApexTrigger** `SupportTicketCommentTrigger`
+- **ApexTrigger** `SupportTicketTrigger`
+- **ApexTrigger** `VendorContractTrigger`
 
