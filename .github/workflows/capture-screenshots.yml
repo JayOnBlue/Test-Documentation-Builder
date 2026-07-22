@@ -66,7 +66,10 @@ jobs:
             echo "::error::Repo secret SF_AUTH_URL is not set. See the comment at the top of this workflow file for how to generate it." >&2
             exit 1
           fi
-          echo "${{ secrets.SF_AUTH_URL }}" | sf org login sfdx-url --sfdx-url-stdin --alias ci --set-default
+          AUTH_FILE="$(mktemp)"
+          echo "${{ secrets.SF_AUTH_URL }}" > "$AUTH_FILE"
+          sf org login sfdx-url --sfdx-url-file "$AUTH_FILE" --alias ci --set-default
+          rm -f "$AUTH_FILE"
 
       - name: Deploy the demo metadata (Order__c, its tab/app, and the docs-capture permission set)
         run: sf project deploy start --source-dir force-app --target-org ci --wait 10
