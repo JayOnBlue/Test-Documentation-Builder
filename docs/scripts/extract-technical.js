@@ -170,8 +170,8 @@ function securityFindingsFor(name) {
   const hasSoql = own.some((e) => e.type === 'soql_read');
   const hasDml = own.some((e) => e.type === 'dml_write');
   const findings = [];
-  if (hasSoql) findings.push({ severity: 'warning', note: 'Performs SOQL — verify field-level security (FLS) is enforced (e.g. WITH SECURITY_ENFORCED, or explicit isAccessible() checks) before treating query results as safe to display.' });
-  if (hasDml) findings.push({ severity: 'warning', note: 'Performs DML — verify object/field CRUD permissions are checked (e.g. Security.stripInaccessible, or isCreateable()/isUpdateable()) rather than assuming the running user has access.' });
+  if (hasSoql) findings.push({ severity: 'warning', label: 'No USER_MODE on SOQL', note: 'SOQL without WITH USER_MODE / as user — FLS/CRUD is not automatically enforced on the query results.' });
+  if (hasDml) findings.push({ severity: 'warning', label: 'No CRUD check on DML', note: 'DML without a Security.stripInaccessible or isCreateable()/isUpdateable() guard — assumes the running user has object/field access.' });
   return findings;
 }
 

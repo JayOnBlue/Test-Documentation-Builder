@@ -15,14 +15,11 @@
 
   <header class="topbar">
     <a class="topbar__logo" href="#/"><span class="topbar__mark" aria-hidden="true"></span><span id="site-name">{{SITE_NAME}}</span></a>
-    <div class="topbar__search-wrap">
-      <div class="topbar__search">
-        <span aria-hidden="true">&#128269;</span>
-        <input id="search-input" type="text" placeholder="Search documentation..." autocomplete="off">
-        <span class="kbd">/</span>
-      </div>
-      <div id="search-dropdown" class="search-dropdown" hidden></div>
-    </div>
+    <button id="search-trigger" class="topbar__search" type="button">
+      <span aria-hidden="true">&#128269;</span>
+      <span class="topbar__search-label">Search documentation...</span>
+      <span class="kbd">/</span>
+    </button>
     <div class="topbar__actions">
       <a id="btn-changelog" class="topbar__btn" href="#/changelog"><span aria-hidden="true">&#128337;</span> Changelog</a>
       <a id="btn-tech" class="topbar__btn" href="#/tech"><span aria-hidden="true">&lt;/&gt;</span> Technical Reference</a>
@@ -39,6 +36,7 @@
   <button id="back-to-top" type="button" aria-label="Back to top">&#8593;</button>
 
   <div id="modal-root"></div>
+  <div id="search-modal-root"></div>
 
   <script src="data.js"></script>
   <script src="app.js"></script>

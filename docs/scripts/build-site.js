@@ -30,7 +30,7 @@ const VERSIONS_FILE = path.join(ROOT, 'docs', 'technical', 'versions.json');
 const CHANGELOG_FILE = path.join(ROOT, 'docs', 'CHANGELOG.md');
 
 const CATEGORY_ORDER = { 'Getting Started': 0 };
-const CALLOUT_LABELS = { before: 'Before you start', note: 'Note', tip: 'Tip', warning: 'Warning', deprecated: 'Deprecated' };
+const CALLOUT_LABELS = { before: 'Before you start', note: 'Note', tip: 'Tip', warning: 'Warning', deprecated: 'Deprecated', placeholder: 'Placeholder' };
 
 function slugify(s) { return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
 function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }

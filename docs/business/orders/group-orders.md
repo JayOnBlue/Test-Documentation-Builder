@@ -11,9 +11,15 @@ slug: "group-orders"
 
 ## Overview
 
-_(needs enrichment)_ This page is an auto-generated stub. It exists so the sidebar and navigation are
-complete, but nobody — human or AI — has written the real content yet. When `force-app` gains a Group
-Order feature (or the AI business-doc step is pointed at one), this page should be replaced.
+```callout
+type: placeholder
+- This is a placeholder page in this demo.
+- Full click-by-click guidance and business rules for Group Orders will live here once this project's
+  `force-app` gains a Group Order feature (or the AI business-doc step is pointed at one).
+```
+
+Group Orders is part of the Orders area. Detailed walkthroughs, prerequisites, and the automation behind
+it will appear on this page once written.
 
 ## Prerequisites
 

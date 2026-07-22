@@ -54,6 +54,21 @@
   function localSet(key, val) {
     try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable — non-fatal */ }
   }
+  var AVATAR_PALETTE = ['#6455f0', '#2563eb', '#0ea5a3', '#d97706', '#dc2626', '#7c3aed', '#059669', '#db2777'];
+  function hashString(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return h;
+  }
+  function colorFor(name) { return AVATAR_PALETTE[hashString(name || '?') % AVATAR_PALETTE.length]; }
+  function initialsOf(name) {
+    var parts = String(name || '?').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+  }
+  var CATEGORY_PALETTE = ['#6455f0', '#0ea5a3', '#d97706', '#db2777', '#2563eb', '#7c3aed', '#64748b', '#059669'];
+  function categoryColor(cat) { return CATEGORY_PALETTE[hashString(cat) % CATEGORY_PALETTE.length]; }
+  function categoryLetter(cat) { return String(cat).trim()[0].toUpperCase(); }
 
   // ---------------- state ----------------
   var state = {
@@ -120,8 +135,9 @@
     var html = cats.map(function (cat) {
       var pages = business.pages.filter(function (p) { return p.category === cat; }).sort(function (a, b) { return a.order - b.order; });
       var collapsed = state.sidebarCollapsed[cat] ? ' is-collapsed' : '';
+      var caret = state.sidebarCollapsed[cat] ? '&#9656;' : '&#9662;';
       return '<div class="nav-group">' +
-        '<div class="nav-group__label" data-toggle-cat="' + esc(cat) + '"><span>' + esc(cat) + '</span><span class="nav-group__count">' + pages.length + '</span></div>' +
+        '<div class="nav-group__label" data-toggle-cat="' + esc(cat) + '"><span><span class="nav-group__caret">' + caret + '</span>' + esc(cat) + '</span><span class="nav-group__count">' + pages.length + '</span></div>' +
         '<ul class="nav-group__items' + collapsed + '">' +
         pages.map(function (p) {
           var active = p.slug === activeSlug ? ' is-active' : '';
@@ -163,7 +179,7 @@
       var key = name;
       var open = state.treeOpen[key] !== false; // default open
       html += '<details class="tree__folder"' + (open ? ' open' : '') + ' data-tree-key="' + esc(key) + '">' +
-        '<summary>' + esc(name) + ' (' + child.count + ')</summary>' +
+        '<summary>&#128193; ' + esc(name) + ' (' + child.count + ')</summary>' +
         '<div class="tree__children">' + renderTreeNode(child, activeName) + '</div></details>';
     });
     (node.items || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).forEach(function (c) {
@@ -177,21 +193,21 @@
   function renderSidebarTech(route) {
     var activeName = route.target || null;
     var navItems = [
-      ['tech-overview', '#/tech', 'Technical Overview'],
-      ['tech-index', '#/tech/index', 'Component Index'],
-      ['tech-features', '#/tech/features', 'Features'],
-      ['tech-versions', '#/tech/versions', 'Version History'],
+      ['tech-overview', '#/tech', '&#9673;', 'Technical Overview'],
+      ['tech-index', '#/tech/index', '&#9776;', 'Component Index'],
+      ['tech-features', '#/tech/features', '&#10022;', 'Features'],
+      ['tech-versions', '#/tech/versions', '&#128340;', 'Version History'],
     ];
     var nav = navItems.map(function (item) {
       var active = route.name === item[0] ? ' is-active' : '';
-      return '<a class="' + active.trim() + '" href="' + item[1] + '">' + item[2] + '</a>';
+      return '<a class="' + active.trim() + '" href="' + item[1] + '"><span class="tech-nav__icon">' + item[2] + '</span>' + item[3] + '</a>';
     }).join('');
     var tree = buildTree();
     qs('#sidebar').innerHTML =
       '<a class="sidebar__back" href="#/">&larr; Back to business docs</a>' +
       '<nav class="tech-nav">' + nav + '</nav>' +
       '<div class="source-tree-label">Source tree</div>' +
-      '<div class="tree">force-app / main / default</div>' +
+      '<div class="tree tree--path">&#128193; force-app / main / default</div>' +
       '<div class="tree">' + renderTreeNode(tree, activeName) + '</div>';
     qsa('.tree__folder', qs('#sidebar')).forEach(function (el) {
       el.addEventListener('toggle', function () { state.treeOpen[el.getAttribute('data-tree-key')] = el.open; });
@@ -307,29 +323,32 @@
     });
   }
 
+  var ROLE_ICONS = { all: '&#9432;', sales: '$', operations: '&#9881;', developer: '{ }' };
   function renderRoleAndGlossaryAndCards() {
     var roles = [['all', 'Everyone'], ['sales', 'Sales'], ['operations', 'Operations'], ['developer', 'Developer']];
     var picker = '<div class="role-picker">' + roles.map(function (r) {
       var active = state.role === r[0] ? ' is-active' : '';
-      return '<button type="button" class="role-chip' + active + '" data-role="' + r[0] + '">' + r[1] + '</button>';
+      return '<button type="button" class="role-chip' + active + '" data-role="' + r[0] + '"><span class="role-chip__icon">' + ROLE_ICONS[r[0]] + '</span>' + r[1] + '</button>';
     }).join('') + '</div>';
 
-    var glossaryHtml = glossary.length ? '<div class="glossary"><h2 id="key-terms" style="margin-top:0">Key terms</h2><dl>' +
-      glossary.map(function (g) { return '<dt title="' + esc(g.definition) + '">' + esc(g.term) + '</dt><dd>' + esc(g.definition) + '</dd>'; }).join('') +
-      '</dl></div>' : '';
+    var glossaryHtml = glossary.length ? '<div class="glossary"><div class="glossary__label">Key terms</div>' +
+      glossary.map(function (g) { return '<p><dfn title="' + esc(g.definition) + '">' + esc(g.term) + '</dfn> &mdash; ' + esc(g.definition) + '</p>'; }).join('') +
+      '</div>' : '';
 
     var cats = business.categories.filter(function (c) { return c !== 'Getting Started'; });
     var cards = cats.map(function (cat) {
       var pages = business.pages.filter(function (p) { return p.category === cat; });
       var first = pages.slice().sort(function (a, b) { return a.order - b.order; })[0];
       return '<a class="home-card" href="#/docs/' + slugify(cat) + '/' + first.slug + '">' +
+        '<span class="home-card__icon" style="background:' + categoryColor(cat) + '22;color:' + categoryColor(cat) + '">' + esc(categoryLetter(cat)) + '</span>' +
         '<span class="home-card__title">' + esc(cat) + '</span>' +
         '<span class="home-card__desc">' + pages.map(function (p) { return esc(p.feature); }).join(', ') + '</span>' +
-        '<span class="home-card__count">' + pages.length + (pages.length === 1 ? ' page' : ' pages') + '</span></a>';
+        '<span class="home-card__count">' + pages.length + (pages.length === 1 ? ' PAGE' : ' PAGES') + '</span></a>';
     }).join('') + '<a class="home-card" href="#/tech">' +
+      '<span class="home-card__icon" style="background:' + categoryColor('Technical Reference') + '22;color:' + categoryColor('Technical Reference') + '">T</span>' +
       '<span class="home-card__title">Technical Reference</span>' +
-      '<span class="home-card__desc">Component-level map of the Salesforce metadata: classes, objects, flows, and dependencies.</span>' +
-      '<span class="home-card__count">' + tech.componentCount + ' components</span></a>';
+      '<span class="home-card__desc">Living map of ' + tech.componentCount + ' components and ' + tech.edgeCount + ' edges &mdash; Apex, objects, features and versions.</span>' +
+      '<span class="home-card__count">' + (tech.componentsByType.ApexClass || 0) + ' APEX CLASSES</span></a>';
 
     return picker + glossaryHtml + '<h2 id="browse-by-area">Browse by area</h2><div class="home-cards">' + cards + '</div>';
   }
@@ -409,11 +428,10 @@
             items.map(function (it) { return '<li><code>' + esc(it.name) + '</code> <span style="color:var(--faint)">(' + esc(it.type) + ')</span></li>'; }).join('') +
             '</ul></div>';
         }).join('');
-        var avatarBg = ['#6455f0', '#2563eb', '#0ea5a3', '#d97706'][i % 4];
         var contributorAvatars = (r.contributors || []).map(function (name) {
-          var initials = name.split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
-          return '<span class="avatar-sm" style="background:' + avatarBg + '" title="' + esc(name) + '">' + esc(initials) + '</span>';
+          return '<span class="avatar-sm" style="background:' + colorFor(name) + '" title="' + esc(name) + '">' + esc(initialsOf(name)) + '</span>';
         }).join('');
+        var firstContributor = (r.contributors || [])[0] || 'unknown';
         return '<div class="release" id="release-' + r.version + '">' +
           '<div class="release__rail">' +
           '<div class="tag-pill">&#127991; ' + esc(r.version) + '</div>' +
@@ -421,7 +439,7 @@
           '<div class="release__date">Published ' + fmtDate(r.date) + '</div></div>' +
           '<div class="release-card">' +
           '<div class="release-card__title">Release ' + esc(r.version) + (r.hash ? ' <span class="mono" style="color:var(--faint);font-size:14px">(' + esc(r.hash) + ')</span>' : '') + '</div>' +
-          '<div class="release-card__byline"><span class="avatar-sm" style="background:' + avatarBg + '">' + esc((r.contributors[0] || '?').slice(0, 2).toUpperCase()) + '</span> ' + esc((r.contributors || [])[0] || 'unknown') + ' released this</div>' +
+          '<div class="release-card__byline"><span class="avatar-sm" style="background:' + colorFor(firstContributor) + '">' + esc(initialsOf(firstContributor)) + '</span> ' + esc(firstContributor) + ' released this</div>' +
           groupsHtml +
           '<div class="release-card__footer"><div class="avatar-stack">' + contributorAvatars + '</div>' +
           (r.compareUrl ? '<a class="compare-link" href="' + esc(r.compareUrl) + '" target="_blank" rel="noopener">' + esc(r.compareRange || 'compare') + '</a>' : '<span></span>') +
@@ -486,8 +504,8 @@
 
       var rows = list.map(function (c) {
         var cov = c.coverage;
-        var covHtml = cov == null ? '<span style="color:var(--faint)">&mdash;</span>' :
-          '<span class="mini-bar"><span style="width:' + cov + '%;background:' + coverageColor(cov) + '"></span></span>' + cov + '%';
+        var covHtml = '<span class="mini-bar"><span style="width:' + (cov == null ? 0 : cov) + '%;background:' + coverageColor(cov) + '"></span></span>' +
+          (cov == null ? '<span style="color:var(--faint)">&mdash;</span>' : cov + '%');
         return '<tr data-goto="' + esc(componentRouteHref(c.name)) + '">' +
           '<td><strong>' + esc(c.name) + '</strong></td>' +
           '<td class="mono" style="color:var(--muted)">' + esc(c.type) + '</td>' +
@@ -562,6 +580,28 @@
     return '<table class="rel-table"><thead><tr><th>Component</th><th>Relationship</th><th>Confidence</th></tr></thead><tbody>' + rows + '</tbody></table>';
   }
 
+  var METHOD_VERB_MAP = {
+    get: 'Returns', fetch: 'Returns', find: 'Finds', create: 'Creates', insert: 'Creates', build: 'Builds',
+    update: 'Updates', delete: 'Deletes', remove: 'Removes', handle: 'Handles', process: 'Processes',
+    validate: 'Validates', confirm: 'Confirms', send: 'Sends', is: 'Checks whether', has: 'Checks whether',
+    run: 'Runs', execute: 'Executes', assign: 'Assigns', calculate: 'Calculates', sync: 'Synchronizes'
+  };
+  function humanizeMethodName(name) {
+    var words = name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/_/g, ' ').toLowerCase().split(/\s+/).filter(Boolean);
+    if (!words.length) return '';
+    var verb = words[0];
+    var rest = words.slice(1).join(' ');
+    var mapped = METHOD_VERB_MAP[verb];
+    if (mapped) return mapped + (rest ? ' ' + rest + '.' : '.');
+    return verb.charAt(0).toUpperCase() + verb.slice(1) + (rest ? ' ' + rest : '') + '.';
+  }
+
+  function renderRelatedPages(links) {
+    return '<div class="related-pages-grid">' + links.map(function (l) {
+      return '<a class="related-page-card" href="' + l.href + '"><span>' + esc(l.title) + '</span><span class="related-page-card__arrow">&rarr;</span></a>';
+    }).join('') + '</div>';
+  }
+
   function renderComponentDetail(name) {
     var c = byComponentName[name];
     if (!c) { qs('#main').innerHTML = '<div class="wide-width"><h1 class="page-title">Not found</h1><p>No component named "' + esc(name) + '".</p></div>'; buildTOC([]); return; }
@@ -581,49 +621,65 @@
       var usedIn = m.usedIn && m.usedIn.length
         ? m.usedIn.map(function (u) { return '<a href="' + componentRouteHref(u.name) + '">' + esc(u.name) + '</a> (' + esc(u.relationship) + ')'; }).join(', ')
         : 'No specific caller resolved &mdash; see Used by below.';
-      return '<div class="method-row"><div class="method-row__head" data-method-toggle="' + esc(key) + '">' +
-        '<div><span class="method-row__name">' + esc(m.name) + '</span></div><div class="method-row__flags">' + flags.join('') + '</div></div>' +
+      return '<div class="method-row"><div class="method-row__top">' +
+        '<span class="method-row__name">' + esc(m.name) + '</span><div class="method-row__flags">' + flags.join('') + '</div></div>' +
+        '<p class="method-row__desc" title="Inferred from the method name — not verified">' + esc(humanizeMethodName(m.name)) + '</p>' +
+        '<button type="button" class="method-row__toggle" data-method-toggle="' + esc(key) + '">' + (open ? '&#9662;' : '&#9656;') + ' signature &amp; used-in</button>' +
         '<div class="method-row__detail' + (open ? ' is-open' : '') + '" data-method-detail="' + esc(key) + '">' +
         '<div class="method-row__sig">' + esc(m.signature) + '</div>' +
         '<div class="method-row__usedin"><strong>Used in:</strong> ' + usedIn + '</div></div></div>';
     }).join('') : '<div style="color:var(--muted);font-size:13.5px">No methods detected.</div>';
 
+    var statusWord = c.quality === 'High' ? 'Good' : 'Needs Attention';
     var aiReview = isClass ? '<div class="review-panel" id="ai-review">' +
-      '<div class="ai-review__head"><span class="pill ' + (c.quality === 'High' ? 'pill--good' : c.quality === 'Medium' ? 'pill--warn' : 'pill--danger') + '">' + esc(c.quality || 'n/a') + ' quality</span>' +
-      '<span style="color:var(--muted);font-weight:500;font-size:13px">static heuristic, not a live review</span></div>' +
-      '<p class="ai-review__note">' + (c.isTestClass ? 'This is a test class — coverage/quality heuristics don\'t apply to it.' : 'Quality is derived from whether a Test class in this repo references ' + esc(c.name) + '.') + '</p>' +
-      (c.securityFindings && c.securityFindings.length ? '<ul class="security-list">' + c.securityFindings.map(function (f) { return '<li>&#9888; ' + esc(f.note) + '</li>'; }).join('') + '</ul>' : '') +
+      '<div class="ai-review__head"><span class="dot dot--' + (c.quality === 'High' ? 'good' : 'warn') + '"></span><strong>AI Review</strong>' +
+      '<span class="ai-review__status">' + statusWord + '</span>' +
+      '<span class="pill ' + (c.quality === 'High' ? 'pill--good' : c.quality === 'Medium' ? 'pill--warn' : 'pill--danger') + '">' + esc(c.quality || 'n/a') + '</span></div>' +
+      '<p class="ai-review__note">' + (c.isTestClass ? 'This is a test class — coverage/quality heuristics don\'t apply to it.' : 'Auto-scaffold from static signals; enrich with a manual read.') + '</p>' +
+      (c.securityFindings && c.securityFindings.length
+        ? '<div class="security-heading">Security:</div><ul class="security-list">' + c.securityFindings.map(function (f) { return '<li><strong>' + esc(f.label) + ':</strong> ' + esc(f.note) + '</li>'; }).join('') + '</ul>'
+        : '') +
       '</div>' : '';
 
-    var purposePanel = '<div class="review-panel" id="purpose"><label style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Purpose (yours — saved locally, not synced)</label>' +
-      '<textarea id="purpose-input" placeholder="What does this component do, in your own words?">' + esc(savedPurpose) + '</textarea>' +
+    var purposePanel = '<div class="review-panel" id="purpose"><label class="review-panel__label">Purpose <span class="review-panel__label-sub">(interpretive &mdash; editable)</span></label>' +
+      '<textarea id="purpose-input" placeholder="What does this component do, in your own words?" title="Saved to this browser only — not synced anywhere">' + esc(savedPurpose) + '</textarea>' +
       '<button type="button" class="save-btn" id="save-purpose">Save purpose</button></div>';
 
     toc.push({ id: 'purpose', text: 'Purpose' });
     if (isClass) toc.push({ id: 'ai-review', text: 'AI Review' });
     toc.push({ id: 'methods', text: 'Methods' }, { id: 'depends-on', text: 'Depends on' }, { id: 'used-by', text: 'Used by' });
 
+    var covColor = coverageColor(c.coverage);
     qs('#main').innerHTML = '<div class="wide-width">' +
       '<div class="crumbs"><a href="#/">Docs</a> <span>/</span> <a href="#/tech">Technical Reference</a> <span>/</span> <a href="#/tech/index">Index</a> <span>/</span> <span>' + esc(c.name) + '</span></div>' +
+      '<a class="back-link" href="#/tech/index">&larr; Back to Component Index</a>' +
       '<div class="detail-head"><h1 class="page-title page-title--tech" style="word-break:break-word">' + esc(c.name) + '</h1><span class="dot dot--' + (c.health === 'good' ? 'good' : c.health === 'warn' ? 'warn' : 'na') + '"></span></div>' +
       '<div class="detail-path"><span class="type-badge">' + esc(c.type) + '</span> &middot; force-app/main/default/' + esc(c.path) + '</div>' +
       '<div class="meta-row">Updated ' + fmtDate(c.updated) + ' <span class="sep">&middot;</span> Owner: ' + esc(c.owner) +
-      (c.coverage != null ? ' <span class="sep">&middot;</span> Coverage ' + c.coverage + '%' : '') +
-      ' <span class="sep">&middot;</span> <span class="pill pill--warn">Auto-generated</span></div>' +
+      (c.coverage != null ? ' <span class="sep">&middot;</span> Coverage <strong style="color:' + covColor + '">' + c.coverage + '%</strong>' : '') +
+      ' <span class="sep">&middot;</span> <span class="pill pill--warn">+ Auto-generated</span></div>' +
       '<div class="toolbar"><button id="copy-md-btn">Copy as Markdown</button><button id="impact-btn">Impact</button></div>' +
       purposePanel + aiReview +
       '<h2 id="methods">Methods (' + (c.methods ? c.methods.length : 0) + ')</h2>' + methodsHtml +
-      '<h2 id="depends-on" style="margin-top:36px">Depends on (' + c.dependsOn.length + ')</h2><div class="panel">' + relTable(c.dependsOn) + '</div>' +
-      '<h2 id="used-by">Used by (' + c.usedBy.length + ')</h2><div class="panel">' + relTable(c.usedBy) + '</div>' +
+      '<div class="split-tables" style="margin-top:36px">' +
+      '<div><h2 id="depends-on">Depends on (' + c.dependsOn.length + ')</h2><div class="panel">' + relTable(c.dependsOn) + '</div></div>' +
+      '<div><h2 id="used-by">Used by (' + c.usedBy.length + ')</h2><div class="panel">' + relTable(c.usedBy) + '</div></div>' +
+      '</div>' +
       '<div id="impact-panel"></div>' +
+      '<h2 style="margin-top:36px">Related Pages</h2>' + renderRelatedPages([
+        { title: 'Component Index', href: '#/tech/index' },
+        { title: 'Technical Overview', href: '#/tech' },
+      ]) +
       '</div>';
 
-    qsa('[data-method-toggle]').forEach(function (head) {
-      head.addEventListener('click', function () {
-        var key = head.getAttribute('data-method-toggle');
+    qsa('[data-method-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.getAttribute('data-method-toggle');
         state.methodExpanded[key] = !state.methodExpanded[key];
+        var open = state.methodExpanded[key];
         var detail = qs('[data-method-detail="' + key.replace(/"/g, '') + '"]');
-        if (detail) detail.classList.toggle('is-open', state.methodExpanded[key]);
+        if (detail) detail.classList.toggle('is-open', open);
+        btn.innerHTML = (open ? '&#9662;' : '&#9656;') + ' signature &amp; used-in';
       });
     });
 
@@ -651,9 +707,10 @@
       var direct = levels[0] || [];
       var transitive = levels.slice(1).reduce(function (a, l) { return a + l.length; }, 0);
       var referenced = c.dependsOn.length;
-      var html = '<div class="impact-panel"><div class="impact-stats">' +
+      var html = '<div class="impact-panel"><div class="panel__head">Impact analysis &middot; blast radius</div><div class="impact-stats">' +
         statCard(direct.length, 'Direct dependents') + statCard(transitive, 'Transitive dependents') + statCard(referenced, 'Objects/classes referenced') +
-        '</div>';
+        '</div>' +
+        '<p class="impact-panel__note">Changing this class could ripple through its direct dependents and their callers. Review the Used-by list and run the highlighted test classes before deploying.</p>';
       levels.forEach(function (level, i) {
         html += '<div class="panel"><div class="panel__head">Depth ' + (i + 1) + '</div><table class="rel-table">' +
           level.map(function (n) { return '<tr><td><a href="' + componentRouteHref(n) + '">' + esc(n) + '</a></td></tr>'; }).join('') + '</table></div>';
@@ -687,11 +744,16 @@
 
     qs('#main').innerHTML = '<div class="wide-width">' +
       '<div class="crumbs"><a href="#/">Docs</a> <span>/</span> <a href="#/tech">Technical Reference</a> <span>/</span> <a href="#/tech/index">Index</a> <span>/</span> <span>' + esc(c.name) + '</span></div>' +
+      '<a class="back-link" href="#/tech/index">&larr; Back to Component Index</a>' +
       '<h1 class="page-title page-title--tech">' + esc(c.name) + '</h1>' +
       '<div class="detail-path"><span class="type-badge">CustomObject</span> ' + esc(schema.label) + '</div>' +
       '<h2 id="fields">Fields (' + schema.fields.length + ')</h2><div class="panel"><table class="data-table"><thead><tr><th>Label</th><th>API Name</th><th>Type</th><th>Req</th></tr></thead><tbody>' + fieldRows + '</tbody></table></div>' +
       '<h2 id="record-types">Record Types</h2>' + recordTypesHtml +
       '<h2 id="relationships">Relationships</h2>' + relHtml +
+      '<h2 style="margin-top:36px">Related Pages</h2>' + renderRelatedPages([
+        { title: 'Component Index', href: '#/tech/index' },
+        { title: 'Technical Overview', href: '#/tech' },
+      ]) +
       '</div>';
     buildTOC([{ id: 'fields', text: 'Fields' }, { id: 'record-types', text: 'Record Types' }, { id: 'relationships', text: 'Relationships' }]);
   }
@@ -703,8 +765,8 @@
     var cards = tech.features.map(function (f) {
       return '<div class="feature-card"><span class="feature-card__title">' + esc(f.title) + '</span>' +
         '<span class="feature-card__desc">Members: ' + f.members.map(esc).join(', ') + '</span>' +
-        '<span class="feature-card__meta">' + f.memberCount + ' members</span> ' +
-        '<span class="pill ' + (f.quality === 'High' ? 'pill--good' : f.quality === 'Medium' ? 'pill--warn' : 'pill--danger') + '">' + esc(f.quality) + '</span></div>';
+        '<span class="feature-card__footer"><span class="feature-card__meta">' + f.memberCount + ' members</span><span class="sep">&middot;</span>' +
+        '<span class="pill ' + (f.quality === 'High' ? 'pill--good' : f.quality === 'Medium' ? 'pill--warn' : 'pill--danger') + '">' + esc(f.quality) + '</span></span></div>';
     }).join('');
     qs('#main').innerHTML = '<div class="wide-width">' +
       '<div class="crumbs"><a href="#/">Docs</a> <span>/</span> <a href="#/tech">Technical Reference</a> <span>/</span> <span>Features</span></div>' +
@@ -725,13 +787,20 @@
         var addSquares = total ? Math.round((v.additions / total) * 5) : 0;
         var squares = Array.from({ length: 5 }, function (_, si) { return '<span style="background:' + (si < addSquares ? 'var(--health-good)' : '#ef4444') + '"></span>'; }).join('');
         var addedChips = v.added.map(function (n) { return '<span class="change-chip change-chip--added">+ ' + esc(n) + '</span>'; }).join('');
+        var modifiedChips = (v.modified || []).map(function (n) { return '<span class="change-chip change-chip--modified">&#8226; ' + esc(n) + '</span>'; }).join('');
         var removedChips = v.removed.map(function (n) { return '<span class="change-chip change-chip--removed">&minus; ' + esc(n) + '</span>'; }).join('');
+        var description = v.description ? '<p class="commit__description">' + esc(v.description) + '</p>' : '';
         return '<div class="commit"><div class="commit__rail"><div class="commit__avatar" style="background:' + v.avatarBg + '">' + esc(v.initials) + '</div>' + (i < versions.length - 1 ? '<div class="commit__line"></div>' : '') + '</div>' +
           '<div class="commit__body">' +
           '<div class="commit__summary">' + esc(v.summary) + (v.latest ? ' <span class="pill pill--info">LATEST</span>' : '') + '</div>' +
           '<div class="commit__meta"><strong>' + esc(v.author) + '</strong> committed <code>' + esc(v.hash) + '</code> &middot; ' + timeAgo(v.when) + ' &middot; tag ' + esc(v.version) + ' &middot; ' + v.filesChanged + ' files changed</div>' +
+          description +
           '<div class="commit__diffstat"><span class="diff-add">+' + v.additions + '</span><span class="diff-del">&minus;' + v.deletions + '</span><span class="diff-squares">' + squares + '</span></div>' +
-          '<div class="change-chips">' + addedChips + removedChips + '</div>' +
+          '<div class="change-chips">' + addedChips + modifiedChips + removedChips + '</div>' +
+          '<div class="commit__impact">' +
+          '<div class="commit__impact-row"><span class="commit__impact-label">Technical</span>' + esc(v.technicalSummary || '') + '</div>' +
+          '<div class="commit__impact-row"><span class="commit__impact-label">Business</span>' + esc(v.businessSummary || '') + '</div>' +
+          '</div>' +
           '</div></div>';
       }).join('') + '</div>';
 
@@ -827,21 +896,46 @@
     return idx;
   }
   var SEARCH_INDEX = searchIndex();
-  var searchInput = qs('#search-input');
-  var searchDropdown = qs('#search-dropdown');
-  function runSearch(q) {
+  var searchModalOpen = false;
+
+  function renderSearchResults(q) {
+    var results = qs('#search-modal-results');
+    if (!results) return;
     q = q.trim().toLowerCase();
-    if (!q) { searchDropdown.hidden = true; return; }
+    if (!q) { results.innerHTML = ''; return; }
     var hits = SEARCH_INDEX.filter(function (item) { return item.title.toLowerCase().indexOf(q) !== -1; }).slice(0, 20);
-    searchDropdown.innerHTML = hits.length
+    results.innerHTML = hits.length
       ? hits.map(function (h) { return '<a class="search-hit" href="' + h.href + '">' + esc(h.title) + '<small>' + esc(h.kind) + ' &middot; ' + esc(h.sub) + '</small></a>'; }).join('')
-      : '<div class="search-hit">No matches</div>';
-    searchDropdown.hidden = false;
+      : '<div class="search-hit search-hit--empty">No matches</div>';
+    qsa('.search-hit[href]', results).forEach(function (a) { a.addEventListener('click', closeSearchModal); });
   }
-  searchInput.addEventListener('input', function () { runSearch(searchInput.value); });
-  searchInput.addEventListener('blur', function () { setTimeout(function () { searchDropdown.hidden = true; }, 150); });
+
+  function openSearchModal() {
+    searchModalOpen = true;
+    qs('#search-modal-root').innerHTML =
+      '<div class="modal-backdrop" id="search-backdrop">' +
+      '<div class="search-modal">' +
+      '<div class="search-modal__input-row"><span aria-hidden="true">&#128269;</span>' +
+      '<input id="search-modal-input" type="text" placeholder="Search documentation..." autocomplete="off">' +
+      '<span class="kbd">ESC</span></div>' +
+      '<div id="search-modal-results" class="search-results"></div>' +
+      '</div></div>';
+    qs('#search-backdrop').addEventListener('click', function (e) { if (e.target.id === 'search-backdrop') closeSearchModal(); });
+    var input = qs('#search-modal-input');
+    input.addEventListener('input', function () { renderSearchResults(input.value); });
+    input.focus();
+  }
+  function closeSearchModal() {
+    searchModalOpen = false;
+    qs('#search-modal-root').innerHTML = '';
+  }
+
+  qs('#search-trigger').addEventListener('click', openSearchModal);
   document.addEventListener('keydown', function (e) {
-    if (e.key === '/' && document.activeElement !== searchInput && !state.downloadModalOpen) { e.preventDefault(); searchInput.focus(); }
+    if (searchModalOpen && e.key === 'Escape') { closeSearchModal(); return; }
+    if (e.key === '/' && !searchModalOpen && !state.downloadModalOpen && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault(); openSearchModal();
+    }
   });
 
   // ================================================================
