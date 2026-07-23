@@ -63,10 +63,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup Node 20
+      # Node 22 (LTS) is required: the Salesforce CLI bundles undici 8.0.3, which
+      # calls worker_threads.markAsUncloneable — an API added in v22.10.0 and NOT
+      # backported to Node 20. On Node 20 the CLI crashes at `sf org login` with
+      # "webidl.util.markAsUncloneable is not a function" (nodejs/undici#5024).
+      - name: Setup Node 22
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install Salesforce CLI (if missing)
