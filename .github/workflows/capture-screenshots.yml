@@ -3,25 +3,48 @@ name: Capture Documentation Screenshots
 # Runs the CumulusCI + Robot Framework (SalesforcePlaywright) harness in robot-capture/ against
 # a real Salesforce org and commits the resulting PNGs to docs/images.
 #
-# Auth note: a GitHub-hosted runner has no cached Salesforce CLI session, so it can't reuse an
-# "already logged in" browser the way a local run can. Instead this workflow uses a durable
-# SFDX Auth URL secret — a refresh-token URL derived from a session you already satisfied
-# MFA/passkey on, generated once locally and never expiring on its own:
+# Auth note: this uses the OAuth 2.0 JWT Bearer Flow — the approach CumulusCI's own docs recommend
+# for CI (https://cumulusci.readthedocs.io/en/stable/tutorial.html#connect-cumulusci-to-a-persistent-org),
+# and the standard pattern used across real-world Salesforce CI pipelines generally. Unlike a single
+# hand-pasted "SFDX Auth URL" string (fragile: one stray quote, a wrapped line, or a trailing space
+# breaks its strict force://id:secret:token@host format), JWT auth uses three plain, unambiguous
+# secrets plus a certificate — nothing to mis-paste. It's fully headless: no login screen, no
+# MFA/passkey prompt, ever, because a JWT Bearer flow is a server-to-server credential exchange, not
+# a browser login.
 #
-#   sf org display --verbose --json --target-org <org>   # copy the "sfdxAuthUrl" value
-#
-# Store that value as a repo secret named SF_AUTH_URL (Settings -> Secrets and variables ->
-# Actions -> New repository secret). No login screen is ever shown by this workflow — MFA/passkey
-# was only ever satisfied once, by you, when you first generated the auth URL.
+# One-time setup:
+#   1. Generate a self-signed certificate (run locally, once — keep server.key private):
+#        openssl genrsa -out server.key 2048
+#        openssl req -new -key server.key -out server.csr -subj "/CN=github-actions-ci"
+#        openssl x509 -req -sha256 -days 3650 -in server.csr -signkey server.key -out server.crt
+#   2. In Salesforce Setup -> App Manager -> New Connected App:
+#        - Enable OAuth Settings; Callback URL can be anything (e.g. https://login.salesforce.com/services/oauth2/callback) — unused by JWT
+#        - OAuth Scopes: "Manage user data via APIs (api)" and "Perform requests at any time (refresh_token, offline_access)"
+#        - Check "Use digital signatures" and upload server.crt
+#        - Save, then copy the Consumer Key it generates
+#        - Manage -> Edit Policies -> Permitted Users -> "Admin approved users are pre-authorized",
+#          then create/assign a permission set granting access to this Connected App to the running user
+#   3. Add repo secrets (Settings -> Secrets and variables -> Actions -> New repository secret):
+#        SF_JWT_KEY       the full contents of server.key (multi-line PEM — paste as-is)
+#        SF_CONSUMER_KEY  the Consumer Key from the Connected App
+#        SF_USERNAME      the Salesforce username to authenticate as
+#      Optional: SF_INSTANCE_URL (defaults to https://login.salesforce.com; use
+#      https://test.salesforce.com if the target is a sandbox).
 #
 # Start with workflow_dispatch (manual) until you've confirmed a run behaves as expected; add a
 # `schedule:` or `push:` trigger once you're comfortable with it running unattended.
 
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'Recapture every screenshot, even ones already committed (ignores the skip-if-already-captured default)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
+  actions: write   # needed to trigger docs-pipeline.yml's redeploy after committing new images
 
 concurrency:
   group: capture-screenshots
@@ -60,44 +83,26 @@ jobs:
       - name: Install Salesforce CLI
         run: npm install --global @salesforce/cli
 
-      - name: Diagnose SF_AUTH_URL shape (never prints the secret itself)
+      - name: Authenticate via JWT (headless — no login screen, no MFA/passkey)
+        env:
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_CONSUMER_KEY: ${{ secrets.SF_CONSUMER_KEY }}
+          SF_USERNAME: ${{ secrets.SF_USERNAME }}
+          SF_INSTANCE_URL: ${{ secrets.SF_INSTANCE_URL }}
         run: |
-          VAL="${{ secrets.SF_AUTH_URL }}"
-          if [ -z "$VAL" ]; then
-            echo "::error::SF_AUTH_URL is empty."
+          if [ -z "$SF_JWT_KEY" ] || [ -z "$SF_CONSUMER_KEY" ] || [ -z "$SF_USERNAME" ]; then
+            echo "::error::Repo secrets SF_JWT_KEY, SF_CONSUMER_KEY, and SF_USERNAME must all be set. See the comment at the top of this workflow file for one-time setup." >&2
             exit 1
           fi
-          echo "Length: ${#VAL} characters"
-          case "$VAL" in
-            force://*) echo "Starts with 'force://': yes" ;;
-            *) echo "::warning::Starts with 'force://': NO — the value must start with force:// (with no leading quote/space)." ;;
-          esac
-          AT_COUNT=$(printf '%s' "$VAL" | tr -cd '@' | wc -c)
-          echo "Number of '@' characters: $AT_COUNT (should be exactly 1)"
-          AFTER_AT="${VAL#*@}"
-          case "$AFTER_AT" in
-            http://*|https://*) echo "::warning::The part after '@' starts with http(s):// — the instance URL must NOT include the protocol." ;;
-            *) echo "Part after '@' has no http(s):// prefix: OK" ;;
-          esac
-          BEFORE_AT="${VAL%@*}"
-          CREDS="${BEFORE_AT#force://}"
-          COLON_COUNT=$(printf '%s' "$CREDS" | tr -cd ':' | wc -c)
-          echo "Colons between 'force://' and '@': $COLON_COUNT (should be exactly 2 — clientId:clientSecret:refreshToken)"
-          NEWLINES=$(printf '%s' "$VAL" | wc -l)
-          echo "Embedded newlines: $NEWLINES (should be 0)"
-
-      - name: Authenticate (reuses an already-logged-in session, no login screen, no MFA/passkey)
-        run: |
-          if [ -z "${{ secrets.SF_AUTH_URL }}" ]; then
-            echo "::error::Repo secret SF_AUTH_URL is not set. See the comment at the top of this workflow file for how to generate it." >&2
-            exit 1
-          fi
-          AUTH_FILE="$(mktemp)"
-          # Strip CRLF and any stray surrounding quotes/whitespace a copy-paste might have introduced —
-          # the value must be exactly force://<clientId>:<clientSecret>:<refreshToken>@<instanceUrl-without-protocol>
-          printf '%s' "${{ secrets.SF_AUTH_URL }}" | tr -d '\r' | sed -e 's/^[[:space:]"'"'"']*//' -e 's/[[:space:]"'"'"']*$//' > "$AUTH_FILE"
-          sf org login sfdx-url --sfdx-url-file "$AUTH_FILE" --alias ci --set-default
-          rm -f "$AUTH_FILE"
+          KEY_FILE="$(mktemp)"
+          printf '%s\n' "$SF_JWT_KEY" > "$KEY_FILE"
+          sf org login jwt \
+            --client-id "$SF_CONSUMER_KEY" \
+            --jwt-key-file "$KEY_FILE" \
+            --username "$SF_USERNAME" \
+            --instance-url "${SF_INSTANCE_URL:-https://login.salesforce.com}" \
+            --alias ci --set-default
+          rm -f "$KEY_FILE"
 
       - name: Deploy the demo metadata (Order__c, its tab/app, and the docs-capture permission set)
         run: sf project deploy start --source-dir force-app --target-org ci --wait 10
@@ -111,7 +116,12 @@ jobs:
 
       - name: Run the capture suite
         working-directory: robot-capture
-        run: cci task run capture_docs --org ci
+        run: |
+          if [ "${{ inputs.force }}" = "true" ]; then
+            cci task run capture_docs --org ci -o vars FORCE:True
+          else
+            cci task run capture_docs --org ci
+          fi
 
       - name: Upload Robot Framework results (for debugging, even on failure)
         if: always()
@@ -122,13 +132,28 @@ jobs:
           if-no-files-found: ignore
 
       - name: Commit any newly captured screenshots
+        id: commit_images
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/images docs/screenshot-manifest.json
           if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Nothing new to commit."
           else
             git commit -m "docs: capture screenshots via robot-capture [skip ci]"
             git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      # [skip ci] above (needed so this same push doesn't re-trigger a push-based workflow loop)
+      # also means docs-pipeline.yml's `push` trigger won't fire for this commit — and it only
+      # watches force-app/** anyway, not docs/images. Without this, the images would be committed
+      # to the repo but the *deployed* Pages site would still show the old placeholders until
+      # something else touched force-app/. Dispatching it directly (not a push) re-runs the site
+      # build/deploy with these new images, independent of [skip ci].
+      - name: Redeploy the doc site so it picks up the new images
+        if: steps.commit_images.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run docs-pipeline.yml --ref "${{ github.ref_name }}"

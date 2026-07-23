@@ -1,0 +1,9 @@
+{
+  "name": "robot-capture-control-panel",
+  "private": true,
+  "type": "module",
+  "description": "Local browser control panel for the CumulusCI + Robot Framework screenshot capture harness.",
+  "scripts": {
+    "start": "node server.mjs"
+  }
+}

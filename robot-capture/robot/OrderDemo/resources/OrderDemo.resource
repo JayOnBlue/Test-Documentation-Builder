@@ -18,6 +18,30 @@ Set Doc Base Url
     Set Suite Variable    ${DOC_BASE}    ${origin}
     Log              Capture base URL: ${DOC_BASE}
 
+Set Force Flag
+    [Documentation]    Converts the ${FORCE} suite variable (always a string, e.g. from
+    ...                "-o vars FORCE:True") into a real boolean ${FORCE_BOOL} used by
+    ...                Should Skip Capture and Capture Navigable Screenshot.
+    ${force_bool}=   Convert To Boolean    ${FORCE}
+    Set Suite Variable    ${FORCE_BOOL}    ${force_bool}
+
+Should Skip Capture
+    [Documentation]    True if ${FORCE_BOOL} is not set and every given screenshot id already
+    ...                has a captured image — used to guard a whole multi-step test case so a
+    ...                partially-captured interaction sequence still re-runs in full rather than
+    ...                silently leaving a gap.
+    [Arguments]      @{ids}
+    IF    ${FORCE_BOOL}
+        RETURN    ${False}
+    END
+    FOR    ${id}    IN    @{ids}
+        ${exists}=    Screenshot Exists    ${id}
+        IF    not ${exists}
+            RETURN    ${False}
+        END
+    END
+    RETURN    ${True}
+
 Record Id For Object
     [Documentation]    Return the Id of one sample record for the object, via SOQL. Empty if none exist.
     [Arguments]      ${object}
@@ -40,9 +64,17 @@ Resolve Capture Url
     RETURN           ${DOC_BASE}${resolved}
 
 Capture Navigable Screenshot
-    [Documentation]    Navigate to one manifest entry's page and save docs/images/<id>.png.
+    [Documentation]    Navigate to one manifest entry's page and save docs/images/<id>.png,
+    ...                unless it's already captured and ${FORCE_BOOL} is not set.
     [Arguments]      ${shot}    ${dir}
     ${id}=           Set Variable    ${shot}[id]
+    IF    not ${FORCE_BOOL}
+        ${exists}=    Screenshot Exists    ${id}
+        IF    ${exists}
+            Log      Skipping ${id} — already captured (pass -o vars FORCE:True to recapture)
+            RETURN
+        END
+    END
     ${pattern}=      Set Variable    ${shot}[url_pattern]
     ${url}=          Resolve Capture Url    ${pattern}
     IF    '${url}' == '${EMPTY}'

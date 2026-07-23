@@ -39,6 +39,7 @@ sf-docs-automation-demo/
 │   ├── _state/progress.json            # generated — tracks the last commit this pipeline documented
 │   └── site/                           # generated — the GitHub Pages output; git-ignored, rebuilt every run
 ├── robot-capture/                      # CumulusCI + Robot Framework (SalesforcePlaywright) screenshot capture — see its own README
+│   ├── server.mjs + control.html       # local browser control panel (npm start -> http://localhost:4322)
 └── .github/workflows/
     ├── docs-pipeline.yml               # force-app push -> Changelog/Business docs/Technical Reference -> GitHub Pages
     └── capture-screenshots.yml         # manual trigger -> runs robot-capture/, commits new docs/images
@@ -116,14 +117,16 @@ Pages implemented:
    If you skip this, the pipeline still runs and deploys — it just skips the AI business-doc step and
    tells you so in the log.
 4. **(Optional) Enable screenshot capture** — `capture-screenshots.yml` is a separate, manually-triggered
-   workflow (Actions tab → "Capture Documentation Screenshots" → Run workflow). One-time setup:
-   ```bash
-   sf org display --verbose --json --target-org <your-already-logged-in-org>   # copy the "sfdxAuthUrl" value
-   ```
-   Add that value as a repo secret named **`SF_AUTH_URL`**. This is a refresh-token URL derived from a
-   session you already satisfied MFA/passkey on — the workflow reuses it silently on every run, so no
-   login screen or MFA/passkey prompt ever appears in CI. See `robot-capture/README.md` for what it
-   captures and how to run it locally first.
+   workflow (Actions tab → "Capture Documentation Screenshots" → Run workflow). It authenticates via the
+   OAuth 2.0 JWT Bearer Flow (a certificate + Connected App, not an interactive login), so no login screen
+   or MFA/passkey prompt ever appears in CI. Full one-time setup steps (generating the certificate,
+   creating the Connected App, and the three repo secrets to add — `SF_JWT_KEY`, `SF_CONSUMER_KEY`,
+   `SF_USERNAME`) are in the comment block at the top of `.github/workflows/capture-screenshots.yml`. See
+   `robot-capture/README.md` for what it captures and how to run it locally first — the easiest way to
+   run a first capture is the local control panel: `cd robot-capture && npm start`, then open
+   `http://localhost:4322` and pick an org your `sf` CLI is already logged into (no `npm install`
+   needed). Note this panel is local-only: it relies on an already-authenticated local `sf` session, so
+   it doesn't apply to the CI workflow, which uses its own JWT-based auth instead.
 
 ## Try it
 

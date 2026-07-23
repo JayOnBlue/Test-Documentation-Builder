@@ -9,9 +9,14 @@ project:
 
 tasks:
     capture_docs:
-        description: Capture all documentation screenshots against the target org.
+        description: >
+            Capture documentation screenshots against the target org. Already-captured
+            screenshots are skipped by default; pass "-o vars FORCE:True" to recapture
+            everything, e.g. cci task run capture_docs --org ci -o vars FORCE:True
         class_path: cumulusci.tasks.robotframework.Robot
         options:
             suites: robot/OrderDemo/tests/docs_capture.robot
+            vars:
+                - FORCE:False
             options:
                 outputdir: robot/OrderDemo/results

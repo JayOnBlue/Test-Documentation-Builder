@@ -11,8 +11,14 @@ Documentation    Captures every documentation screenshot against a real Salesfor
 Resource         cumulusci/robotframework/SalesforcePlaywright.robot
 Resource         ${CURDIR}/../resources/OrderDemo.resource
 
-Suite Setup      Run Keywords    Open Test Browser    size=1680x1050    AND    Set Doc Base Url
+Suite Setup      Run Keywords    Open Test Browser    size=1680x1050    AND    Set Doc Base Url    AND    Set Force Flag
 Suite Teardown   Close Browser
+
+
+*** Variables ***
+# Default: skip screenshots that already exist. Override per run with:
+#   cci task run capture_docs --org ci -o vars FORCE:True
+${FORCE}         False
 
 
 *** Test Cases ***
@@ -31,6 +37,11 @@ Capture App Launcher and Orders Tab — Order Lifecycle
     [Documentation]    Multi-step interaction: open the App Launcher, search "Order Management"
     ...                (captured as-is — the real thing a user sees), click its tile to switch
     ...                into the app, then click the Orders tab.
+    ${skip}=         Should Skip Capture    order-lifecycle-app-launcher    order-lifecycle-orders-tab
+    IF    ${skip}
+        Log          Skipping — both screenshots already captured (pass -o vars FORCE:True to recapture)
+        RETURN
+    END
     Show App Launcher Search    Order Management
     Capture Screenshot As    order-lifecycle-app-launcher
     Click            a:has-text("Order Management") >> nth=0
@@ -43,6 +54,11 @@ Capture Create Order Form — Order Lifecycle
     [Documentation]    Multi-step interaction: click New on the Orders tab, fill in Customer Email,
     ...                screenshot the filled-in form before saving, then save — this also creates
     ...                the sample Order record the next test case opens.
+    ${skip}=         Should Skip Capture    order-lifecycle-create-order
+    IF    ${skip}
+        Log          Skipping — already captured (pass -o vars FORCE:True to recapture)
+        RETURN
+    END
     Go To            ${DOC_BASE}/lightning/o/Order__c/home
     Wait Until Loading Is Complete
     Click            button:has-text("New")
@@ -55,6 +71,11 @@ Capture Create Order Form — Order Lifecycle
 
 Capture Order Record Page — Order Lifecycle
     [Documentation]    Open the Order record just created and capture its detail page.
+    ${skip}=         Should Skip Capture    order-lifecycle-record-page
+    IF    ${skip}
+        Log          Skipping — already captured (pass -o vars FORCE:True to recapture)
+        RETURN
+    END
     ${id}=           Record Id For Object    Order__c
     Go To            ${DOC_BASE}/lightning/r/Order__c/${id}/view
     Wait Until Loading Is Complete

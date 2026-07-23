@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Management Docs — Screenshot Capture</title>
+<style>
+  :root { --accent:#635bff; --border:#e3e8ee; --text:#1a1f36; --muted:#6b7280; }
+  * { box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; color:var(--text); background:#f6f8fb; margin:0; padding:40px 20px; }
+  .card { max-width:820px; margin:0 auto; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 8px 30px rgba(26,31,54,.08); overflow:hidden; }
+  .card__head { padding:24px 28px; border-bottom:1px solid var(--border); }
+  h1 { margin:0 0 4px; font-size:20px; }
+  .sub { color:var(--muted); font-size:14px; }
+  .body { padding:24px 28px; }
+  label.fld { display:block; font-weight:600; font-size:13px; margin:0 0 6px; }
+  select { width:100%; padding:11px 13px; font-size:15px; border:1px solid var(--border); border-radius:8px; background:#fff; }
+  .row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:20px; }
+  button { font-family:inherit; font-size:14px; font-weight:600; padding:11px 20px; border-radius:8px; border:none; cursor:pointer; }
+  .btn-primary { background:var(--accent); color:#fff; }
+  .btn-primary:hover { background:#4b45c6; }
+  .btn-primary:disabled { opacity:.5; cursor:default; }
+  .opt { font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+  .hint { font-size:12.5px; color:var(--muted); margin-top:6px; }
+  .banner { margin-top:16px; padding:12px 14px; border-radius:8px; font-size:13px; display:none; }
+  .banner--warn { background:#fff4e5; color:#a05a00; display:block; }
+  pre { background:#0f1729; color:#d7e0ef; padding:16px; border-radius:10px; font-size:12.5px; line-height:1.5; height:300px; overflow:auto; margin-top:22px; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="card__head">
+      <h1>Order Management Docs — Screenshot Capture</h1>
+      <div class="sub">Reuses your Salesforce CLI login — no passkey, no MFA, no second Chrome window to sign into. Pick the org and click.</div>
+    </div>
+    <div class="body">
+      <label class="fld" for="org">Salesforce org (from your <code>sf</code> CLI)</label>
+      <select id="org"><option>Loading orgs…</option></select>
+      <div class="hint">These are the orgs your Salesforce CLI is already logged into. Not listed? Run <code>sf org login web</code> in a terminal, then refresh.</div>
+
+      <div id="cliBanner" class="banner banner--warn"></div>
+
+      <div class="row">
+        <button id="captureBtn" class="btn-primary">Capture &amp; Build</button>
+        <label class="opt"><input type="checkbox" id="forceChk"> Re-capture existing images</label>
+        <label class="opt"><input type="checkbox" id="rebuildChk" checked> Rebuild site when done</label>
+        <button id="refreshBtn" class="opt" style="background:none;border:1px solid var(--border);color:var(--text)">Refresh orgs</button>
+      </div>
+
+      <pre id="log">Ready. Choose an org above, then click "Capture &amp; Build".</pre>
+    </div>
+  </div>
+
+<script>
+  var logEl = document.getElementById('log');
+  var orgSel = document.getElementById('org');
+  var banner = document.getElementById('cliBanner');
+  function log(m, clear) { if (clear) logEl.textContent = ''; logEl.textContent += (logEl.textContent ? '\n' : '') + m; logEl.scrollTop = logEl.scrollHeight; }
+
+  async function loadOrgs() {
+    banner.style.display = 'none';
+    orgSel.innerHTML = '<option>Loading orgs…</option>';
+    try {
+      var r = await fetch('/api/orgs'); var d = await r.json();
+      if (!d.ok) { banner.textContent = d.error; banner.className = 'banner banner--warn'; orgSel.innerHTML = '<option value="">(no orgs found)</option>'; return; }
+      if (!d.orgs.length) { orgSel.innerHTML = '<option value="">(no authenticated orgs)</option>'; return; }
+      orgSel.innerHTML = d.orgs.map(function (o) { return '<option value="' + o.value + '"' + (o.default ? ' selected' : '') + '>' + o.label + (o.default ? '  —  default' : '') + '</option>'; }).join('');
+    } catch (e) { banner.textContent = 'Could not reach the local server: ' + e.message; banner.className = 'banner banner--warn'; }
+  }
+  loadOrgs();
+  document.getElementById('refreshBtn').addEventListener('click', loadOrgs);
+
+  document.getElementById('captureBtn').addEventListener('click', function () {
+    var org = orgSel.value;
+    if (!org) { log('No org selected. Authenticate with "sf org login web" first.', true); return; }
+    var force = document.getElementById('forceChk').checked ? '1' : '0';
+    var rebuild = document.getElementById('rebuildChk').checked ? '1' : '0';
+    var btn = this; btn.disabled = true;
+    log('Starting capture for "' + org + '" …', true);
+    var es = new EventSource('/api/capture?org=' + encodeURIComponent(org) + '&force=' + force + '&rebuild=' + rebuild);
+    es.onmessage = function (e) { try { log(JSON.parse(e.data)); } catch (x) { log(e.data); } };
+    es.addEventListener('done', function (e) {
+      es.close(); btn.disabled = false;
+      try { var s = JSON.parse(e.data); if (s.error) log('\nFinished with error: ' + s.error); } catch (x) {}
+    });
+    es.onerror = function () { es.close(); btn.disabled = false; log('\nConnection closed.'); };
+  });
+</script>
+</body>
+</html>

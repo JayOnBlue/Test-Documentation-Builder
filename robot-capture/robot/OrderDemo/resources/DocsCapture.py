@@ -50,6 +50,11 @@ class DocsCapture:
         return self.images_dir
 
     @keyword
+    def screenshot_exists(self, screenshot_id):
+        """True if docs/images/<screenshot_id>.png already exists."""
+        return os.path.exists(os.path.join(self.images_dir, f"{screenshot_id}.png"))
+
+    @keyword
     def object_api_name(self, url_pattern):
         """Pull the object API name out of a /lightning/r/<Object>/{recordId}/... pattern."""
         m = re.search(r"/lightning/r/([^/]+)/", url_pattern or "")
