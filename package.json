@@ -9,12 +9,16 @@
     "version-history": "node docs/scripts/generate-version-history.js",
     "changelog": "node docs/scripts/generate-changelog.js",
     "build:site": "node docs/scripts/build-site.js",
-    "build": "npm run extract:technical && npm run author:business && npm run version-history && npm run changelog && npm run build:site"
+    "build": "npm run extract:technical && npm run author:business && npm run version-history && npm run changelog && npm run build:site",
+    "capture:screenshots": "node docs/scripts/capture-screenshots.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
     "js-yaml": "^5.2.1",
     "markdown-it": "^14.3.0"
+  },
+  "devDependencies": {
+    "playwright": "1.61.1"
   }
 }

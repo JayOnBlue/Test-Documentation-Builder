@@ -31,12 +31,18 @@
   <div class="card">
     <div class="card__head">
       <h1>Order Management Docs — Screenshot Capture</h1>
-      <div class="sub">Reuses your Salesforce CLI login — no passkey, no MFA, no second Chrome window to sign into. Pick the org and click.</div>
+      <div class="sub">Pick an org your Salesforce CLI is already logged into — no passkey, no MFA — or log in to a new one right here. Everything, including pushing the results to GitHub, runs from this page.</div>
     </div>
     <div class="body">
       <label class="fld" for="org">Salesforce org (from your <code>sf</code> CLI)</label>
       <select id="org"><option>Loading orgs…</option></select>
-      <div class="hint">These are the orgs your Salesforce CLI is already logged into. Not listed? Run <code>sf org login web</code> in a terminal, then refresh.</div>
+      <div class="hint">These are the orgs your Salesforce CLI is already logged into.</div>
+
+      <div class="row" style="margin-top:12px">
+        <input id="newAlias" type="text" placeholder="alias for a new org" style="flex:1;min-width:160px;padding:9px 11px;font-size:14px;border:1px solid var(--border);border-radius:8px">
+        <button id="loginBtn" style="background:none;border:1px solid var(--border);color:var(--text)">Log in to a new org</button>
+      </div>
+      <div class="hint">Not in the list above? Give it an alias and click this — it opens a real Salesforce login in your browser (MFA/passkey may apply, since it's a genuinely new session), then adds it to the dropdown.</div>
 
       <div id="cliBanner" class="banner banner--warn"></div>
 
@@ -44,6 +50,7 @@
         <button id="captureBtn" class="btn-primary">Capture &amp; Build</button>
         <label class="opt"><input type="checkbox" id="forceChk"> Re-capture existing images</label>
         <label class="opt"><input type="checkbox" id="rebuildChk" checked> Rebuild site when done</label>
+        <label class="opt"><input type="checkbox" id="pushChk" checked> Commit &amp; push to GitHub when done</label>
         <button id="refreshBtn" class="opt" style="background:none;border:1px solid var(--border);color:var(--text)">Refresh orgs</button>
       </div>
 
@@ -70,14 +77,29 @@
   loadOrgs();
   document.getElementById('refreshBtn').addEventListener('click', loadOrgs);
 
+  document.getElementById('loginBtn').addEventListener('click', function () {
+    var alias = document.getElementById('newAlias').value.trim();
+    if (!alias) { log('Enter an alias for the new org first.', true); return; }
+    var btn = this; btn.disabled = true;
+    log('Logging in "' + alias + '" …', true);
+    var es = new EventSource('/api/login?alias=' + encodeURIComponent(alias));
+    es.onmessage = function (e) { try { log(JSON.parse(e.data)); } catch (x) { log(e.data); } };
+    es.addEventListener('done', function (e) {
+      es.close(); btn.disabled = false;
+      try { var s = JSON.parse(e.data); if (s.error) log('\nLogin failed: ' + s.error); else loadOrgs(); } catch (x) {}
+    });
+    es.onerror = function () { es.close(); btn.disabled = false; log('\nConnection closed.'); };
+  });
+
   document.getElementById('captureBtn').addEventListener('click', function () {
     var org = orgSel.value;
-    if (!org) { log('No org selected. Authenticate with "sf org login web" first.', true); return; }
+    if (!org) { log('No org selected. Pick one above, or log in to a new one first.', true); return; }
     var force = document.getElementById('forceChk').checked ? '1' : '0';
     var rebuild = document.getElementById('rebuildChk').checked ? '1' : '0';
+    var push = document.getElementById('pushChk').checked ? '1' : '0';
     var btn = this; btn.disabled = true;
     log('Starting capture for "' + org + '" …', true);
-    var es = new EventSource('/api/capture?org=' + encodeURIComponent(org) + '&force=' + force + '&rebuild=' + rebuild);
+    var es = new EventSource('/api/capture?org=' + encodeURIComponent(org) + '&force=' + force + '&rebuild=' + rebuild + '&push=' + push);
     es.onmessage = function (e) { try { log(JSON.parse(e.data)); } catch (x) { log(e.data); } };
     es.addEventListener('done', function (e) {
       es.close(); btn.disabled = false;

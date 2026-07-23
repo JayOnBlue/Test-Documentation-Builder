@@ -26,6 +26,7 @@ sf-docs-automation-demo/
 │   │   ├── generate-changelog.js       # deterministic: force-app diff -> docs/CHANGELOG.md (grouped releases)
 │   │   ├── author-business-docs.mjs    # the ONE AI step -> updates docs/business/*.md only
 │   │   ├── build-site.js               # assembles docs/site/ (one shell + one data bundle) + docs/screenshot-manifest.json
+│   │   ├── capture-screenshots.mjs     # secretless Playwright capturer — reads the manifest, writes docs/images/<id>.png
 │   │   └── site-assets/                # index.html / app.js / styles.css — the unified SPA shell
 │   ├── business/                       # <- the business/use-case Markdown "database"
 │   │   ├── TEMPLATE.md                 # documents the `callout` and `screenshot` fenced-block conventions
@@ -35,14 +36,15 @@ sf-docs-automation-demo/
 │   ├── technical/versions.json         # generated — do not hand-edit
 │   ├── CHANGELOG.md                    # generated — do not hand-edit (the release data IS this file)
 │   ├── screenshot-manifest.json        # generated — every `screenshot` block found across docs/business/**/*.md
-│   ├── images/                         # captured screenshots (<screenshot-id>.png), committed by the workflow below
+│   ├── images/                         # captured screenshots (<screenshot-id>.png), pushed by the local control panel below
 │   ├── _state/progress.json            # generated — tracks the last commit this pipeline documented
 │   └── site/                           # generated — the GitHub Pages output; git-ignored, rebuilt every run
 ├── robot-capture/                      # CumulusCI + Robot Framework (SalesforcePlaywright) screenshot capture — see its own README
-│   ├── server.mjs + control.html       # local browser control panel (npm start -> http://localhost:4322)
+│   ├── server.mjs + control.html       # local browser control panel (npm start -> opens localhost:4322,
+│   │                                   #   captures, then pushes docs/images to GitHub itself)
 └── .github/workflows/
     ├── docs-pipeline.yml               # force-app push -> Changelog/Business docs/Technical Reference -> GitHub Pages
-    └── capture-screenshots.yml         # manual trigger -> runs robot-capture/, commits new docs/images
+    └── sf-screenshots.yml              # secretless (no repo secrets) Playwright screenshot capture, run on demand
 ```
 
 `docs/site/` is listed in `.gitignore` — it's pure build output (derived entirely from `docs/business/`,
@@ -116,17 +118,62 @@ Pages implemented:
    **`CLAUDE_CODE_OAUTH_TOKEN`** (Settings → Secrets and variables → Actions → New repository secret).
    If you skip this, the pipeline still runs and deploys — it just skips the AI business-doc step and
    tells you so in the log.
-4. **(Optional) Enable screenshot capture** — `capture-screenshots.yml` is a separate, manually-triggered
-   workflow (Actions tab → "Capture Documentation Screenshots" → Run workflow). It authenticates via the
-   OAuth 2.0 JWT Bearer Flow (a certificate + Connected App, not an interactive login), so no login screen
-   or MFA/passkey prompt ever appears in CI. Full one-time setup steps (generating the certificate,
-   creating the Connected App, and the three repo secrets to add — `SF_JWT_KEY`, `SF_CONSUMER_KEY`,
-   `SF_USERNAME`) are in the comment block at the top of `.github/workflows/capture-screenshots.yml`. See
-   `robot-capture/README.md` for what it captures and how to run it locally first — the easiest way to
-   run a first capture is the local control panel: `cd robot-capture && npm start`, then open
-   `http://localhost:4322` and pick an org your `sf` CLI is already logged into (no `npm install`
-   needed). Note this panel is local-only: it relies on an already-authenticated local `sf` session, so
-   it doesn't apply to the CI workflow, which uses its own JWT-based auth instead.
+4. **(Optional) Capture screenshots** — two ways to do this, neither needs a stored repo secret. See
+   **Screenshot capture** below.
+
+## Screenshot capture
+
+`screenshot` blocks in the business docs (see `docs/business/TEMPLATE.md`) are collected by
+`build-site.js` into `docs/screenshot-manifest.json` — a list of `{ id, alt, step, url_pattern }`
+entries. Capturing turns each entry into `docs/images/<id>.png`, which the site then renders inline.
+There are two capturers; both read the same manifest, write the same files, and use **no stored repo
+secret**:
+
+### Option A — local control panel (Robot Framework)
+
+`cd robot-capture && npm start` opens `http://localhost:4322` in your browser automatically. Pick an org
+your `sf` CLI is already logged into (no MFA/passkey), or log in to a new one right there, click
+**Capture & Build**, and it pushes the resulting screenshots to GitHub itself when done. See
+`robot-capture/README.md` for details.
+
+### Option B — secretless GitHub Actions workflow (Playwright)
+
+`.github/workflows/sf-screenshots.yml` captures the same shots on a runner using
+`docs/scripts/capture-screenshots.mjs`, and — crucially — **stores no credential anywhere**. Instead of
+a GitHub Secret, you paste a short-lived Salesforce access token into the workflow's run form at trigger
+time; the run masks it, uses it, and revokes the org session on exit (even on failure). The token dies at
+the org session timeout (~2h) regardless.
+
+1. **Mint a token locally** from an org your `sf` CLI is logged into:
+   ```bash
+   sf org login web --alias myOrg     # once, if not already logged in
+   sf org display -o myOrg            # copy "Access Token" and "Instance Url"
+   ```
+2. **Dispatch:** GitHub → **Actions** → **SF Screenshots** → **Run workflow**, and fill in:
+   - **access_token** — the `Access Token` from `sf org display`
+   - **instance_url** — the `Instance Url` (My Domain, e.g. `https://myorg.my.salesforce.com`)
+   - **recapture** — check to overwrite images that already exist
+   Or via CLI: `gh workflow run sf-screenshots.yml -f access_token=… -f instance_url=… -f recapture=false`.
+
+   New/changed images are committed back to `docs/images/` automatically and also uploaded as the
+   `sf-screenshots` artifact.
+
+> ⚠️ **Visibility caveat (known & accepted):** `workflow_dispatch` inputs — including `access_token` — are
+> recorded in the run history and visible to anyone with repo read access. That is acceptable here because
+> the repo is private/single-maintainer (the run-history audience is the same person who minted the token)
+> and the token is short-lived and self-revoking. Do **not** move it into GitHub Secrets — a pasted,
+> ephemeral, self-revoking credential is the whole point of this design.
+
+Run Option B locally too (against an org your `sf` CLI is logged into as `screenshotOrg`):
+
+```bash
+npm install
+npx playwright install --with-deps chromium
+SF_ORG_ALIAS=myOrg npm run capture:screenshots
+```
+
+Env vars honored by the script: `SF_ORG_ALIAS`, `SCREENSHOT_DIR` (default `docs/images`),
+`SCREENSHOT_MANIFEST` (default `docs/screenshot-manifest.json`), `RECAPTURE` (`true` to overwrite).
 
 ## Try it
 

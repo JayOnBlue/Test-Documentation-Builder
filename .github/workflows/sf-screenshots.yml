@@ -1,0 +1,172 @@
+# =============================================================================
+# Secretless Salesforce Lightning screenshot capture (Playwright)
+# =============================================================================
+#
+# A secretless, secrets-free alternative to the robot-capture/ suite. It reads
+# docs/screenshot-manifest.json, drives the org with Playwright, and writes the
+# docs/images/<id>.png files the doc site (docs/scripts/build-site.js) expects.
+# It uses NO GitHub Secrets. The Salesforce access token is pasted by the
+# operator at trigger time as a workflow_dispatch input and lives only for the
+# duration of the run.
+#
+# >>> KNOWN & ACCEPTED CAVEAT — READ BEFORE USE <<<
+# workflow_dispatch inputs (including `access_token`) are recorded in the run
+# history and are visible to anyone with repository read access. This is
+# ACCEPTABLE for this workflow because:
+#   (a) the repository is private / single-maintainer, so the run-history
+#       audience is the same person who minted the token, and
+#   (b) the token is short-lived — it is an org access token that dies at the
+#       Salesforce session timeout (~2h) and is additionally revoked at the end
+#       of every run (see the `always()` logout step below).
+# Do NOT try to "fix" this by moving the token into GitHub Secrets — a pasted,
+# ephemeral, self-revoking credential is the entire point of this design.
+# =============================================================================
+
+name: SF Screenshots
+
+# Constraint 9: workflow_dispatch only. No push / pull_request triggers, so this
+# pasted-credential workflow can never be started by inbound/forked PRs.
+on:
+  workflow_dispatch:
+    inputs:
+      access_token:
+        description: "Salesforce org access token (mint locally: sf org display -o <alias>)"
+        required: true
+        type: string
+      instance_url:
+        description: "My Domain / instance URL for the org"
+        required: true
+        type: string
+        default: "https://login.salesforce.com"
+      recapture:
+        description: "Overwrite screenshots that already exist"
+        required: false
+        type: boolean
+        default: false
+
+# Constraint 7: least privilege. Only contents:write, needed for the auto-issued
+# GITHUB_TOKEN to commit the regenerated screenshots. Nothing else is granted.
+permissions:
+  contents: write
+
+# Serialize runs so two dispatches cannot race the docs/images commit.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # Constraint 8: third-party actions pinned to full commit SHAs.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node 20
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Salesforce CLI (if missing)
+        run: |
+          if command -v sf >/dev/null 2>&1; then
+            echo "sf already present: $(sf --version)"
+          else
+            npm install --global @salesforce/cli
+            echo "installed: $(sf --version)"
+          fi
+
+      # ---------------------------------------------------------------------
+      # Auth step. Constraints 3, 4, 5, 10 all live here.
+      #  - add-mask is the FIRST line so the token is scrubbed from any later
+      #    accidental echo (constraint 3).
+      #  - the token reaches the CLI ONLY through the step-scoped env var
+      #    SF_ACCESS_TOKEN; it is never interpolated into the script body
+      #    (constraints 4 & 10). --no-prompt makes the CLI read SF_ACCESS_TOKEN.
+      #  - instance_url is likewise passed via env, never inlined.
+      #  - no `set -x`, no --verbose (constraint 5).
+      # ---------------------------------------------------------------------
+      - name: Authenticate to Salesforce
+        env:
+          SF_ACCESS_TOKEN: ${{ inputs.access_token }}
+          SF_INSTANCE_URL: ${{ inputs.instance_url }}
+        run: |
+          echo "::add-mask::${{ inputs.access_token }}"
+          sf org login access-token \
+            --no-prompt \
+            --instance-url "$SF_INSTANCE_URL" \
+            --alias screenshotOrg \
+            --set-default
+
+      # Constraint 5: verify without leaking. jq selects only non-sensitive
+      # fields; the raw (token-bearing) JSON is never printed.
+      - name: Verify session (redacted)
+        run: |
+          sf org display --target-org screenshotOrg --json \
+            | jq '{username: .result.username, instanceUrl: .result.instanceUrl, connectedStatus: .result.connectedStatus}'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Derive the Playwright version from the lockfile so the cache key tracks
+      # the exact pinned version.
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          version="$(node -p "require('./package-lock.json').packages['node_modules/playwright'].version")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Playwright version: $version"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
+      # Cache miss: full download + OS libs. Cache hit: browser binary is
+      # already restored, but OS libs live outside the cached path, so install
+      # just the deps.
+      - name: Install Playwright Chromium (cache miss)
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright OS deps (cache hit)
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Capture screenshots
+        env:
+          SF_ORG_ALIAS: screenshotOrg
+          SCREENSHOT_DIR: docs/images
+          SCREENSHOT_MANIFEST: docs/screenshot-manifest.json
+          RECAPTURE: ${{ inputs.recapture }}
+        run: node docs/scripts/capture-screenshots.mjs
+
+      # Constraint 6: revoke the runner-side session no matter what happened
+      # above (success, failure, or cancellation).
+      - name: Logout (revoke session)
+        if: always()
+        run: sf org logout --target-org screenshotOrg --no-prompt || true
+
+      - name: Commit screenshots
+        run: |
+          git config user.name "sf-screenshots-bot"
+          git config user.email "sf-screenshots-bot@users.noreply.github.com"
+          git add docs/images
+          if git diff --cached --quiet; then
+            echo "No screenshot changes to commit."
+          else
+            git commit -m "chore(screenshots): refresh Salesforce Lightning captures [skip ci]"
+            git push
+          fi
+
+      - name: Upload screenshots artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sf-screenshots
+          path: docs/images
+          if-no-files-found: warn

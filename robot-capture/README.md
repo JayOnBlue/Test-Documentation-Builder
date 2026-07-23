@@ -39,47 +39,49 @@ rfbrowser init
 #    if cci complains about git, initialise one (or just run this from the pushed repo root).
 ```
 
-## Local control panel (recommended)
+## Local control panel — the only way this runs (no GitHub Actions, no secrets)
 
-Instead of running `cci` commands by hand, a small local web page drives them for you:
+There is deliberately no GitHub Actions workflow for capture, no Connected App, no JWT certificate,
+and no repo secrets to configure. A cloud CI runner has no browser and no access to your Salesforce
+session, so authenticating it headlessly would always mean *some* stored credential (a JWT cert, a
+long-lived auth URL, etc.) — exactly the setup friction and fragile-format problems this project ran
+into earlier. Since a real capture needs a real logged-in browser session anyway, that session — and
+the page you drive it from — lives on your machine instead:
 
 ```bash
 cd robot-capture
 npm start
 ```
 
-Open **http://localhost:4322**, pick an org from the dropdown (populated from `sf org list` — the
-orgs your Salesforce CLI is already logged into), and click **Capture & Build**. You don't need to
-run `cci org import` yourself first — the panel does that on every click, so the connection stays
-fresh. No `npm install` is needed; the server has zero dependencies.
+This opens **http://localhost:4322** in your default browser automatically. From there:
 
-What the two checkboxes do:
+1. **Pick an org** from the dropdown — orgs your Salesforce CLI is already logged into, no
+   passkey/MFA prompt. **Not listed?** Type an alias into "Log in to a new org" and click it — this
+   runs a real `sf org login web` and opens the actual Salesforce login in your browser (MFA/passkey
+   will apply here, since it's a genuinely new session), then adds it to the dropdown.
+2. **Click Capture & Build.** You don't need to run `cci org import` yourself first — the panel does
+   that on every click, so the connection stays fresh.
+3. **The result is pushed to GitHub automatically** (see the checkbox below) — using your own local
+   git identity and push access, the same as if you ran `git push` yourself.
+
+No `npm install` is needed anywhere in this flow; the server has zero dependencies.
+
+What the checkboxes do:
 
 - **Re-capture existing images** — passes `-o vars FORCE:True` to `cci task run capture_docs`, which
   bypasses the skip-if-already-captured logic described below and redoes all 4 screenshots.
 - **Rebuild site when done** — runs `node docs/scripts/build-site.js` again after capture so
   `docs/site/index.html` immediately shows the new images instead of "Screenshot pending" placeholders.
+- **Commit & push to GitHub when done** (on by default) — stages `docs/images/` and
+  `docs/screenshot-manifest.json`, commits, and pushes from this machine. If nothing changed (every
+  shot was skipped), it says so instead of creating an empty commit. After a successful push it also
+  tries `gh workflow run docs-pipeline.yml` (needs the `gh` CLI, already authenticated) so the
+  **deployed** GitHub Pages site picks up the new images too — a plain `git push` of `docs/images/`
+  alone wouldn't trigger that workflow, since its `push` trigger only watches `force-app/**`. If `gh`
+  isn't available this step just logs a note instead of failing the run.
 
 The log box streams each command's real output live, including Robot Framework's own progress. For
 the full pass/fail/skip detail of a run, see `robot-capture/robot/OrderDemo/results/log.html`.
-
-## Running it from GitHub Actions
-
-Actions tab -> **"Capture Documentation Screenshots"** -> **Run workflow**. It:
-
-1. Authenticates headlessly via JWT (see "Connect your org" below — no login screen, ever).
-2. Deploys the demo metadata and assigns the permission set.
-3. Runs the capture suite — pass the **"Recapture every screenshot"** checkbox in the Run workflow
-   dialog to force a full recapture (maps to `-o vars FORCE:True`); leave it unchecked to only fill in
-   screenshots that aren't already in the repo.
-4. **Commits any new/changed PNGs and the manifest straight to the branch it ran on** — this is what
-   "updates images in the repo" means concretely: `docs/images/*.png` and
-   `docs/screenshot-manifest.json` land as a real commit by `github-actions[bot]`, pushed by the
-   workflow itself (no PR step for this part — the images are the actual pixels, there's no prose to
-   review).
-5. If anything was committed, it also triggers `docs-pipeline.yml` so the **deployed** GitHub Pages
-   site rebuilds with the new images too — the images commit alone wouldn't do this, since that
-   workflow's `push` trigger only watches `force-app/**`.
 
 ## Deploy the demo metadata (once per org)
 
@@ -93,24 +95,14 @@ sf org assign permset --name Order_Management_Docs --target-org <org>
 
 ## Connect your org — reuses an already-authenticated session, no new login, no MFA/passkey
 
-**Locally:** CumulusCI can import the org your `sf` CLI is already authenticated to:
+The control panel above does this for you on every click. To do it by hand from a terminal instead:
 
 ```bash
 cci org import <sf alias/username> ci      # e.g.: cci org import QuintJMSandbox ci
 cci org list                               # confirm "ci" is listed
 ```
 
-**In CI (GitHub Actions):** there's no local `sf` session on a fresh runner, so the workflow
-(`.github/workflows/capture-screenshots.yml`) uses the **OAuth 2.0 JWT Bearer Flow** instead — the
-approach [CumulusCI's own docs recommend for CI](https://cumulusci.readthedocs.io/en/stable/tutorial.html#connect-cumulusci-to-a-persistent-org)
-and the standard pattern for headless Salesforce CI generally. It's fully server-to-server, so no
-login screen or MFA/passkey prompt is ever shown. Unlike a single hand-pasted "SFDX Auth URL" string
-(easy to mangle with a stray quote or wrapped line when pasting into a secret box), JWT uses three
-plain secrets plus a certificate — see the setup steps in the comment at the top of
-`.github/workflows/capture-screenshots.yml` for exactly how to generate the certificate, create the
-Connected App, and which three secrets to add (`SF_JWT_KEY`, `SF_CONSUMER_KEY`, `SF_USERNAME`).
-
-## Capture (manual — what the control panel and CI both do under the hood)
+## Capture (manual — what the control panel does under the hood)
 
 Make sure the manifest exists (it's generated by the site build, from the `screenshot` blocks in
 `../docs/business/**/*.md`):
