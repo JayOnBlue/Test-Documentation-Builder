@@ -40,11 +40,30 @@ const SF = process.platform === "win32" ? "sf.cmd" : "sf";
 
 /** Run an `sf` command and return parsed JSON `.result`. */
 function sfJson(args) {
-  const out = execFileSync(SF, [...args, "--json"], {
-    encoding: "utf8",
-    maxBuffer: 32 * 1024 * 1024,
-  });
-  return JSON.parse(out).result;
+  try {
+    const out = execFileSync(SF, [...args, "--json"], {
+      encoding: "utf8",
+      maxBuffer: 32 * 1024 * 1024,
+      // Capture stderr too so a non-zero exit surfaces the CLI's real message
+      // instead of Node's opaque "Command failed: ...".
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    return JSON.parse(out).result;
+  } catch (err) {
+    // The sf CLI exits non-zero on query/auth errors, but still prints its
+    // --json error payload (with the real message) to stdout. Prefer that.
+    const raw = (err.stdout || err.stderr || "").toString().trim();
+    let message = raw || err.message;
+    try {
+      const parsed = JSON.parse(raw);
+      message = parsed.message || parsed.name || message;
+    } catch {
+      /* not JSON — keep the raw text */
+    }
+    const wrapped = new Error(message);
+    wrapped.isSfError = true;
+    throw wrapped;
+  }
 }
 
 /** Get a one-time frontdoor login URL for the org (token-bearing — do not log). */
@@ -55,11 +74,21 @@ function getFrontdoorUrl() {
   return url;
 }
 
-/** Return the Id of the most recent record of an object via SOQL, or null. */
+/**
+ * Return the Id of the most recent record of an object via SOQL, or null.
+ * Returns null (not throws) when the object is absent, unreadable, or empty —
+ * those are "no record to screenshot" conditions, not capture failures. The
+ * reason is logged so a missing deployment is diagnosable.
+ */
 export function firstRecordId(objectApiName) {
   const soql = `SELECT Id FROM ${objectApiName} ORDER BY CreatedDate DESC LIMIT 1`;
-  const result = sfJson(["data", "query", "--target-org", ORG_ALIAS, "--query", soql]);
-  return result?.records?.[0]?.Id || null;
+  try {
+    const result = sfJson(["data", "query", "--target-org", ORG_ALIAS, "--query", soql]);
+    return result?.records?.[0]?.Id || null;
+  } catch (err) {
+    console.warn(`  query for ${objectApiName} failed: ${err.message}`);
+    return null;
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -227,6 +256,7 @@ async function main() {
   await waitForLightning(page);
 
   let failures = 0;
+  let skipped = 0;
   for (const entry of entries) {
     const outPath = path.join(SCREENSHOT_DIR, `${entry.id}.png`);
     if (!RECAPTURE && existsSync(outPath)) {
@@ -238,6 +268,8 @@ async function main() {
       let relativeUrl = entry.url_pattern;
 
       // Resolve {recordId} against a live record when the pattern needs one.
+      // A missing object/record is a soft skip (the shot legitimately can't be
+      // taken without data), not a capture failure — so it never fails the run.
       if (relativeUrl.includes("{recordId}")) {
         const objectApiName = objectApiNameFrom(relativeUrl);
         if (!objectApiName) {
@@ -245,7 +277,12 @@ async function main() {
         }
         const recordId = firstRecordId(objectApiName);
         if (!recordId) {
-          throw new Error(`no ${objectApiName} records found to screenshot`);
+          console.warn(
+            `  skip ${entry.id}: no ${objectApiName} record available in this org ` +
+              `(is the demo force-app deployed and seeded with data?)`
+          );
+          skipped += 1;
+          continue;
         }
         relativeUrl = relativeUrl.replace("{recordId}", recordId);
       }
@@ -267,11 +304,12 @@ async function main() {
 
   await browser.close();
 
+  const skipNote = skipped > 0 ? ` (${skipped} skipped — no data)` : "";
   if (failures > 0) {
-    console.error(`${failures} shot(s) failed.`);
+    console.error(`${failures} shot(s) failed${skipNote}.`);
     process.exit(1);
   }
-  console.log("All shots captured.");
+  console.log(`All shots captured${skipNote}.`);
 }
 
 main().catch((err) => {
